@@ -1,24 +1,33 @@
-'use client'
-import React from 'react';
-import {createRoot} from 'react-dom/client';
-import {APIProvider, Map} from '@vis.gl/react-google-maps';
-import  Pin from './components/pin.jsx';
+'use client';
+import React, { useState } from 'react';
+import Map from './components/map.tsx';
 
-const page = () => (
-  <APIProvider apiKey='AIzaSyC9dICfO1Q2SlNUbKIyUWpE3gTiZ_qeE0c'>
-    <Map
-      mapId={'efa788b3413cc48d'}
-      style={{width: '100vw', height: '100vh'}}
-      defaultCenter={{lat: 22.54992, lng: 0}}
-      defaultZoom={3}
-      gestureHandling={'greedy'}
-      disableDefaultUI={true}
-    >
+const Page = () => {
+  const [address, setAddress] = useState('');
 
-      <Pin></Pin>
-    </Map>
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+    e.preventDefault();
+    // Logic to handle the form submission and add the pin using the entered address
+    console.log('Address:', address);
+    // Reset the address input
+    setAddress('');
+  };
 
-  </APIProvider>
-);
+  return (
+    <>
+      <h1>Map</h1>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          placeholder="Enter address"
+        />
+        <button type="submit">Add Pin</button>
+      </form>
+      <Map />
+    </>
+  );
+};
 
-export default page;
+export default Page;
