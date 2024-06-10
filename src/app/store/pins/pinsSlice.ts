@@ -1,5 +1,6 @@
 // src/store/pinsSlice.ts
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit';
+import { RootState } from '../store';
 import { Pin } from '../../types/pinData';
 
 interface PinState {
@@ -30,4 +31,10 @@ const pinsSlice = createSlice({
 });
 
 export const { addPin, updatePin, deletePin } = pinsSlice.actions;
+
+export const selectPins = createSelector(
+  (state: RootState) => state.pins,
+  (pins) => pins.pins
+);
+
 export default pinsSlice.reducer;
