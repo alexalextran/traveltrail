@@ -1,0 +1,46 @@
+@import "variables&functions";
+
+.main{
+    @include flexCenter(row);
+    font-size: 1vw;
+    width: 80%;
+    display: grid;
+    margin: 0 auto;
+    text-align: center;
+    grid-template-columns: 2fr repeat(2, 1fr) 0.5fr 1fr repeat(3, 0.66fr);
+    column-gap: 1em;
+    
+    :nth-child(1){
+        border-left:  0.1em solid $blue;
+        border-right: 0.1em solid $blue;
+    }
+     :not(button){
+        border-right: 0.15em solid $blue;
+    }
+
+    button{
+        transition: background-Color 300ms ease;
+        @include button
+    }
+
+    .markform{
+        height: inherit;
+        *{
+            border: none;
+        }
+
+        input{
+            width: 50%
+        }
+        @include flexCustom(space-around, center, row);
+    }
+}
+
+@media all and (max-width: 550px) {
+    .main{
+   font-size: 2vw;
+   width: 95%;
+        
+    }
+    
+   }

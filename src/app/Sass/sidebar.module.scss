@@ -1,0 +1,20 @@
+@import "variables&functions";
+
+.main{
+    @include flexCustom(space-between, center, row);
+   width: 35vw;
+   position: absolute;
+   z-index: 100;
+   left: -32vw;
+    height: 100vh;
+    transition: left 0.5s;
+    background-color: red;
+
+    .rightExtender{
+        height: inherit;
+        min-width: 3vw;
+        background-color: green;
+     
+    }
+
+}
