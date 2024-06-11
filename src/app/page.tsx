@@ -7,6 +7,7 @@ import { Pin } from '../app/types/pinData.ts';
 import { get } from 'http';
 import Sidebar from './components/sidebar.tsx';
 import styles from './Sass/page.module.scss'
+import Modal from './components/modal.tsx';
 
 const Page = () => {
   const [address, setAddress] = useState('');
@@ -48,7 +49,8 @@ const Page = () => {
 
   return (
     <>
-      <h1>Map</h1>
+     <Modal />
+      {/* <h1>Map</h1>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -57,10 +59,11 @@ const Page = () => {
           placeholder="Enter address"
         />
         <button type="submit">Add Pin</button>
-      </form>
+      </form> */}
      
       <Sidebar />
       <Map />
+     
      
     </>
   );
