@@ -11,7 +11,7 @@ function Sidebar() {
 
     return (
         <main className={styles.main} style={{ left: extend ? '0vw' : '-32vw' }}>
-            <div>
+            <div >
                 {pins.map((pin: Pin, index: number) => <PinItem key={index} pin={pin} />)}
             </div>
             <div className={styles.rightExtender} onClick={() => {setextend(!extend)}}>

@@ -1,19 +1,27 @@
 @import "variables&functions";
 
 .main{
-    @include flexCustom(space-between, center, row);
+    @include flexCustom(space-between, flex-start, row);
    width: 35vw;
    position: absolute;
    z-index: 100;
    left: -32vw;
     height: 100vh;
     transition: left 0.5s;
-    background-color: red;
+    background: rgba( 255, 255, 255, 0.25 );
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+    backdrop-filter: blur( 0.7em );
+    border-radius: 10px;
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
+
+    :first-child{
+        width: 100%;
+    }
 
     .rightExtender{
         height: inherit;
         min-width: 3vw;
-        background-color: green;
+        background-color: white;
      
     }
 

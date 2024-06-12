@@ -6,6 +6,7 @@ import { addPin } from '../../app/store/pins/pinsSlice.ts';
 import { Pin } from '../../app/types/pinData.ts';
 
 const Modal = () => {
+  const [visited, setVisited] = useState(false)
   const [toggle, settoggle] = useState(false)
   const [address, setAddress] = useState('');
   const [title, setTitle] = useState('');
@@ -61,7 +62,7 @@ const Modal = () => {
         <div className={styles.modal}>
           <h1>Map</h1>
           <form onSubmit={handleSubmit}>
-          <input
+            <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -77,11 +78,18 @@ const Modal = () => {
               value={category}
               onChange={(e) => setCategory(e.target.value)}
             >
-               <option value="place">Place</option>
+              <option value="place">Place</option>
               <option value="restaurant">Restaurant</option>
               <option value="bar">Bar</option>
-             
             </select>
+            <label>
+              <input
+                type="checkbox"
+                checked={visited}
+                onChange={(e) => setVisited(e.target.checked)}
+              />
+              Visited
+            </label>
             <button type="submit">Add Pin</button>
           </form>
         </div>

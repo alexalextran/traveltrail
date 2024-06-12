@@ -1,0 +1,28 @@
+@import "variables&functions";
+
+.main{
+    @include flexCustom(flex-start, center, column);
+    border-bottom: $darkgray 2px solid;
+    padding: 0 1em;
+    h3{
+        color: $green;
+        margin: 0.5em 0
+    }
+
+    :nth-child(2){
+        width: 100%;
+        @include flexCustom(flex-start, center, row);
+        div{
+           border-right: solid black 1px; 
+           
+        }
+        div:not(:first-child){
+          text-align: center;
+          width: 100%;
+          border: none;
+          justify-content: center;
+        }
+        
+    }
+   
+}
