@@ -1,10 +1,12 @@
 // src/store/store.ts
 import { configureStore } from '@reduxjs/toolkit';
 import pinReducer from './pins/pinsSlice';
+import categoryReducer from './categories/categoriesSlice';
 
 const store = configureStore({
   reducer: {
     pins: pinReducer,
+    categories: categoryReducer,
   },
 });
 
