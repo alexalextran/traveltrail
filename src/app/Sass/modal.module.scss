@@ -23,9 +23,14 @@ form{
         @include flexCenter(row);
       
     }
+
+    input, textarea{
+        @include input;
+    }
     input, div, select, textarea{
-        margin-bottom: 0.4em;
+        margin-bottom: 1em;
         width: 100%;
+      
     }
 }
 }

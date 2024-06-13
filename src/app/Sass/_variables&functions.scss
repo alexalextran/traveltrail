@@ -100,12 +100,13 @@ $orange: rgba(255,92,53, .7);
 @mixin input {      
         background: none;
         border: none;
-        color: $blue;
-        border-bottom:  0.2em solid black;
+        color: black;
+        border-bottom:  0.1em solid black;
         font-size: 1em;
         transition: border 0.5s;
+        padding-bottom: 0.4em;
         &:focus{
-            border-bottom: 0.2em solid $orange;
+            border-bottom: 0.2em solid $green;
             transition: border 0.5s;
             outline: none;
         }
