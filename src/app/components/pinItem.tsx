@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Pin } from '../types/pinData'
 import styles from '../Sass/pinItem.module.scss'
 
 function PinItem({ pin }: { pin: Pin }) {
+    const [show, setshow] = useState(false)
   return (
     <main className={styles.main}>
         <div><h3>{pin.title}</h3></div>
@@ -10,8 +11,13 @@ function PinItem({ pin }: { pin: Pin }) {
         <div>
         <div>{pin.address}</div>
         <div>{pin.category}</div>
-        {/* <div>{pin?.description}</div>  */}
         </div>
+
+        {
+            pin.description && <button onClick={() => setshow(!show)}>Show</button>
+            
+        }
+        {show && <div>{pin.description}</div> }
     </main>
   )
 }

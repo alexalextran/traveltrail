@@ -2,15 +2,32 @@
 
 .modal{
 position: absolute;
-z-index: 99999;
+z-index:100;
 background-color: red;
-height: 15em;
-width: 25em;
+height: 20em;
+width: 30em;
 background: rgba( 255, 255, 255, 0.25 );
 box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
 backdrop-filter: blur( 0.7em );
 border-radius: 10px;
 border: 0.3em solid grey;
+@include flexCenter(column);
+
+
+
+form{
+    padding: 0.5em 1.5em;
+    width: 100%;
+    @include flexCenter(column);
+    label{
+        @include flexCenter(row);
+      
+    }
+    input, div, select, textarea{
+        margin-bottom: 0.4em;
+        width: 100%;
+    }
+}
 }
 
 .button{
@@ -27,3 +44,7 @@ border: 0.3em solid grey;
         margin-bottom: 0.1em;
     }
 }
+
+.pac-container {
+    z-index: 10000 !important;
+  }
