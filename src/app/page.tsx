@@ -8,6 +8,7 @@ import { get } from 'http';
 import Sidebar from './components/sidebar.tsx';
 import styles from './Sass/page.module.scss'
 import Modal from './components/modal.tsx';
+import { APIProvider } from '@vis.gl/react-google-maps';
 
 const Page = () => 
   
@@ -15,10 +16,13 @@ const Page = () =>
 
 
     <>
+        <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLEAPI_API_KEY ?? ''}>
+
      <Modal />
       <Sidebar />
       <Map />
-     
+      </APIProvider>
+
      
     </>
   

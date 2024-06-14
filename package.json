@@ -18,7 +18,8 @@
     "react-draggable": "^4.4.6",
     "react-redux": "^9.1.2",
     "redux": "^5.0.1",
-    "sass": "^1.77.4"
+    "sass": "^1.77.4",
+    "use-places-autocomplete": "^4.0.1"
   },
   "devDependencies": {
     "@types/node": "^20",

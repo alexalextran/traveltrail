@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Draggable from 'react-draggable';
 import styles from "../Sass/modal.module.scss";
 import { useDispatch } from 'react-redux';
 import { addPin } from '../../app/store/pins/pinsSlice.ts';
 import { Pin } from '../../app/types/pinData.ts';
-import { LoadScript, Autocomplete } from '@react-google-maps/api';
+import { APIProvider, useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
 
-const libraries = ["places"];
 const Modal = () => {
+  const map = useMap();
+  const placesLib = useMapsLibrary('places');
+
   const [description, setDescription] = useState('');
   const [visited, setVisited] = useState(false);
   const [toggle, settoggle] = useState(false);
@@ -15,17 +17,30 @@ const Modal = () => {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<'restaurant' | 'bar' | 'place'>('place' as 'restaurant' | 'bar' | 'place');
   const dispatch = useDispatch();
+  
+  const addressInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (placesLib && addressInputRef.current) {
+      const autocomplete = new google.maps.places.Autocomplete(addressInputRef.current);
+      autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace();
+        if (place.formatted_address) {
+          setAddress(place.formatted_address);
+        }
+      });
+    }
+  }, [placesLib, toggle]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     // Logic to handle the form submission and add the pin using the entered address
     
-  
-      async function getData(){
-        const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.NEXT_PUBLIC_GOOGLEAPI_API_KEY}`);
-        const data = await response.json();
-        return data;
-      }
+    async function getData(){
+      const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.NEXT_PUBLIC_GOOGLEAPI_API_KEY}`);
+      const data = await response.json();
+      return data;
+    }
 
     const data = await getData();
     const coords = data.results[0].geometry.location;
@@ -53,7 +68,6 @@ const Modal = () => {
 
   return (
     <>
-      <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLEAPI_API_KEY || ''} libraries={libraries}>
       <button className={styles.button} onClick={() => {settoggle(!toggle)}}>
         <p>+</p>
       </button>
@@ -70,23 +84,13 @@ const Modal = () => {
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter Title"
             />
-            <Autocomplete
-              onLoad={(autocomplete) => {
-                autocomplete.addListener("place_changed", () => {
-                  const place = autocomplete.getPlace();
-                  if (place) {
-                    setAddress(place.formatted_address);
-                  }
-                });
-              }}
-            >
-              <input
-                type="text"
-                value={address || ''}
-                onChange={(e) => setAddress(e.target.value || '')}
-                placeholder="Enter address"
-              />
-            </Autocomplete>
+            <input
+              type="text"
+              ref={addressInputRef}
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="Enter address"
+            />
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value as 'restaurant' | 'bar' | 'place')}
@@ -113,7 +117,6 @@ const Modal = () => {
           </form>
         </div>
       </Draggable>}
-      </LoadScript>
     </>
   );
 };
