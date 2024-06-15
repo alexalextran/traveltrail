@@ -7,7 +7,7 @@ interface CategoryState {
 }
 
 const initialState: CategoryState = {
-  categories: ["restaurant", "bar", "place"],
+  categories: ["Restaurant", "Bar", "Place"],
 };
 
 const categoriesSlice = createSlice({

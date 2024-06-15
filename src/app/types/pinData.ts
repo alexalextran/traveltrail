@@ -6,6 +6,6 @@ export interface Pin {
     lng: number;
     title: string;
     description?: string;
-    category: 'restaurant' | 'bar' | 'place';
+    category: string;
   }
   

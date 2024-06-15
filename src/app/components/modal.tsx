@@ -15,7 +15,7 @@ const Modal = () => {
   const [toggle, settoggle] = useState(false);
   const [address, setAddress] = useState<string>('');
   const [title, setTitle] = useState('');
-  const [category, setCategory] = useState<'restaurant' | 'bar' | 'place'>('place' as 'restaurant' | 'bar' | 'place');
+  const [category, setCategory] = useState<string>('');
   const dispatch = useDispatch();
   
   const addressInputRef = useRef<HTMLInputElement | null>(null);
@@ -41,9 +41,10 @@ const Modal = () => {
       const data = await response.json();
       return data;
     }
-
     const data = await getData();
     const coords = data.results[0].geometry.location;
+
+    console.log(category)
 
     // Create a new pin
     const newPin: Pin = {
@@ -62,8 +63,7 @@ const Modal = () => {
     dispatch(addPin(newPin));
 
     // Reset the address and category inputs
-    setAddress('');
-    setCategory('place');
+ 
   };
 
   return (
@@ -93,11 +93,11 @@ const Modal = () => {
             />
             <select
               value={category}
-              onChange={(e) => setCategory(e.target.value as 'restaurant' | 'bar' | 'place')}
+              onChange={(e) => setCategory(e.target.value)}
             >
-              <option value="place">Place</option>
-              <option value="restaurant">Restaurant</option>
-              <option value="bar">Bar</option>
+              <option value="Place">Place</option>
+              <option value="Restaurant">Restaurant</option>
+              <option value="Bar">Bar</option>
             </select>
             
             <label>

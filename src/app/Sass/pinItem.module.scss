@@ -14,11 +14,12 @@
         @include flexCustom(flex-start, center, row);
         div{
            border-right: solid black 1px; 
+           width: 70%;
            
         }
         div:not(:first-child){
           text-align: center;
-          width: 100%;
+          width: 30%;
           border: none;
           justify-content: center;
         }
