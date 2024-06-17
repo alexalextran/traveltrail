@@ -8,7 +8,17 @@ interface PinState {
 }
 
 const initialState: PinState = {
-  pins: [],
+  pins: [
+    {
+      id: '1',
+      address: '123 Dummy St, Dummy City, DS 12345',
+      lat: 40.7128,
+      lng: -74.0060,
+      title: 'Dummy Pin',
+      description: 'This is a dummy pin.',
+      category: 'Place'
+    }
+  ],
 };
 
 const pinsSlice = createSlice({
