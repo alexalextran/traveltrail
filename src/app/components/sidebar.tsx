@@ -14,24 +14,39 @@ function Sidebar() {
     const [selectedCategory, setSelectedCategory] = useState<null | string>("Place");
     const pins = useSelector(selectPins);
     const categories = useSelector(selectCategories);
+    const [toggleunNvisted, settoggleunNvisted] = useState<null | Boolean>(null)
+
     
-    const filteredPins = selectedCategory ? pins.filter(pin => pin.category === selectedCategory) : pins;
+
+    var filteredPins
+   
+     filteredPins = selectedCategory ? pins.filter(pin => pin.category === selectedCategory) : pins;
+     filteredPins = toggleunNvisted != null ? filteredPins.filter(pin => pin.visited === toggleunNvisted) : filteredPins;
+    
+
 
     useEffect(() => {
-      
-        console.log(filteredPins, pins)
+          
+        
      
-    }, [selectedCategory])
+    }, [selectedCategory, pins])
     
     return (
         <>
         <main className={styles.main} style={{ left: extend ? '0vw' : '-32vw' }}>
+            
             <div className={styles.categories}>
+
                 {categories.map((category: string, index: number) => 
                 <div key={index} onClick={() => setSelectedCategory(category)}>{category}</div>)}
+                <div onClick={() => setSelectedCategory(null)}>Show All</div>
                 <button onClick={() => setToggle(true)}>Add  Category</button>
             </div>
             <div >
+                <div className={styles.unNvisitedButtons}>
+                    <button onClick={() => settoggleunNvisted(true)}>Visited</button>
+                    <button onClick={() => settoggleunNvisted(false)}>Unvisited</button>
+                </div>
                 {filteredPins.map((pin: Pin, index: number) => <PinItem key={index} pin={pin} />)}
             </div>
             <div className={styles.rightExtender} onClick={() => {setextend(!extend)}}>

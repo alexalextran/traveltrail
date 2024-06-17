@@ -7,5 +7,6 @@ export interface Pin {
     title: string;
     description?: string;
     category: string;
+    visited: boolean;
   }
   

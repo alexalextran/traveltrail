@@ -15,7 +15,7 @@ const Modal = () => {
   const [toggle, settoggle] = useState(false);
   const [address, setAddress] = useState<string>('');
   const [title, setTitle] = useState('');
-  const [category, setCategory] = useState<string>('');
+  const [category, setCategory] = useState<string>('Place');
   const dispatch = useDispatch();
   
   const addressInputRef = useRef<HTMLInputElement | null>(null);
@@ -55,6 +55,7 @@ const Modal = () => {
       lat: coords.lat, // These values should be replaced with actual coordinates
       lng: coords.lng, // You may need to use a geocoding service to get these from the address
       category: category,
+      visited: visited,
     };
 
     console.log('New Pin:', newPin);

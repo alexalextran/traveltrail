@@ -15,7 +15,7 @@
     border: 1px solid rgba( 255, 255, 255, 0.18 );
 
   
-    :nth-child(2){
+    div:nth-child(2){
         width: 100%;
     }
 
@@ -41,4 +41,25 @@
             color: $green;
         }
     }
+}
+
+
+.unNvisitedButtons{
+    @include flexCustom(space-around, center, row);
+    background-color: $green;
+    color: white;
+    padding: 0.5em;
+    border-radius: 5px;
+    margin: 0.5em;
+
+    button{
+       
+        @include button;
+        background-color: white;
+        color:  $green;
+        width: 40%;
+        font-size: 1em;
+
+    }
+
 }
