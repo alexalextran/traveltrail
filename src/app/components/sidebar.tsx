@@ -11,7 +11,7 @@ import AddCategoryModal from '../components/addCategoryModal.tsx'; // Import the
 function Sidebar() {
     const [toggle, setToggle] = useState(false)
     const [extend, setextend] = useState(false)
-    const [selectedCategory, setSelectedCategory] = useState<null | string>(null);
+    const [selectedCategory, setSelectedCategory] = useState<null | string>("Place");
     const pins = useSelector(selectPins);
     const categories = useSelector(selectCategories);
     
