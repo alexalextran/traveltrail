@@ -8,5 +8,6 @@ export interface Pin {
     description?: string;
     category: string;
     visited: boolean;
+    imageKeys?: string[];
   }
   

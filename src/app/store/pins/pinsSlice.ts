@@ -20,14 +20,14 @@ const initialState: PinState = {
       visited: false,
     },
     {
-      "id": "rquvokz3o",
-      "title": "stay away",
-      "address": "AU, Level 1/203 Thomas St, Haymarket NSW 2000, Australia",
-      "description": "",
-      "lat": -33.8806844,
-      "lng": 151.2041748,
-      "category": "Place",
-      "visited": true
+      id: "rquvokz3o",
+      title: "stay away",
+      address: "AU, Level 1/203 Thomas St, Haymarket NSW 2000, Australia",
+      description: "",
+      lat: -33.8806844,
+      lng: 151.2041748,
+      category: "Place",
+      visited: true
   }
   ],
 };
