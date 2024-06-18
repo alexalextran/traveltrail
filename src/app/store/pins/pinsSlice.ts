@@ -48,10 +48,20 @@ const pinsSlice = createSlice({
     deletePin: (state, action: PayloadAction<string>) => {
       state.pins = state.pins.filter(pin => pin.id !== action.payload);
     },
+    addPictures: (state, action: PayloadAction<{id: string, picture: string[]}>) => {
+      const pin = state.pins.find(pin => pin.id === action.payload.id);
+      if (pin) {
+        if (pin.imageKeys) {
+          pin.imageKeys = pin.imageKeys.concat(action.payload.picture);
+        } else {
+          pin.imageKeys = action.payload.picture;
+        }
+      }
+    },
   },
 });
 
-export const { addPin, updatePin, deletePin } = pinsSlice.actions;
+export const { addPin, updatePin, deletePin, addPictures } = pinsSlice.actions;
 
 export const selectPins = createSelector(
   (state: RootState) => state.pins,
