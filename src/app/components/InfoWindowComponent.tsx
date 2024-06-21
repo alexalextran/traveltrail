@@ -1,16 +1,11 @@
-import React, {useState} from 'react'
+import React from 'react'
 import styles from "../Sass/infoWindow.module.scss";
-import { useSelector } from 'react-redux';
-import { selectPins } from '../store/pins/pinsSlice.ts';
-import { Pin } from '../types/pinData.ts';
-import ExpandedInfoModal from './expandedInfoModal.tsx';
 
-export default function InfoWindowComponent({lat, lng, pinID}: {lat: number, lng: number, pinID: string}) {
-const [toggleIWM, settoggleIWM] = useState(false)
 
-    const pins = useSelector(selectPins);
-    const filteredPin:Pin = pins.filter(pin => pin.id == pinID)[0];
-  console.log(pinID)
+export default function InfoWindowComponent({ filteredPin, settoggleIWM}: { filteredPin: any, settoggleIWM: any}) {
+
+   
+ 
     
   return (
     <>
@@ -21,7 +16,7 @@ const [toggleIWM, settoggleIWM] = useState(false)
         {filteredPin.category}
         <button onClick={()=> settoggleIWM(true)}>Click To Expand</button>
     </main>
-    {toggleIWM && <ExpandedInfoModal pin={filteredPin} />} 
+  
     </>
   )
 }

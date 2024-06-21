@@ -28,10 +28,10 @@ a:active, a, a:focus {
 body::-webkit-scrollbar {
   width: 0.8rem;
   z-index: 100;
-  background-color: rgb(30, 30, 30);
+  background-color: rgb(21, 19, 30);
 }
 
 body::-webkit-scrollbar-thumb {
   background-color: rgb(28, 204, 91);
-  box-shadow: 0 -100vh 0 100vh rgb(30, 30, 30);
+  box-shadow: 0 -100vh 0 100vh rgb(21, 19, 30);
 }

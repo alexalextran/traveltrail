@@ -1,0 +1,11 @@
+@import "variables&functions";
+
+.main{
+    width: 100vw;
+    height: 100vh;
+    @include absolutefill;
+    position:absolute !important;
+    z-index: 999999999;
+    background-color: black;
+    top: 0 !important;
+}
