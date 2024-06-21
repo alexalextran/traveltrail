@@ -19,11 +19,11 @@ function PinItem({ pin }: { pin: Pin }) {
             pin.description && <button onClick={() => setshow(!show)}>Show</button>
             
         }
-        <button>Show Pictures</button>
+      
         <ImgUpload pinID={pin.id}/>
 
         {show && <div>{pin.description}</div> }
-        {pin.imageKeys && pin.imageKeys.map((image, index) => <img key={index} src={image} alt={`pin ${index}`} />)}    </main>
+          </main>
   )
 }
 

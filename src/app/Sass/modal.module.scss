@@ -2,7 +2,7 @@
 
 .modal{
 position: absolute;
-z-index:100;
+z-index:40;
 background-color: red;
 height: 20em;
 width: 30em;
@@ -41,7 +41,7 @@ form{
     position: fixed;
     bottom: 40px;
     right: 40px;
-    z-index: 100;
+    z-index: 40;
     width: 100px;
     height: 100px;
     border-radius: 50%;

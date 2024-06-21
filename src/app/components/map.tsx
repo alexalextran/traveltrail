@@ -4,7 +4,6 @@ import Pin from './pin.tsx';
 import { useSelector } from 'react-redux';
 import { selectPins } from '../store/pins/pinsSlice.ts';
 import ImgUpload from '../components/imgUpload.tsx';
-import ExpandedInfoModal from './expandedInfoModal.tsx';
 const MapComponent = () => {
   const pins = useSelector(selectPins);
 
