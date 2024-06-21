@@ -5,7 +5,6 @@ import ImgUpload from './imgUpload'
 
 function PinItem({ pin }: { pin: Pin }) {
     const [show, setshow] = useState(false)
-    console.log(pin)
   return (
     <main className={styles.main}>
         <div><h3>{pin.title}</h3></div>
