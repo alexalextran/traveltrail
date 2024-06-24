@@ -5,6 +5,8 @@ import { useDispatch } from 'react-redux';
 import { addPin } from '../../app/store/pins/pinsSlice.ts';
 import { Pin } from '../../app/types/pinData.ts';
 import { APIProvider, useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
+import { writeToFirestore } from '../firebaseFunctions/writeDocument.ts'; // Adjust the import path as necessary
+
 
 const Modal = () => {
   const map = useMap();
@@ -58,10 +60,11 @@ const Modal = () => {
       visited: visited,
     };
 
-    console.log('New Pin:', newPin);
-
+    writeToFirestore('users/alextran/pins', newPin)
+  .then(() => dispatch(addPin(newPin)))
+  .catch((error) => console.error('Error writing document: ', error));
     // Dispatch the addPin action
-    dispatch(addPin(newPin));
+    
 
     // Reset the address and category inputs
  
