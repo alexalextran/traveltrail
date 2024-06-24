@@ -1,7 +1,11 @@
-// src/store/pinsSlice.ts
-import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createSelector, createAsyncThunk } from '@reduxjs/toolkit';
+import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import { app } from "../../firebase";
 import { RootState } from '../store';
 import { Pin } from '../../types/pinData';
+
+// Initialize Firestore
+const db = getFirestore(app);
 
 interface PinState {
   pins: Pin[];
@@ -9,28 +13,22 @@ interface PinState {
 
 const initialState: PinState = {
   pins: [
-    {
-      id: '1',
-      address: '123 Dummy St, Dummy City, DS 12345',
-      lat: 40.7128,
-      lng: -74.0060,
-      title: 'Dummy Pin',
-      description: 'This is a dummy pin.',
-      category: 'Place',
-      visited: false,
-    },
-    {
-      id: "rquvokz3o",
-      title: "stay away",
-      address: "AU, Level 1/203 Thomas St, Haymarket NSW 2000, Australia",
-      description: "",
-      lat: -33.8806844,
-      lng: 151.2041748,
-      category: "Place",
-      visited: true
-  }
+    
   ],
 };
+
+
+export const fetchPins = createAsyncThunk(
+  'pins/fetchPins',
+  async () => {
+    const querySnapshot = await getDocs(collection(db, 'users/alextran/pins'));
+    const pinsArray: Pin[] = [];
+    querySnapshot.forEach((doc) => {
+      pinsArray.push({ id: doc.id, ...doc.data() } as Pin);
+    });
+    return pinsArray;
+  }
+);
 
 const pinsSlice = createSlice({
   name: 'pins',
@@ -58,6 +56,11 @@ const pinsSlice = createSlice({
         }
       }
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchPins.fulfilled, (state, action) => {
+      state.pins = action.payload;
+    });
   },
 });
 
