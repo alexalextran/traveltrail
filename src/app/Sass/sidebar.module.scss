@@ -44,6 +44,12 @@
 }
 
 
+.pinItems{
+    height: 100%;
+    background-color: rgb(247,247,247);
+}
+
+
 .unNvisitedButtons{
     @include flexCustom(space-around, center, row);
     background-color: $green;

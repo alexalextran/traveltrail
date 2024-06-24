@@ -2,8 +2,7 @@
 
 .main{
     @include flexCustom(flex-start, center, column);
-    border-bottom: $darkgray 2px solid;
-    padding: 0 1em;
+    
     h3{
         color: $green;
         margin: 0.5em 0
@@ -24,6 +23,25 @@
           justify-content: center;
         }
         
+    }
+
+    .iconBar{
+        width: 100%;
+        @include flexCustom(space-around, center, row);
+        background-color: $green;
+        svg{
+           width: 1.5em;
+           height: 1.5em;
+           &:nth-child(1){
+                fill: white;
+           }
+           &:nth-child(2){
+            fill: white;
+            }
+            &:nth-child(3){
+                fill:white;
+           }
+        }
     }
    
 }

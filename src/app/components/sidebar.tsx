@@ -42,7 +42,7 @@ function Sidebar() {
                 <div onClick={() => setSelectedCategory(null)}>Show All</div>
                 <button onClick={() => setToggle(true)}>Add  Category</button>
             </div>
-            <div >
+            <div className={styles.pinItems}>
                 <div className={styles.unNvisitedButtons}>
                     <button style={{backgroundColor: toggleunNvisted == true ? "black" : "white"}}    onClick={() => toggleunNvisted === true ? settoggleunNvisted(null) : settoggleunNvisted(true)}>Visited</button>
                     <button  style={{backgroundColor: toggleunNvisted == false ? "black" : "white"}} onClick={() => toggleunNvisted === false ? settoggleunNvisted(null) : settoggleunNvisted(false)}>Unvisited</button>

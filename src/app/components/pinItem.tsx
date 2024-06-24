@@ -2,6 +2,10 @@ import React, { useState } from 'react'
 import { Pin } from '../types/pinData'
 import styles from '../Sass/pinItem.module.scss'
 import ImgUpload from './imgUpload'
+import { RiEditFill } from "react-icons/ri";
+import { MdPhotoSizeSelectActual, MdDeleteForever  } from "react-icons/md";
+import { FaImages } from "react-icons/fa";
+
 
 function PinItem({ pin }: { pin: Pin }) {
     const [show, setshow] = useState(false)
@@ -14,14 +18,22 @@ function PinItem({ pin }: { pin: Pin }) {
         <div>{pin.category}</div>
         </div>
 
+
+     
         {
             pin.description && <button onClick={() => setshow(!show)}>Show</button>
+
             
         }
       
-        <ImgUpload pinID={pin.id}/>
+       
 
         {show && <div>{pin.description}</div> }
+        <div className={styles.iconBar}>
+          <RiEditFill/>
+          <FaImages />
+          <MdDeleteForever />
+        </div>
           </main>
   )
 }
