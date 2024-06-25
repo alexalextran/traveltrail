@@ -46,29 +46,27 @@ const Modal = () => {
     const data = await getData();
     const coords = data.results[0].geometry.location;
 
-    console.log(category)
-
     // Create a new pin
-    const newPin: Pin = {
-      id: Math.random().toString(36).substr(2, 9), // Generate a random id
+    const newPin: Omit<Pin, 'id'> = {
       title: title,
       address: address,
       description: description,
-      lat: coords.lat, // These values should be replaced with actual coordinates
-      lng: coords.lng, // You may need to use a geocoding service to get these from the address
+      lat: coords.lat,
+      lng: coords.lng,
       category: category,
       visited: visited,
+      imageUrls: [],
     };
 
     writeToFirestore('users/alextran/pins', newPin)
-  .then(() => dispatch(addPin(newPin)))
-  .catch((error) => console.error('Error writing document: ', error));
-    // Dispatch the addPin action
-    
+    .then((docId) => {
+      const completePin: Pin = { ...newPin, id: docId };
+      dispatch(addPin(completePin)); // Dispatch the action with the complete pin
+    })
+    .catch((error) => console.error('Error writing document: ', error));
+};
 
-    // Reset the address and category inputs
- 
-  };
+
 
   return (
     <>

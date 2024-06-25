@@ -33,9 +33,9 @@ export default function ExpandedInfoModal({pin, settoggleIWM}: {pin: Pin, settog
       <p>{pin.address}</p>
       <p>{pin.visited}</p>
       <p>{pin?.description}</p>
-      {pin.imageKeys && 
+      {pin.imageUrls && 
       <Carousel responsive={responsiveConfig}>
-        { pin.imageKeys.map((src, index) => <img key={index} src={src} alt=""/>)}
+        { pin.imageUrls.map((src, index) => <img key={index} src={src} alt=""/>)}
       </Carousel>}
       
     </main>

@@ -18,7 +18,7 @@ const MapComponent = () => {
     // Dispatch fetchPins to load pins from the database into the Redux state
     dispatch(fetchPins());
   }, [dispatch]);
-console.log(pins)
+  
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLEAPI_API_KEY ?? ''}>
       <Map mapId={'efa788b3413cc48d'} style={{ width: '100vw', height: '100vh', right: '0', position: 'absolute' }} defaultCenter={{ lat: 22.54992, lng: 0 }} defaultZoom={3} gestureHandling={'greedy'} disableDefaultUI={true}>

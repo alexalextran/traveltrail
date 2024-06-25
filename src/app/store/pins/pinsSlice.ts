@@ -26,7 +26,9 @@ export const fetchPins = createAsyncThunk(
     querySnapshot.forEach((doc) => {
       pinsArray.push({ id: doc.id, ...doc.data() } as Pin);
     });
+    console.log(pinsArray)
     return pinsArray;
+   
   }
 );
 
@@ -43,16 +45,16 @@ const pinsSlice = createSlice({
         state.pins[index] = action.payload;
       }
     },
-    deletePin: (state, action: PayloadAction<string>) => {
+    removePinById: (state, action: PayloadAction<string>) => { // Renamed from deletePin to removePinById
       state.pins = state.pins.filter(pin => pin.id !== action.payload);
     },
     addPictures: (state, action: PayloadAction<{id: string, picture: string[]}>) => {
       const pin = state.pins.find(pin => pin.id === action.payload.id);
       if (pin) {
-        if (pin.imageKeys) {
-          pin.imageKeys = pin.imageKeys.concat(action.payload.picture);
+        if (pin.imageUrls) {
+          pin.imageUrls = pin.imageUrls.concat(action.payload.picture);
         } else {
-          pin.imageKeys = action.payload.picture;
+          pin.imageUrls = action.payload.picture;
         }
       }
     },
@@ -64,7 +66,7 @@ const pinsSlice = createSlice({
   },
 });
 
-export const { addPin, updatePin, deletePin, addPictures } = pinsSlice.actions;
+export const { addPin, updatePin, removePinById, addPictures } = pinsSlice.actions;
 
 export const selectPins = createSelector(
   (state: RootState) => state.pins,

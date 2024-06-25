@@ -5,10 +5,21 @@ import ImgUpload from './imgUpload'
 import { RiEditFill } from "react-icons/ri";
 import { MdPhotoSizeSelectActual, MdDeleteForever  } from "react-icons/md";
 import { FaImages } from "react-icons/fa";
+import { deleteFromFirestore } from '../firebaseFunctions/writeDocument.ts'; // Adjust the import path as necessary
+import { useDispatch } from 'react-redux';
+import { removePinById } from '../store/pins/pinsSlice.ts'; // Add this import statement
 
 
 function PinItem({ pin }: { pin: Pin }) {
     const [show, setshow] = useState(false)
+    const dispatch  = useDispatch();
+
+  const deletePin = () => {
+   deleteFromFirestore(`users/alextran/pins`, `${pin.id}`).then(() => {
+    dispatch(removePinById(pin.id));
+   });
+  }; // Add closing parenthesis here
+  
   return (
     <main className={styles.main}>
         <div><h3>{pin.title}</h3></div>
@@ -19,20 +30,14 @@ function PinItem({ pin }: { pin: Pin }) {
         </div>
 
 
-     
-        {
-            pin.description && <button onClick={() => setshow(!show)}>Show</button>
 
-            
-        }
-      
-       
 
         {show && <div>{pin.description}</div> }
         <div className={styles.iconBar}>
+          <ImgUpload pinID={pin.id}/>
           <RiEditFill/>
           <FaImages />
-          <MdDeleteForever />
+          <MdDeleteForever onClick={() => {deletePin()}}/>
         </div>
           </main>
   )
