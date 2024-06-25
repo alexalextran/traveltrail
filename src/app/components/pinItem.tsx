@@ -4,7 +4,6 @@ import styles from '../Sass/pinItem.module.scss'
 import ImgUpload from './imgUpload'
 import { RiEditFill } from "react-icons/ri";
 import { MdPhotoSizeSelectActual, MdDeleteForever  } from "react-icons/md";
-import { FaImages } from "react-icons/fa";
 import { deleteFromFirestore } from '../firebaseFunctions/writeDocument.ts'; // Adjust the import path as necessary
 import { useDispatch } from 'react-redux';
 import { removePinById } from '../store/pins/pinsSlice.ts'; // Add this import statement
@@ -34,9 +33,8 @@ function PinItem({ pin }: { pin: Pin }) {
 
         {show && <div>{pin.description}</div> }
         <div className={styles.iconBar}>
-          <ImgUpload pinID={pin.id}/>
           <RiEditFill/>
-          <FaImages />
+          <ImgUpload pinID={pin.id}/>
           <MdDeleteForever onClick={() => {deletePin()}}/>
         </div>
           </main>
