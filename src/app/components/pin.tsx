@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { selectPins } from '../store/pins/pinsSlice.ts'; // Import the ExpandedInfoModal component
 
 
-const CustomizedMarker = ({lat, lng, pinID}: {lat: number, lng: number, pinID:string}) => {
+const CustomizedMarker = ({lat, lng, pinID, userLocation}: {lat: number, lng: number, pinID:string, userLocation: { lat: number; lng: number; }}) => {
   const [markerRef, marker] = useAdvancedMarkerRef();
   const [toggleIWM, settoggleIWM] = useState(false)
 
@@ -27,7 +27,7 @@ const CustomizedMarker = ({lat, lng, pinID}: {lat: number, lng: number, pinID:st
       {showInfoWindow && <InfoWindow  anchor={marker} className={styles.infoWindow}><InfoWindowComponent filteredPin={filteredPin} settoggleIWM={settoggleIWM}   /></InfoWindow>}
       
     </AdvancedMarker>
-     {toggleIWM && <ExpandedInfoModal pin={filteredPin} settoggleIWM={settoggleIWM} /> }
+     {toggleIWM && <ExpandedInfoModal pin={filteredPin} settoggleIWM={settoggleIWM}  userLocation={userLocation}/> }
     </>
   );
 };

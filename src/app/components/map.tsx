@@ -34,7 +34,7 @@ const MapComponent = () => {
         >
         {pins.map((pin) => (
           // Render each pin using the Pin component
-          <Pin key={pin.id} pinID={pin.id} lat={pin.lat} lng={pin.lng} />
+          <Pin key={pin.id} pinID={pin.id} lat={pin.lat} lng={pin.lng} userLocation={{lat: location.lat, lng: location.lng}}/>
         ))}
 
 <AdvancedMarker position={{ lat: location.lat, lng: location.lng}}>
