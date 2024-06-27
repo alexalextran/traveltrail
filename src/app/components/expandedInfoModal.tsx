@@ -4,21 +4,22 @@ import styles from '../Sass/expandedInfoModal.module.scss'
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { useMapsLibrary, useMap } from '@vis.gl/react-google-maps';
+import IconBar from '../components/iconBar.tsx';
 
 export default function ExpandedInfoModal({pin, settoggleIWM, userLocation}: {pin: Pin, settoggleIWM: any, userLocation: { lat: number, lng: number }}) {
   const responsiveConfig = {
     superLargeDesktop: {
       // the naming can be any, depends on you.
       breakpoint: { max: 4000, min: 3000 },
-      items: 5
+      items: 1
     },
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
-      items: 3
+      items: 1
     },
     tablet: {
       breakpoint: { max: 1024, min: 464 },
-      items: 2
+      items: 1
     },
     mobile: {
       breakpoint: { max: 464, min: 0 },
@@ -44,17 +45,22 @@ export default function ExpandedInfoModal({pin, settoggleIWM, userLocation}: {pi
   
   return (
     <main className={styles.main}>
-      <button onClick={() => settoggleIWM(false)}>Close</button>
+      <div className={styles.header}>
       <h1>{pin.title}</h1>
+      <button onClick={() => settoggleIWM(false)}>Close</button>
+      </div>
       <h5>{pin.category}</h5>
       <p>{pin.address}</p>
       <p>{distanceToUser.toFixed(2)}KM Away</p>
       <p>{pin.visited}</p>
       <p>{pin?.description}</p>
+      <div className={styles.footer}>
       {pin.imageUrls && 
-      <Carousel responsive={responsiveConfig}>
+      <Carousel responsive={responsiveConfig} className={styles.carouselcontainer}>
         { pin.imageUrls.map((src, index) => <img key={index} src={src} alt=""/>)}
       </Carousel>}
+        <IconBar pin={pin}/>
+      </div>
       
     </main>
   )
