@@ -5,6 +5,9 @@ import InfoWindowComponent from "./InfoWindowComponent";
 import ExpandedInfoModal from "../components/expandedInfoModal";
 import { useSelector } from 'react-redux';
 import { selectPins } from '../store/pins/pinsSlice.ts'; // Import the ExpandedInfoModal component
+import { selectCategories } from '../store/categories/categoriesSlice'
+import { Category } from "../types/categoryData.ts";
+
 
 
 const CustomizedMarker = ({lat, lng, pinID, userLocation}: {lat: number, lng: number, pinID:string, userLocation: { lat: number; lng: number; }}) => {
@@ -18,12 +21,16 @@ const CustomizedMarker = ({lat, lng, pinID, userLocation}: {lat: number, lng: nu
 
 
   const pins = useSelector(selectPins);
+  const categories = useSelector(selectCategories);
+
   const filteredPin:any = pins.filter(pin => pin.id == pinID)[0];
+  const filteredCategory:Category = categories.filter(category => category.categoryName === filteredPin.category)[0]
+
 
   return (
     <>
     <AdvancedMarker position={{lat: lat, lng: lng}} ref={markerRef} onClick={handleClick}>
-      <Pin background={'#FBBC04'} glyphColor={'#000'} borderColor={'#000'} />
+      <Pin background={filteredCategory.categoryColor} glyphColor={'#000'} borderColor={'#000'} />
       {showInfoWindow && <InfoWindow  anchor={marker} className={styles.infoWindow}><InfoWindowComponent filteredPin={filteredPin} settoggleIWM={settoggleIWM}   /></InfoWindow>}
       
     </AdvancedMarker>

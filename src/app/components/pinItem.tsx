@@ -1,28 +1,20 @@
 import React, { useState } from 'react'
 import { Pin } from '../types/pinData'
 import styles from '../Sass/pinItem.module.scss'
-import ImgUpload from './imgUpload'
-import { RiEditFill } from "react-icons/ri";
-import { MdPhotoSizeSelectActual, MdDeleteForever  } from "react-icons/md";
-import { deleteFromFirestore } from '../firebaseFunctions/writeDocument.ts'; // Adjust the import path as necessary
-import { useDispatch } from 'react-redux';
-import { removePinById } from '../store/pins/pinsSlice.ts'; // Add this import statement
+import { useSelector } from 'react-redux';
 import IconBar from './iconBar.tsx';
+import { selectCategories } from '../store/categories/categoriesSlice'
+import { Category } from '../types/categoryData.ts';
 
 
 function PinItem({ pin }: { pin: Pin }) {
     const [show, setshow] = useState(false)
-    const dispatch  = useDispatch();
+    const categories = useSelector(selectCategories);
 
-  const deletePin = () => {
-   deleteFromFirestore(`users/alextran/pins`, `${pin.id}`).then(() => {
-    dispatch(removePinById(pin.id));
-   });
-  }; // Add closing parenthesis here
-  
+    const category:Category = categories.filter(category => category.categoryName === pin.category)[0]
   return (
     <main className={styles.main}>
-        <div><h3>{pin.title}</h3></div>
+        <h3 style={{color: `${category.categoryColor}`}}>{pin.title}</h3>
        
         <div>
         <div>{pin.address}</div>
@@ -33,7 +25,7 @@ function PinItem({ pin }: { pin: Pin }) {
 
 
         {show && <div>{pin.description}</div> }
-      <IconBar pin={pin}/>
+      <IconBar pin={pin} color={category.categoryColor}/>
           </main>
   )
 }

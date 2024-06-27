@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux';
 import { removePinById } from '../store/pins/pinsSlice.ts'; 
 import "react-color-palette/css";
 
-export default function IconBar({pin}: {pin: Pin}) {
+export default function IconBar({pin, color}: {pin: Pin, color: string}) {
     const dispatch  = useDispatch();
 
     const deletePin = () => {
@@ -20,10 +20,10 @@ export default function IconBar({pin}: {pin: Pin}) {
        
        
   return (
-    <div className={styles.iconBar}>
-    <RiEditFill/>
-    <ImgUpload pinID={pin.id}/>
-    <MdDeleteForever onClick={() => {deletePin()}}/>
-  </div>
-  )
+      <div className={styles.iconBar} style={{backgroundColor: `${color}`}}>
+      <RiEditFill/>
+      <ImgUpload pinID={pin.id}/>
+      <MdDeleteForever onClick={() => {deletePin()}}/>
+    </div>
+    )
 }

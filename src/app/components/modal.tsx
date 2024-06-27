@@ -1,16 +1,19 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Draggable from 'react-draggable';
 import styles from "../Sass/modal.module.scss";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addPin } from '../../app/store/pins/pinsSlice.ts';
 import { Pin } from '../../app/types/pinData.ts';
 import { APIProvider, useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
 import { writeToFirestore } from '../firebaseFunctions/writeDocument.ts'; // Adjust the import path as necessary
+import { Category } from '../types/categoryData.ts';
+import { selectCategories } from '../store/categories/categoriesSlice'
 
 
 const Modal = () => {
   const map = useMap();
   const placesLib = useMapsLibrary('places');
+  const categories = useSelector(selectCategories);
 
   const [description, setDescription] = useState('');
   const [visited, setVisited] = useState(false);
@@ -97,9 +100,12 @@ const Modal = () => {
               value={category}
               onChange={(e) => setCategory(e.target.value)}
             >
-              <option value="Place">Place</option>
-              <option value="Restaurant">Restaurant</option>
-              <option value="Bar">Bar</option>
+              {
+                categories.map((category: Category) => (
+                  <option key={category.categoryName} value={category.categoryName}>{category.categoryName}</option>
+                ))
+              }
+             
             </select>
             
             <label>
