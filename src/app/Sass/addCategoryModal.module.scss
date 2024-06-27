@@ -1,22 +1,51 @@
 @import "variables&functions";
 
-.main{
+.main {
     width: 30em;
-    height: 30em;
+    height: auto;
+    padding: 1em;
     @include absolutecenter;
     z-index: 99999;
-    background: rgba( 255, 255, 255, 0.25 );
-box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
-backdrop-filter: blur( 0.7em );
-border-radius:1em;
-}
-
-
-
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(4px);
+    border-radius: 1em;
+    @include flexCenter(column);
+    gap: 1em;
   
-  .modalContent > :nth-child(1) > :nth-child(1) > :nth-child(1) {
- 
-            height: 5em!important;
-            width: 100%;
-        }
+
+    input[type="text"] {
+        width: 80%;
+        padding: 1em;
+        border: 2px solid #ccc;
+        border-radius: 0.4em;
+        
+    }
+
+    button {
+        width: 10em;
+       @include button;
+       
+    }
+
+    .exit{
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 0.4em;
+        width: 3em;
+        font-size: 1.5em;
+        @include clickable;
+        border-radius: 0;
+    }
+
     
+
+    .modalContent{
+        width: 80%;
+    }
+
+    button:hover {
+        background-color: #f0f0f0;
+    }
+}

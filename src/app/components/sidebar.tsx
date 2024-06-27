@@ -26,7 +26,7 @@ function Sidebar() {
 
 
     useEffect(() => {
-          
+          console.log("I was renderd")
         
      
     }, [selectedCategory, pins])

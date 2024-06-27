@@ -2,27 +2,34 @@ import React, { useState } from 'react'
 import styles from '../Sass/addCategoryModal.module.scss'
 import { useDispatch } from 'react-redux';
 import { addCategory } from '../../app/store/categories/categoriesSlice.ts';
-import ColorPickerComponent from './ColorPickerComponent.tsx';
-
+import { ColorPicker, useColor } from "react-color-palette";
+import { writeCategory } from '../firebaseFunctions/Categories.ts';
 
 
 
 export default function AddCategoryModal({setToggle}: any) {
     const dispatch = useDispatch();
     const [categoryToAdd, setcategoryToAdd] = useState('')
+    const [color, setColor] = useColor("rgb(0,0,0)");
+
+
+
   return (
-    <main className={styles.main}>ADD
+    <main className={styles.main}>
+      <h1>Add Category</h1>
     <input type='text'value={categoryToAdd} onChange={(e) => setcategoryToAdd(e.target.value)}>
     </input>
-    <ColorPickerComponent/>
+    <div className={styles.modalContent}>
+    <ColorPicker color={color} onChange={setColor} hideInput={["hsv"]} hideAlpha={true}/>
+    </div>
     <button onClick={()=> { 
         dispatch(addCategory(categoryToAdd)); 
         setToggle(false);
         }}>
-        ADD BUTTON
+        Add
     </button>
-    <button onClick={()=> setToggle(false)}>
-        Exit Button
+    <button onClick={()=> setToggle(false)} className={styles.exit}>
+        X
     </button>
     </main>
   )

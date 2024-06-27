@@ -11,10 +11,9 @@ $orange: rgba(255,92,53, .7);
 @mixin button {
   aspect-ratio: 7/2;
   border-radius: 0.4em;
-  font-size: 0.6em;
-  outline: none;
-  color: white;
-  border: 0.15em solid black;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
    
