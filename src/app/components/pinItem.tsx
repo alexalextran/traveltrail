@@ -7,6 +7,7 @@ import { MdPhotoSizeSelectActual, MdDeleteForever  } from "react-icons/md";
 import { deleteFromFirestore } from '../firebaseFunctions/writeDocument.ts'; // Adjust the import path as necessary
 import { useDispatch } from 'react-redux';
 import { removePinById } from '../store/pins/pinsSlice.ts'; // Add this import statement
+import IconBar from './iconBar.tsx';
 
 
 function PinItem({ pin }: { pin: Pin }) {
@@ -32,11 +33,7 @@ function PinItem({ pin }: { pin: Pin }) {
 
 
         {show && <div>{pin.description}</div> }
-        <div className={styles.iconBar}>
-          <RiEditFill/>
-          <ImgUpload pinID={pin.id}/>
-          <MdDeleteForever onClick={() => {deletePin()}}/>
-        </div>
+      <IconBar pin={pin}/>
           </main>
   )
 }

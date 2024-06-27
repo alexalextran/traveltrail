@@ -46,18 +46,14 @@ position: relative;
          background-color: $green;
          svg{
             width: 1.5em;
-            height: 1.5em;
-            &:nth-child(1){
-                 fill: white;
-            }
-            &:nth-child(2){
-             fill: white;
-             }
-             &:nth-child(3){
-                 fill:white;
-            }
+           height: 1.5em;
+          fill: white;
+          &:nth-child(3){
+            filter: invert(100%);
+          }
          }
          & > :nth-child(2){
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;

@@ -7,6 +7,7 @@ import {  MdDeleteForever  } from "react-icons/md";
 import { deleteFromFirestore } from '../firebaseFunctions/writeDocument.ts'; 
 import { useDispatch } from 'react-redux';
 import { removePinById } from '../store/pins/pinsSlice.ts'; 
+import "react-color-palette/css";
 
 export default function IconBar({pin}: {pin: Pin}) {
     const dispatch  = useDispatch();
@@ -15,8 +16,8 @@ export default function IconBar({pin}: {pin: Pin}) {
         deleteFromFirestore(`users/alextran/pins`, `${pin.id}`).then(() => {
          dispatch(removePinById(pin.id));
         });
-       }; // Add closing parenthesis here
-  
+       }; 
+       
        
   return (
     <div className={styles.iconBar}>
