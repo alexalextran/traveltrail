@@ -34,7 +34,7 @@ const CustomizedMarker = ({lat, lng, pinID, userLocation}: {lat: number, lng: nu
       {showInfoWindow && <InfoWindow  anchor={marker} className={styles.infoWindow}><InfoWindowComponent filteredPin={filteredPin} settoggleIWM={settoggleIWM}   /></InfoWindow>}
       
     </AdvancedMarker>
-     {toggleIWM && <ExpandedInfoModal pin={filteredPin} settoggleIWM={settoggleIWM}  userLocation={userLocation}/> }
+     {toggleIWM && <ExpandedInfoModal pin={filteredPin} settoggleIWM={settoggleIWM}  userLocation={userLocation} filteredCategory={filteredCategory}/> }
     </>
   );
 };

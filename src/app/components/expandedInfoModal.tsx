@@ -1,12 +1,14 @@
 import React from 'react'
 import { Pin } from '../types/pinData'
+import { Category } from '../types/categoryData.ts'
+
 import styles from '../Sass/expandedInfoModal.module.scss'
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { useMapsLibrary, useMap } from '@vis.gl/react-google-maps';
 import IconBar from '../components/iconBar.tsx';
 
-export default function ExpandedInfoModal({pin, settoggleIWM, userLocation}: {pin: Pin, settoggleIWM: any, userLocation: { lat: number, lng: number }}) {
+export default function ExpandedInfoModal({pin, settoggleIWM, userLocation, filteredCategory}: {filteredCategory: Category, pin: Pin, settoggleIWM: any, userLocation: { lat: number, lng: number }}) {
   const responsiveConfig = {
     superLargeDesktop: {
       // the naming can be any, depends on you.
@@ -39,13 +41,14 @@ export default function ExpandedInfoModal({pin, settoggleIWM, userLocation}: {pi
     const to = new google.maps.LatLng(lat2, lng2);
     
     return google.maps.geometry.spherical.computeDistanceBetween(from, to) / 1000; // Distance in km
+
   };
 
   const distanceToUser = calculateDistance(pin.lat, pin.lng, userLocation.lat, userLocation.lng);
   
   return (
-    <main className={styles.main}>
-      <div className={styles.header}>
+    <main className={styles.main} >
+      <div className={styles.header} style={{ borderBottomColor: filteredCategory.categoryColor }}>
       <h1>{pin.title}</h1>
       <button onClick={() => settoggleIWM(false)}>Close</button>
       </div>
@@ -59,7 +62,7 @@ export default function ExpandedInfoModal({pin, settoggleIWM, userLocation}: {pi
       <Carousel responsive={responsiveConfig} className={styles.carouselcontainer}>
         { pin.imageUrls.map((src, index) => <img key={index} src={src} alt=""/>)}
       </Carousel>}
-        <IconBar pin={pin}/>
+        <IconBar pin={pin} color={filteredCategory.categoryColor}/>
       </div>
       
     </main>
