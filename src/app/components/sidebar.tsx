@@ -9,11 +9,14 @@ import AddCategoryModal from '../components/addCategoryModal.tsx'; // Import the
 import { Category } from '../types/categoryData.ts';
 import { fetchCategories } from '../store/categories/categoriesSlice.ts'; // Import the AppThunk type
 import { AppDispatch } from '../store/store.ts'; // Import the AppDispatch type
-
+import { RiArrowRightDoubleFill } from "react-icons/ri";
+import { HiOutlineArrowsExpand } from "react-icons/hi";
+import FullScreen from '../components/FullScreen.tsx';
 
 function Sidebar() {
     const [toggle, setToggle] = useState(false)
     const [extend, setextend] = useState(false)
+    const [fullScreen, setfullScreen] = useState(false)
     const [selectedCategory, setSelectedCategory] = useState<null | string>("Place");
     const pins = useSelector(selectPins);
     const categories = useSelector(selectCategories);
@@ -52,11 +55,13 @@ function Sidebar() {
                 </div>
                 {filteredPins.map((pin: Pin, index: number) => <PinItem key={index} pin={pin} />)}
             </div>
-            <div className={styles.rightExtender} onClick={() => {setextend(!extend)}}>
-                Side
+            <div className={styles.rightExtender} >
+                <div onClick={() => {setextend(!extend)}}><RiArrowRightDoubleFill/></div>
+                <div onClick={() => {setfullScreen(true)}}><HiOutlineArrowsExpand/></div>
             </div>
         </main>
          {toggle && <AddCategoryModal setToggle={setToggle}/>} 
+         {fullScreen && <FullScreen setfullScreen={setfullScreen}/>} 
          </>
     )
 }

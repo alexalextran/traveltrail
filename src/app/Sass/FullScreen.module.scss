@@ -1,0 +1,17 @@
+@import "variables&functions";
+
+.main{
+    @include absolutefill;
+    background-color: rgb(250, 250, 250);
+    z-index: 99999;
+
+
+    .header{
+        background-color: $green;
+        height: 3.5em;
+    }
+
+    .exitButton{
+        @include exitButton;
+    }
+}

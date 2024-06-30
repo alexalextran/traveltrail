@@ -12,7 +12,6 @@
     box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
     backdrop-filter: blur( 0.7em );
     border-radius: 10px;
-    border: 1px solid rgba( 255, 255, 255, 0.18 );
 
   
     div:nth-child(2){
@@ -23,8 +22,21 @@
         height: inherit;
         min-width: 3vw;
         background-color: white;
-     
+        div:nth-child(2){
+            background-color: lightgrey;
+        }
+      div{
+        cursor: pointer;
+        height: 50%;
+        @include flexCenter(row);
+        
+        svg{
+            width: 1.5em;
+            height: 1.5em;
+        }
+      }
     }
+
 
 }
 

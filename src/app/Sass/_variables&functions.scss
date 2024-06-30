@@ -122,3 +122,11 @@ $orange: rgba(255,92,53, .7);
 
 
 
+@mixin exitButton{
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.4em;
+    width: 3em;
+    font-size: 1.5em;
+}
