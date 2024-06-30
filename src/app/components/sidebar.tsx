@@ -61,7 +61,7 @@ function Sidebar() {
             </div>
         </main>
          {toggle && <AddCategoryModal setToggle={setToggle}/>} 
-         {fullScreen && <FullScreen setfullScreen={setfullScreen}/>} 
+         {fullScreen && <FullScreen setfullScreen={setfullScreen} pins={pins} categories={categories}/>} 
          </>
     )
 }
