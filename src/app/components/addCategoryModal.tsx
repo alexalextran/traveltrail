@@ -6,11 +6,10 @@ import { ColorPicker, useColor } from "react-color-palette";
 import { writeCategory } from '../firebaseFunctions/Categories.ts';
 
 
-export default function AddCategoryModal({setToggle}: any) {
-    const dispatch = useDispatch();
-    const [categoryToAdd, setcategoryToAdd] = useState('')
-    const [color, setColor] = useColor("rgb(0,0,0)");
-
+export default function AddCategoryModal({ setToggle }: any) {
+  const dispatch = useDispatch();
+  const [categoryToAdd, setcategoryToAdd] = useState('')
+  const [color, setColor] = useColor("rgb(0,0,0)");
 
   const addCategory = async () => {
     await writeCategory({
@@ -27,18 +26,20 @@ export default function AddCategoryModal({setToggle}: any) {
   }
 
   return (
-    <main className={styles.main}>
+    <main className={setToggle ? styles.main : ''}>
       <h1>Add Category</h1>
       <input type='text' value={categoryToAdd} onChange={(e) => setcategoryToAdd(e.target.value)} />
-      <div className={styles.modalContent}>
+      <div className={setToggle ? styles.modalContent : ''}>
         <ColorPicker color={color} onChange={setColor} hideInput={["hsv"]} hideAlpha={true} />
       </div>
-      <button onClick={() => {addCategory() }}>
+      <button onClick={() => { addCategory() }}>
         Add
       </button>
-      <button onClick={() => setToggle(false)} className={styles.exit}>
+     { setToggle &&
+      <button onClick={() => setToggle(false)} className={setToggle ? styles.exit : ''}>
         X
       </button>
+      }
     </main>
   )
 }

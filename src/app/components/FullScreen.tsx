@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from '../Sass/FullScreen.module.scss';
 import { Pin } from '../types/pinData';
 import { Category } from '../types/categoryData';
@@ -7,6 +7,7 @@ import "react-multi-carousel/lib/styles.css";
 import IconBar from '../components/iconBar';
 import AddPinModal from './addPinModal';
 import Modal from '../components/modal.tsx';
+import AddCategoryModal from './addCategoryModal.tsx';
 
 interface FullScreenProps {
     setfullScreen: any;
@@ -37,6 +38,7 @@ export default function FullScreen({ setfullScreen, pins, categories }: FullScre
       }
       }
 
+      const [child, setchild] = useState(<Modal fullScreen={true}/>)
 
     return (
         <main className={styles.main}>
@@ -81,8 +83,15 @@ export default function FullScreen({ setfullScreen, pins, categories }: FullScre
                         );
                     })}
                 </div>
-                    <h1>Map</h1>
-                    <Modal fullScreen={true}/>
+                <div className={styles.form}>
+                <div>  
+                <button onClick={() => setchild(<Modal fullScreen={true}/>)}>Add Pin</button>
+                <button onClick={() => setchild(<AddCategoryModal />)}>Add Category</button>
+                </div>
+                  
+                    {child}
+                </div>
+                
                 </div>
         </main>
     );

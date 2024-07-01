@@ -96,10 +96,8 @@
 }
 
 
-.form {
-    width: 30%;
-    z-index: 999999;
-    form {
+
+    .form {
         margin: 1em;
         display: flex;
         flex-direction: column;
@@ -158,4 +156,3 @@
             }
         }
     }
-}

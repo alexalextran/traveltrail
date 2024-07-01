@@ -71,8 +71,8 @@ const Modal = ({fullScreen}: {fullScreen: boolean}) => {
 
 if (fullScreen) {
   return (
-    <div className={styles.form}>
-        <form onSubmit={handleSubmit}>
+    
+        <form onSubmit={handleSubmit} className={styles.form}>
           <input
             type="text"
             value={title}
@@ -111,7 +111,7 @@ if (fullScreen) {
           />
           <button type="submit">Add Pin</button>
         </form>
-      </div>
+    
   )
   }
 
@@ -126,7 +126,7 @@ if (fullScreen) {
       >
         <div className={styles.modal}>
           <h1>Map</h1>
-          <form onSubmit={handleSubmit}>
+          <form className={styles.form} onSubmit={handleSubmit}>
             <input
               type="text"
               value={title}
