@@ -10,8 +10,8 @@ import { Category } from '../types/categoryData.ts';
 import { selectCategories } from '../store/categories/categoriesSlice'
 
 
-const Modal = () => {
-  const map = useMap();
+const Modal = ({fullScreen}: {fullScreen: boolean}) => {
+ 
   const placesLib = useMapsLibrary('places');
   const categories = useSelector(selectCategories);
 
@@ -69,7 +69,51 @@ const Modal = () => {
     .catch((error) => console.error('Error writing document: ', error));
 };
 
-
+if (fullScreen) {
+  return (
+    <div className={styles.form}>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Enter Title"
+          />
+          <input
+            type="text"
+            value={address}
+            ref={addressInputRef}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder="Enter address"
+          />
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            {categories.map((category: Category) => (
+              <option key={category.categoryName} value={category.categoryName}>
+                {category.categoryName}
+              </option>
+            ))}
+          </select>
+          <label>
+            <input
+              type="checkbox"
+              checked={visited}
+              onChange={(e) => setVisited(e.target.checked)}
+            />
+            Visited
+          </label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Enter description"
+          />
+          <button type="submit">Add Pin</button>
+        </form>
+      </div>
+  )
+  }
 
   return (
     <>

@@ -5,6 +5,9 @@ import { Category } from '../types/categoryData';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import IconBar from '../components/iconBar';
+import AddPinModal from './addPinModal';
+import Modal from '../components/modal.tsx';
+
 interface FullScreenProps {
     setfullScreen: any;
     pins: Pin[];
@@ -78,27 +81,9 @@ export default function FullScreen({ setfullScreen, pins, categories }: FullScre
                         );
                     })}
                 </div>
-                <div className={styles.form}>
                     <h1>Map</h1>
-                    <form>
-                        <input type="text" placeholder="Enter Title" />
-                        <input type="text" placeholder="Enter address" />
-                        <select>
-                            {categories.map((category: Category) => (
-                                <option key={category.categoryName} value={category.categoryName}>
-                                    {category.categoryName}
-                                </option>
-                            ))}
-                        </select>
-                        <label>
-                            <input type="checkbox" />
-                            Visited
-                        </label>
-                        <textarea placeholder="Enter description" />
-                        <button type="submit">Add Pin</button>
-                    </form>
+                    <Modal fullScreen={true}/>
                 </div>
-            </div>
         </main>
     );
 }

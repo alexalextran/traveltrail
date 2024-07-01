@@ -13,7 +13,7 @@ const Page = () =>
     <>
         <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLEAPI_API_KEY ?? ''}>
 
-     <Modal />
+     <Modal fullScreen={false}/>
       <Sidebar />
       <Map />
       </APIProvider>
