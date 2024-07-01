@@ -35,13 +35,67 @@
     }
 
     .pins {
-        width: 55%;
-        div {
-            padding: 1em;
-            margin-bottom: 1em;
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            border-radius: 0.2em;
+        width: 50%;
+
+        .pinContainer {
+            height: 13em;
+            position: relative;
+           padding: 1em;
+           margin-bottom: 1em;
+           background-color: #fff;
+           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+           border-radius: 0.2em;
+           @include flexCustom(space-between, center, row);
+           & > :last-child{
+            position: absolute;
+            right: 39%;
+            @include flexCustom(space-around, center, column);
+            top: 0;
+            bottom: 0;
+            svg{
+                width: 1.5em;
+               height: 1.5em;
+              fill: white;
+            
+             }
+             & > :nth-child(2){
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: fit-content !important; 
+                height: 1.5em!important;
+                width: 1.5em !important;
+                input{
+                   display: none
+                }
+             }
+           }
+        }
+        
+        .pinInfo {
+            height: 100%;
+          width: 65% !important;
+        
+        }
+        
+        .carousel {
+            width: 35%;
+            
+            aspect-ratio: 16 / 9;
+           img{
+            width: 100%;// Adjusted from 100% to 95%
+            height: auto; // Maintains the image's aspect ratio
+            object-fit: cover; // Ensures the image covers the area without distorting its aspect ratio
+            aspect-ratio: 16 / 9; // Keeps the standard aspect ratio of 16:9
+           }
+        }
+
+      
+
+
+        .pinInfo {
+            width: 50%;
 
             h2 {
                 color: #007bff;
@@ -79,7 +133,7 @@
     }
 
     .form {
-        width: 30%;
+        width: 35%;
         form {
             display: flex;
             flex-direction: column;

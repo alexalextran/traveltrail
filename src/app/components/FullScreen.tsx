@@ -2,7 +2,9 @@ import React from 'react';
 import styles from '../Sass/FullScreen.module.scss';
 import { Pin } from '../types/pinData';
 import { Category } from '../types/categoryData';
-
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
+import IconBar from '../components/iconBar';
 interface FullScreenProps {
     setfullScreen: any;
     pins: Pin[];
@@ -10,6 +12,29 @@ interface FullScreenProps {
 }
 
 export default function FullScreen({ setfullScreen, pins, categories }: FullScreenProps) {
+
+    const responsiveConfig = {
+        superLargeDesktop: {
+          // the naming can be any, depends on you.
+          breakpoint: { max: 4000, min: 3000 },
+          items: 1
+        },
+        desktop: {
+          breakpoint: { max: 3000, min: 1024 },
+          items: 1
+        },
+        tablet: {
+          breakpoint: { max: 1024, min: 464 },
+          items: 1
+        },
+        mobile: {
+          breakpoint: { max: 464, min: 0 },
+          items: 1
+        
+      }
+      }
+
+
     return (
         <main className={styles.main}>
             <div className={styles.header}>
@@ -28,12 +53,27 @@ export default function FullScreen({ setfullScreen, pins, categories }: FullScre
                         const categoryColor = pinCategory ? pinCategory.categoryColor : 'black';
 
                         return (
-                            <div key={index}>
-                                <h2>{pin.title}</h2>
-                                <p>{pin.address}</p>
-                                <p style={{ color: categoryColor, border: `2px solid ${categoryColor}`}}>{pin.category}</p>
-                                <p>{pin.visited ? "Visited" : "Unvisited"}</p>
-                                <p>{pin.description}</p>
+                            <div key={index} className={styles.pinContainer}> {/* Flex container for pin info and carousel */}
+                                <div className={styles.pinInfo}>
+                                    
+                                    <h2>{pin.title}</h2>
+                                    <p>{pin.address}</p>
+                                    <p style={{ color: categoryColor, border: `2px solid ${categoryColor}`}}>{pin.category}</p>
+                                    <p>{pin.visited ? "Visited" : "Unvisited"}</p>
+                                    <p>{pin.description}</p>
+                                   
+                                   
+                                    </div>
+                                   
+                                {pin.imageUrls && pin.imageUrls.length > 0 && (
+                                    <Carousel responsive={responsiveConfig} className={styles.carousel}>
+                                        {pin.imageUrls.map((src, index) => (
+                                            <img key={index} src={src} alt="" />
+                                        ))}
+                                    </Carousel>
+                                )}
+                                 <IconBar pin={pin} color={'rgb(0,123,255)'}/> 
+                                
                             </div>
                         );
                     })}
