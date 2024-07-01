@@ -7,7 +7,7 @@
 
     .header{
         background-color: $green;
-        height: 3.5em;
+        height: 5vh;
     }
 
     .exitButton{
@@ -36,8 +36,10 @@
 
     .pins {
         width: 55%;
-
+        overflow-y: scroll;
+        height: 95vh;
         .pinContainer {
+           
             height: 13em;
             position: relative;
            padding: 1em;
@@ -135,6 +137,26 @@
     .form {
         width: 30%;
         z-index: 999999;
+        .formBar{
+            width: 100%;    
+            button {
+                width: 50%;
+                height: 3em;
+                font-size: 1.3em;
+                padding: 0.5em 1em; // Padding for buttons
+                border: none; // Remove default border
+                background-color: #007bff; // Bootstrap primary color
+                color: white; // Text color
+                font-weight: bold; // Bold text
+                cursor: pointer; // Change cursor to pointer
+                &:nth-child(1){
+                    border-right: 2px solid white;
+                }
+                &:hover {
+                    background-color: #0056b3; // Darker shade on hover
+                }
+            }
+        }
     }
 
   

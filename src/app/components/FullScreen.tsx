@@ -84,7 +84,7 @@ export default function FullScreen({ setfullScreen, pins, categories }: FullScre
                     })}
                 </div>
                 <div className={styles.form}>
-                <div>  
+                <div className={styles.formBar}>  
                 <button onClick={() => setchild(<Modal fullScreen={true}/>)}>Add Pin</button>
                 <button onClick={() => setchild(<AddCategoryModal />)}>Add Category</button>
                 </div>

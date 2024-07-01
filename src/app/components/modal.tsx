@@ -71,8 +71,9 @@ const Modal = ({fullScreen}: {fullScreen: boolean}) => {
 
 if (fullScreen) {
   return (
-    
+        <>
         <form onSubmit={handleSubmit} className={styles.form}>
+        <h1>Add Pin</h1>
           <input
             type="text"
             value={title}
@@ -109,9 +110,9 @@ if (fullScreen) {
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Enter description"
           />
-          <button type="submit">Add Pin</button>
+          <button type="submit">Add</button>
         </form>
-    
+    </>
   )
   }
 
@@ -125,7 +126,7 @@ if (fullScreen) {
         defaultPosition={{x: window.innerWidth / 2, y: window.innerHeight / 2}}
       >
         <div className={styles.modal}>
-          <h1>Map</h1>
+          <h1>Add Pin</h1>
           <form className={styles.form} onSubmit={handleSubmit}>
             <input
               type="text"

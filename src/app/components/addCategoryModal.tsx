@@ -22,13 +22,13 @@ export default function AddCategoryModal({ setToggle }: any) {
         categoryColor: color.hex
       })
     );
-    setToggle(false);
+    setToggle && setToggle(false);
   }
 
   return (
-    <main className={setToggle ? styles.main : ''}>
+    <main className={setToggle ? styles.main : styles.fullScreen}>
       <h1>Add Category</h1>
-      <input type='text' value={categoryToAdd} onChange={(e) => setcategoryToAdd(e.target.value)} />
+      <input type='text' placeholder="Enter category name" value={categoryToAdd } onChange={(e) => setcategoryToAdd(e.target.value)} />
       <div className={setToggle ? styles.modalContent : ''}>
         <ColorPicker color={color} onChange={setColor} hideInput={["hsv"]} hideAlpha={true} />
       </div>
