@@ -9,12 +9,14 @@ const db = getFirestore(app);
 
 interface PinState {
   pins: Pin[];
+  selectedPin: Pin | null;
 }
 
 const initialState: PinState = {
   pins: [
     
   ],
+  selectedPin: null,
 };
 
 
@@ -48,6 +50,9 @@ const pinsSlice = createSlice({
     removePinById: (state, action: PayloadAction<string>) => { // Renamed from deletePin to removePinById
       state.pins = state.pins.filter(pin => pin.id !== action.payload);
     },
+    selectPin: (state, action: PayloadAction<Pin>) => { 
+      state.selectedPin = action.payload;
+    },
     addPictures: (state, action: PayloadAction<{id: string, picture: string[]}>) => {
       const pin = state.pins.find(pin => pin.id === action.payload.id);
       if (pin) {
@@ -66,11 +71,18 @@ const pinsSlice = createSlice({
   },
 });
 
-export const { addPin, updatePin, removePinById, addPictures } = pinsSlice.actions;
+export const { addPin, updatePin, removePinById, addPictures, selectPin } = pinsSlice.actions;
 
 export const selectPins = createSelector(
   (state: RootState) => state.pins,
   (pins) => pins.pins
 );
+
+export const selectSelectedPin = createSelector(
+  (state: RootState) => state.pins,
+  (selectedPin) => selectedPin.selectedPin
+);
+
+
 
 export default pinsSlice.reducer;

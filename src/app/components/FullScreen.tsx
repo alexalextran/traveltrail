@@ -77,7 +77,7 @@ export default function FullScreen({ setfullScreen, pins, categories }: FullScre
                                         ))}
                                     </Carousel>
                                 )}
-                                 <IconBar pin={pin} color={'rgb(0,123,255)'}/> 
+                                 <IconBar setchild={setchild} pin={pin} color={'rgb(0,123,255)'}/> 
                                 
                             </div>
                         );
@@ -87,6 +87,7 @@ export default function FullScreen({ setfullScreen, pins, categories }: FullScre
                 <div className={styles.formBar}>  
                 <button onClick={() => setchild(<Modal fullScreen={true}/>)}>Add Pin</button>
                 <button onClick={() => setchild(<AddCategoryModal />)}>Add Category</button>
+                
                 </div>
                   
                     {child}

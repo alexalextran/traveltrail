@@ -56,7 +56,7 @@ function Sidebar() {
                 {filteredPins.map((pin: Pin, index: number) => <PinItem key={index} pin={pin} />)}
             </div>
             <div className={styles.rightExtender} >
-                <div onClick={() => {setextend(!extend)}}><RiArrowRightDoubleFill/></div>
+                <div onClick={() => {setextend(!extend)}}  className={extend ? styles.rotated : ''}><RiArrowRightDoubleFill/></div>
                 <div onClick={() => {setfullScreen(true)}}><HiOutlineArrowsExpand/></div>
             </div>
         </main>

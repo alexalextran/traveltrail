@@ -18,6 +18,11 @@
         width: 100%;
     }
 
+    .rotated {
+        transform: rotate(180deg);
+        transition: transform 1s ease-in-out; // Adjust timing and easing as needed
+      }
+
     .rightExtender{
         height: inherit;
         min-width: 3vw;
@@ -25,12 +30,13 @@
         div:nth-child(2){
             background-color: lightgrey;
         }
-      div{
+        div{
         cursor: pointer;
         height: 50%;
         @include flexCenter(row);
         
         svg{
+            cursor: pointer;
             width: 1.5em;
             height: 1.5em;
         }
