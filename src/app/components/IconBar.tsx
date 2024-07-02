@@ -9,9 +9,13 @@ import { useDispatch } from 'react-redux';
 import { removePinById, selectPin } from '../store/pins/pinsSlice.ts'; 
 import "react-color-palette/css";
 import EditPinModal from '../components/EditPinModal.tsx';
-export default function IconBar({pin, color, setchild}: {pin: Pin, color: string, setchild?: any}) {
-    const dispatch  = useDispatch();
 
+
+export default function IconBar({pin, color, setchild}: {pin: Pin, color: string, setchild?: any}) {
+ 
+
+
+    const dispatch  = useDispatch();
     const deletePin = () => {
         deleteFromFirestore(`users/alextran/pins`, `${pin.id}`).then(() => {
          dispatch(removePinById(pin.id));
@@ -19,8 +23,12 @@ export default function IconBar({pin, color, setchild}: {pin: Pin, color: string
        }; 
 
        const selectNewPin = () => {
+        
          dispatch(selectPin(pin));
-         setchild(<EditPinModal/>)
+         if(setchild !== null){
+            setchild(<EditPinModal/>)
+         }
+         
         ;
        }; 
        

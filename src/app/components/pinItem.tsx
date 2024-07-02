@@ -25,7 +25,7 @@ function PinItem({ pin }: { pin: Pin }) {
 
 
         {show && <div>{pin.description}</div> }
-      <IconBar pin={pin} color={category.categoryColor}/>
+      <IconBar pin={pin} setchild={null} color={category.categoryColor}/>
           </main>
   )
 }

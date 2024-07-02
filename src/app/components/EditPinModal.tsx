@@ -9,7 +9,7 @@ import { selectCategories } from '../store/categories/categoriesSlice'
 import axios from 'axios';
 import { updateToFirestore } from '../firebaseFunctions/writeDocument.ts'; // Adjust the import path as necessary
 
-function EditPinForm() {
+function EditPinForm({settoggleEditPin}: {settoggleEditPin: any}) {
   const selectedPin = useSelector(selectSelectedPin);
   const categories = useSelector(selectCategories);
 
