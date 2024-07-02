@@ -1,8 +1,11 @@
+import { app } from "../firebase";
+import { getFirestore, collection, doc, addDoc, deleteDoc, updateDoc, arrayUnion } from "firebase/firestore";
+
 // firebaseOperations.ts
 
 // Import Firestore and your Firebase app configuration
-import { collection, addDoc, getFirestore, doc, deleteDoc, updateDoc, arrayUnion  } from "firebase/firestore";
-import { app } from "../firebase";
+
+// Get a Firestore instance
 const db = getFirestore(app);
 
 // Modify writeToFirestore to return the document ID
@@ -17,16 +20,35 @@ export const writeToFirestore = async (collectionName: string, data: any): Promi
   }
 };
 
-
 export const deleteFromFirestore = async (collectionName: string, docId: string): Promise<void> => {
   try {
     // Create a reference to the document to delete
-    const docRef = doc(db, collectionName, docId);
+    const docRef = doc(db, 'users/alextran/pins', docId);
     // Delete the document
     await deleteDoc(docRef);
     console.log("Document deleted with ID: ", docId);
   } catch (error) {
     console.error("Error deleting document: ", error);
+  }
+};
+
+export const updateToFirestore = async (data: any): Promise<void> => {
+  try {
+    // Create a reference to the document to update
+    const docRef = doc(db, 'users/alextran/pins', data.id);
+    // Update the document
+    await updateDoc(docRef, {
+      title: data.title,
+      address: data.address,
+      description: data.description,
+      category: data.category,
+      visited: data.visited,
+      lat: data.lat,
+      lng: data.lng,
+    });
+    console.log("Document updated with ID: ", data.id);
+  } catch (error) {
+    console.error("Error updating document: ", error);
   }
 };
 

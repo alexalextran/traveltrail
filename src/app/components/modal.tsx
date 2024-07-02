@@ -8,7 +8,7 @@ import { APIProvider, useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
 import { writeToFirestore } from '../firebaseFunctions/writeDocument.ts'; // Adjust the import path as necessary
 import { Category } from '../types/categoryData.ts';
 import { selectCategories } from '../store/categories/categoriesSlice'
-
+import axios from 'axios';
 
 const Modal = ({fullScreen}: {fullScreen: boolean}) => {
  
@@ -41,9 +41,11 @@ const Modal = ({fullScreen}: {fullScreen: boolean}) => {
     e.preventDefault();
     // Logic to handle the form submission and add the pin using the entered address
     
-    async function getData(){
-      const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.NEXT_PUBLIC_GOOGLEAPI_API_KEY}`);
-      const data = await response.json();
+   
+
+    async function getData() {
+      const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.NEXT_PUBLIC_GOOGLEAPI_API_KEY}`);
+      const data = response.data;
       return data;
     }
     const data = await getData();
