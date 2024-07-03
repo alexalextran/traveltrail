@@ -52,8 +52,8 @@ function Sidebar() {
             </div>
             <div className={styles.pinItems}>
                 <div className={styles.unNvisitedButtons}>
-                    <button style={{backgroundColor: toggleunNvisted == true ? "black" : "white"}}    onClick={() => toggleunNvisted === true ? settoggleunNvisted(null) : settoggleunNvisted(true)}>Visited</button>
-                    <button  style={{backgroundColor: toggleunNvisted == false ? "black" : "white"}} onClick={() => toggleunNvisted === false ? settoggleunNvisted(null) : settoggleunNvisted(false)}>Unvisited</button>
+                    <button style={{backgroundColor: toggleunNvisted == true ? "lightGrey" : "white"}}    onClick={() => toggleunNvisted === true ? settoggleunNvisted(null) : settoggleunNvisted(true)}>Visited</button>
+                    <button  style={{backgroundColor: toggleunNvisted == false ? "lightGrey" : "white"}} onClick={() => toggleunNvisted === false ? settoggleunNvisted(null) : settoggleunNvisted(false)}>Unvisited</button>
                 </div>
                 {filteredPins.map((pin: Pin, index: number) => <PinItem key={index} pin={pin} />)}
             </div>
