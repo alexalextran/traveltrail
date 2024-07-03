@@ -11,17 +11,19 @@ import { fetchCategories } from '../store/categories/categoriesSlice.ts'; // Imp
 import { AppDispatch } from '../store/store.ts'; // Import the AppDispatch type
 import { RiArrowRightDoubleFill } from "react-icons/ri";
 import { HiOutlineArrowsExpand } from "react-icons/hi";
-import FullScreen from '../components/FullScreen.tsx';
+import FullScreenComponent from '../components/FullScreen.tsx';
+import { selectFullScreen } from '../store/toggleModals/toggleModalSlice.ts';
+import { toggleFullScreen, toggleEditModal, toggleAddModal } from '../store/toggleModals/toggleModalSlice.ts';
 
 function Sidebar() {
     const [toggle, setToggle] = useState(false)
     const [extend, setextend] = useState(false)
-    const [fullScreen, setfullScreen] = useState(false)
     const [selectedCategory, setSelectedCategory] = useState<null | string>("Place");
     const pins = useSelector(selectPins);
     const categories = useSelector(selectCategories);
     const [toggleunNvisted, settoggleunNvisted] = useState<null | Boolean>(null)
     const dispatch: AppDispatch = useDispatch(); // Use the typed version of useDispatch
+    const FullScreen = useSelector(selectFullScreen);
 
 
 
@@ -57,11 +59,14 @@ function Sidebar() {
             </div>
             <div className={styles.rightExtender} >
                 <div onClick={() => {setextend(!extend)}}  className={extend ? styles.rotated : ''}><RiArrowRightDoubleFill/></div>
-                <div onClick={() => {setfullScreen(true)}}><HiOutlineArrowsExpand/></div>
+                <div onClick={() => {  
+                    dispatch(toggleFullScreen(true))
+                    
+                    }}><HiOutlineArrowsExpand/></div>
             </div>
         </main>
          {toggle && <AddCategoryModal setToggle={setToggle}/>} 
-         {fullScreen && <FullScreen setfullScreen={setfullScreen} pins={pins} categories={categories}/>} 
+         {FullScreen && <FullScreenComponent pins={pins} categories={categories}/>} 
          </>
     )
 }

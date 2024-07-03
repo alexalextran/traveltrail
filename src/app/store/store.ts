@@ -2,11 +2,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import pinReducer from './pins/pinsSlice';
 import categoryReducer from './categories/categoriesSlice';
+import modalReducer from './toggleModals/toggleModalSlice';
 
 const store = configureStore({
   reducer: {
     pins: pinReducer,
     categories: categoryReducer,
+    modals: modalReducer,
   },
 });
 

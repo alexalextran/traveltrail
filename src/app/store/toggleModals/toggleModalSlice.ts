@@ -1,15 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface PinState {
+interface ModalState {
   editModal: boolean;
   addModal: boolean;
   imageModal: boolean;
+  fullScreen: boolean;
 }
 
-const initialState: PinState = {
+const initialState: ModalState = {
   editModal: false,
   addModal: false,
   imageModal: false,
+  fullScreen: false,
 };
 
 const pinsSlice = createSlice({
@@ -20,18 +22,22 @@ const pinsSlice = createSlice({
       state.addModal = action.payload;
     },
     toggleEditModal: (state, action: PayloadAction<boolean>) => {
-      state.addModal = action.payload;
+      state.editModal = action.payload;
     },
     toggleImageModal: (state, action: PayloadAction<boolean>) => {
-      state.addModal = action.payload;
+      state.imageModal = action.payload;
+    },
+    toggleFullScreen: (state, action: PayloadAction<boolean>) => {
+      state.fullScreen = action.payload;
     },
   },
 });
 
-export const { toggleAddModal } = pinsSlice.actions;
+export const { toggleAddModal, toggleEditModal, toggleImageModal, toggleFullScreen } = pinsSlice.actions;
 
-export const selectAddModal = (state: { modals: PinState }) => state.modals.addModal;
-export const selectEditModal = (state: { modals: PinState }) => state.modals.editModal;
-export const selectImageModal = (state: { modals: PinState }) => state.modals.imageModal;
+export const selectAddModal = (state: { modals: ModalState }) => state.modals.addModal;
+export const selectEditModal = (state: { modals: ModalState }) => state.modals.editModal;
+export const selectImageModal = (state: { modals: ModalState }) => state.modals.imageModal;
+export const selectFullScreen = (state: { modals: ModalState }) => state.modals.fullScreen;
 
 export default pinsSlice.reducer;

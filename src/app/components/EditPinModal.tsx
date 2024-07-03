@@ -8,10 +8,14 @@ import { Category } from '../types/categoryData.ts';
 import { selectCategories } from '../store/categories/categoriesSlice'
 import axios from 'axios';
 import { updateToFirestore } from '../firebaseFunctions/writeDocument.ts'; // Adjust the import path as necessary
+import { selectFullScreen } from '../store/toggleModals/toggleModalSlice.ts';
+import {toggleEditModal } from '../store/toggleModals/toggleModalSlice.ts';
 
-function EditPinForm({settoggleEditPin}: {settoggleEditPin: any}) {
+function EditPinForm({}) {
   const selectedPin = useSelector(selectSelectedPin);
   const categories = useSelector(selectCategories);
+  const FullScreen = useSelector(selectFullScreen);
+
 
   const [title, setTitle] = useState(selectedPin?.title );
   const [address, setAddress] = useState(selectedPin?.address );
@@ -59,17 +63,19 @@ function EditPinForm({settoggleEditPin}: {settoggleEditPin: any}) {
     }
   };
 
-  return (
-    <form onSubmit={handleSubmit}  className={styles.form}>
-       <h1>Update Pin</h1>
+
+
+  const formContent = (
+    <form onSubmit={handleSubmit} className={styles.form}>
+      <h1>Update Pin</h1>
       <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Enter Title" />
       <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Enter Address" />
       <select value={category} onChange={(e) => setCategory(e.target.value)}>
-      {categories.map((category: Category) => (
-              <option key={category.categoryName} value={category.categoryName}>
-                {category.categoryName}
-              </option>
-            ))}
+        {categories.map((category: Category) => (
+          <option key={category.categoryName} value={category.categoryName}>
+            {category.categoryName}
+          </option>
+        ))}
       </select>
       <label>
         <input type="checkbox" checked={visited} onChange={(e) => setVisited(e.target.checked)} />
@@ -79,6 +85,12 @@ function EditPinForm({settoggleEditPin}: {settoggleEditPin: any}) {
       <button type="submit">Update Pin</button>
     </form>
   );
+
+  return FullScreen ? formContent : 
+  <div className={styles.modal}>
+    <button onClick={() => {dispatch(toggleEditModal(false))}}>X</button>
+    {formContent}
+    </div>;
 }
 
 export default EditPinForm;

@@ -8,14 +8,17 @@ import IconBar from '../components/iconBar';
 import AddPinModal from './addPinModal';
 import Modal from '../components/modal.tsx';
 import AddCategoryModal from './addCategoryModal.tsx';
+import { toggleFullScreen } from '../store/toggleModals/toggleModalSlice.ts';
+import {  useDispatch } from 'react-redux';
+import { AppDispatch } from '../store/store.ts'; // Import the AppDispatch type
 
 interface FullScreenProps {
-    setfullScreen: any;
     pins: Pin[];
     categories: Category[];
 }
 
-export default function FullScreen({ setfullScreen, pins, categories }: FullScreenProps) {
+export default function FullScreen({pins, categories }: FullScreenProps) {
+    const dispatch: AppDispatch = useDispatch(); // Use the typed version of useDispatch
 
     const responsiveConfig = {
         superLargeDesktop: {
@@ -44,7 +47,7 @@ export default function FullScreen({ setfullScreen, pins, categories }: FullScre
         <main className={styles.main}>
             <div className={styles.header}>
                 <h1>Travel Trail</h1>
-                <button className={styles.exitButton} onClick={() => setfullScreen(false)}>X</button>
+                <button className={styles.exitButton} onClick={() => {dispatch(toggleFullScreen(false))}}>X</button>
             </div>
             <div className={styles.content}>
                 <div className={styles.categories}>

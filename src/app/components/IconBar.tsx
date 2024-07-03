@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux';
 import { removePinById, selectPin } from '../store/pins/pinsSlice.ts'; 
 import "react-color-palette/css";
 import EditPinModal from '../components/EditPinModal.tsx';
-
+import { toggleEditModal } from '../store/toggleModals/toggleModalSlice.ts';
 
 export default function IconBar({pin, color, setchild}: {pin: Pin, color: string, setchild?: any}) {
  
@@ -28,6 +28,7 @@ export default function IconBar({pin, color, setchild}: {pin: Pin, color: string
          if(setchild !== null){
             setchild(<EditPinModal/>)
          }
+         dispatch(toggleEditModal(true))
          
         ;
        }; 
