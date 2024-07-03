@@ -21,7 +21,6 @@ const Modal = () => {
   const ShowFullScreen = useSelector(selectFullScreen);
   const [description, setDescription] = useState('');
   const [visited, setVisited] = useState(false);
-  const [toggle, settoggle] = useState(false);
   const [address, setAddress] = useState<string>('');
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<string>('Place');
@@ -39,7 +38,7 @@ const Modal = () => {
         }
       });
     }
-  }, [placesLib, toggle]);
+  }, [placesLib, ShowAddModal]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();

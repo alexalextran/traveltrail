@@ -2,7 +2,7 @@
 
 .modal {
   position: absolute;
-  z-index: 40;
+  z-index: 10;
   background-color: #ffffff; // Light background for better readability
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); // Softer shadow
   backdrop-filter: blur(8px);
@@ -71,7 +71,7 @@
   position: fixed;
   bottom: 20px;
   right: 20px;
-  z-index: 50;
+  z-index: 40;
   width: 60px; // Adjusted size
   height: 60px; // Adjusted size
   border-radius: 50%;
@@ -93,7 +93,7 @@
 }
 
 .pac-container {
-  z-index: 10000 !important;
+  z-index: 999999 !important;
 }
 
 
@@ -205,3 +205,10 @@
         }
       }
     }
+
+
+    .pac-container {
+      z-index: 999999 !important;
+    }
+    
+    

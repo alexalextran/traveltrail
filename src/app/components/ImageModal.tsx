@@ -9,7 +9,8 @@ export default function ImageModal() {
 
     return (
         <div className={styles.imageModal}>
-           {images.map((url, index) => (
+           {images &&
+           images.map((url, index) => (
     <div key={index} className={styles.imageDiv}>
         <img src={url} alt={`Image ${index}`} style={{ width: '100px', height: 'auto' }} />
         <div>
