@@ -4,7 +4,7 @@
     @include flexCustom(flex-start, center, column);
     
     h3{
-        color: $green;
+        color: $webBlue;
         margin: 0.5em 0
     }
 
@@ -28,7 +28,7 @@
     .iconBar{
         width: 100%;
         @include flexCustom(space-around, center, row);
-        background-color: $green;
+        background-color: $webBlue;
         svg{
            width: 1.5em;
            height: 1.5em;

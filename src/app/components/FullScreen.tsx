@@ -8,7 +8,7 @@ import IconBar from '../components/iconBar';
 import AddPinModal from './addPinModal';
 import Modal from '../components/modal.tsx';
 import AddCategoryModal from './addCategoryModal.tsx';
-import { toggleFullScreen } from '../store/toggleModals/toggleModalSlice.ts';
+import { toggleEditModal, toggleFullScreen } from '../store/toggleModals/toggleModalSlice.ts';
 import {  useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store.ts'; // Import the AppDispatch type
 
@@ -41,13 +41,16 @@ export default function FullScreen({pins, categories }: FullScreenProps) {
       }
       }
 
-      const [child, setchild] = useState(<Modal fullScreen={true}/>)
+      const [child, setchild] = useState(<Modal/>)
 
     return (
         <main className={styles.main}>
             <div className={styles.header}>
                 <h1>Travel Trail</h1>
-                <button className={styles.exitButton} onClick={() => {dispatch(toggleFullScreen(false))}}>X</button>
+                <button className={styles.exitButton} onClick={() => {
+                    dispatch(toggleFullScreen(false))
+                    dispatch(toggleEditModal(false))
+                    }}>X</button>
             </div>
             <div className={styles.content}>
                 <div className={styles.categories}>
@@ -88,7 +91,7 @@ export default function FullScreen({pins, categories }: FullScreenProps) {
                 </div>
                 <div className={styles.form}>
                 <div className={styles.formBar}>  
-                <button onClick={() => setchild(<Modal fullScreen={true}/>)}>Add Pin</button>
+                <button onClick={() => setchild(<Modal/>)}>Add Pin</button>
                 <button onClick={() => setchild(<AddCategoryModal />)}>Add Category</button>
                 
                 </div>

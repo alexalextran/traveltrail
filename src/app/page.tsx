@@ -13,11 +13,10 @@ const Page = () => {
 
 
 
-
   return (
     <>
       <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLEAPI_API_KEY ?? ''}>
-        <Modal fullScreen={false} />
+        <Modal />
         {toggleEdit && <EditPinModal/>}
         <Sidebar />
         <Map />

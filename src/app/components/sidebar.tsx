@@ -18,7 +18,7 @@ import { toggleFullScreen, toggleEditModal, toggleAddModal } from '../store/togg
 function Sidebar() {
     const [toggle, setToggle] = useState(false)
     const [extend, setextend] = useState(false)
-    const [selectedCategory, setSelectedCategory] = useState<null | string>("Place");
+    const [selectedCategory, setSelectedCategory] = useState<null | string>(null);
     const pins = useSelector(selectPins);
     const categories = useSelector(selectCategories);
     const [toggleunNvisted, settoggleunNvisted] = useState<null | Boolean>(null)
@@ -46,8 +46,8 @@ function Sidebar() {
             <div className={styles.categories}>
 
                 {categories.map((category: Category, index: number) => 
-                <div key={index} onClick={() => setSelectedCategory(category.categoryName)}>{category.categoryName}</div>)}
-                <div onClick={() => setSelectedCategory(null)}>Show All</div>
+                <div key={index} onClick={() => setSelectedCategory(category.categoryName)} style={{backgroundColor: selectedCategory === category.categoryName && 'rgb(0,123,255)', color: selectedCategory === category.categoryName && 'white'}}>{category.categoryName}</div>)}
+                <div onClick={() => setSelectedCategory(null)} style={{backgroundColor: selectedCategory === null && 'rgb(0,123,255)', color: selectedCategory === null&& 'white'}}>Show All</div>
                 <button onClick={() => setToggle(true)}>Add  Category</button>
             </div>
             <div className={styles.pinItems}>

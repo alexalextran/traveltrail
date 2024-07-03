@@ -11,13 +11,14 @@ import { selectCategories } from '../store/categories/categoriesSlice'
 import axios from 'axios';
 import { selectAddModal } from '../store/toggleModals/toggleModalSlice.ts';
 import {toggleAddModal } from '../store/toggleModals/toggleModalSlice.ts';
+import { selectFullScreen } from '../store/toggleModals/toggleModalSlice.ts';
 
-const Modal = ({fullScreen}: {fullScreen: boolean}) => {
+const Modal = () => {
  
   const placesLib = useMapsLibrary('places');
   const categories = useSelector(selectCategories);
   const ShowAddModal = useSelector(selectAddModal);
-
+  const ShowFullScreen = useSelector(selectFullScreen);
   const [description, setDescription] = useState('');
   const [visited, setVisited] = useState(false);
   const [toggle, settoggle] = useState(false);
@@ -74,7 +75,7 @@ const Modal = ({fullScreen}: {fullScreen: boolean}) => {
     .catch((error) => console.error('Error writing document: ', error));
 };
 
-if (fullScreen) {
+if (ShowFullScreen) {
   return (
         <>
         <form onSubmit={handleSubmit} className={styles.form}>
