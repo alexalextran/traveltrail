@@ -61,7 +61,8 @@ function Sidebar() {
                 <div onClick={() => {setextend(!extend)}}  className={extend ? styles.rotated : ''}><RiArrowRightDoubleFill/></div>
                 <div onClick={() => {  
                     dispatch(toggleFullScreen(true))
-                    
+                    dispatch(toggleEditModal(false))
+                    dispatch(toggleAddModal(false))
                     }}><HiOutlineArrowsExpand/></div>
             </div>
         </main>

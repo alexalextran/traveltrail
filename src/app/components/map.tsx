@@ -26,7 +26,7 @@ const MapComponent = () => {
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLEAPI_API_KEY ?? ''}>
          <Map
           mapId={'efa788b3413cc48d'}
-          style={{ width: '100vw', height: '100vh', right: '0', position: 'absolute' }}
+          style={{ width: '100vw', height: '100vh', right: '0', position: 'absolute', overflowY: 'hidden' }}
           defaultCenter={{ lat: location.lat, lng: location.lng }}
           defaultZoom={13}
           gestureHandling={'greedy'}
