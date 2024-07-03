@@ -9,6 +9,7 @@ import { useDispatch } from 'react-redux';
 import { removePinById, selectPin } from '../store/pins/pinsSlice.ts'; 
 import "react-color-palette/css";
 import EditPinModal from '../components/EditPinModal.tsx';
+import ImageModal from '../components/imageModal.tsx';
 import { toggleEditModal } from '../store/toggleModals/toggleModalSlice.ts';
 
 export default function IconBar({pin, color, setchild}: {pin: Pin, color: string, setchild?: any}) {
@@ -22,11 +23,13 @@ export default function IconBar({pin, color, setchild}: {pin: Pin, color: string
         });
        }; 
 
-       const selectNewPin = () => {
+       const selectNewPin = (child:any) => {
         
          dispatch(selectPin(pin));
-         if(setchild !== null){
+         if(setchild !== null && child == "edit"){
             setchild(<EditPinModal/>)
+         }else if(setchild !== null && child == "image"){
+          setchild(<ImageModal/>)
          }
          dispatch(toggleEditModal(true))
          
@@ -36,8 +39,9 @@ export default function IconBar({pin, color, setchild}: {pin: Pin, color: string
        
   return (
       <div className={styles.iconBar} style={{backgroundColor: `${color}`}}>
-      <RiEditFill onClick={() => {selectNewPin() }}/>
+      <RiEditFill onClick={() => {selectNewPin("edit") }}/>
       <ImgUpload pinID={pin.id}/>
+      <button onClick={() => {selectNewPin("image") }}>Add</button>
       <MdDeleteForever onClick={() => {deletePin()}}/>
     </div>
     )

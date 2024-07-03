@@ -157,3 +157,51 @@
             }
         }
     }
+
+    .imageModal {
+      height: 88vh;
+      @include flexCenter(column);
+      overflow-y: scroll!important;
+    
+      
+
+      .imageDiv{
+        &:nth-child(1){
+          margin-top: 20em;
+        }
+        width: 100%;
+        height: fit-content;
+        margin-top: 2em;
+        @include flexCenter(column);
+        div{
+          @include flexCenter(row);
+          width: 70%;
+        }
+      }
+    
+      img {
+        width: 70%!important;
+        height: auto!important;
+        object-fit: cover;
+        aspect-ratio: 16 / 9;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+    
+      button {
+        width: 100%;
+        padding: 0.5rem 1rem;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    
+        &:hover {
+          background-color: #0056b3;
+        }
+    
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }

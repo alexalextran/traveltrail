@@ -62,7 +62,7 @@ export default function ExpandedInfoModal({pin, settoggleIWM, userLocation, filt
       <Carousel responsive={responsiveConfig} className={styles.carouselcontainer}>
         { pin.imageUrls.map((src, index) => <img key={index} src={src} alt=""/>)}
       </Carousel>}
-        <IconBar pin={pin} color={filteredCategory.categoryColor}/>
+        <IconBar pin={pin} setchild={null} color={filteredCategory.categoryColor}/>
       </div>
       
     </main>

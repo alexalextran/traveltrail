@@ -50,6 +50,7 @@
     height: 100%;
     border-right: 2px solid $webBlue; // Light grey border for separation
     div {
+        cursor: pointer;
         background-color: #f0f0f0; // Light grey for a subtle look
         padding: 0.8em;
         font-size: 1.2em;
