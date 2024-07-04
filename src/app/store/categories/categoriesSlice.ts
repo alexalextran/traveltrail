@@ -12,9 +12,21 @@ interface CategoryState {
 
 const initialState: CategoryState = {
   categories: [
-    { categoryName: "Restaurant", categoryColor: "#FF0000" },
-    { categoryName: "Bar", categoryColor: "#00FF00" },
-    { categoryName: "Place", categoryColor: "#0000FF" },
+    {
+      categoryName: 'Category 1',
+      categoryColor: '#FF0000',
+      CategoryID: '1',
+    },
+    {
+      categoryName: 'Category 2',
+      categoryColor: '#00FF00',
+      CategoryID: '2',
+    },
+    {
+      categoryName: 'Category 3',
+      categoryColor: '#0000FF',
+      CategoryID: '3',
+    },
   ],
 };
 
@@ -24,7 +36,12 @@ export const fetchCategories = createAsyncThunk(
     const querySnapshot = await getDocs(collection(db, 'users/alextran/categories'));
     const categoriesArray: Category[] = [];
     querySnapshot.forEach((doc) => {
-      categoriesArray.push(doc.data() as Category);
+      const categoryData = doc.data() as Category;
+      const categoryWithID = {
+        ...categoryData,
+        categoryID: doc.id
+      };
+      categoriesArray.push(categoryWithID);
     });
     return categoriesArray;
   }

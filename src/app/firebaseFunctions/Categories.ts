@@ -17,6 +17,19 @@ export const writeCategory = async (data: object): Promise<string> => {
   }
 };
 
+export const deleteCategory = async (categoryId: string): Promise<void> => {
+  try {
+    // Create a reference to the category document to delete
+    const categoryRef = doc(db, `users/alextran/categories`, categoryId);
+    // Delete the category document
+    await deleteDoc(categoryRef);
+    console.log("Category deleted with ID: ", categoryId);
+  } catch (error) {
+    console.error("Error deleting category: ", error);
+    throw new Error("Failed to delete category");
+  }
+};
+
 
 // export const deleteFromFirestore = async (collectionName: string, docId: string): Promise<void> => {
 //   try {

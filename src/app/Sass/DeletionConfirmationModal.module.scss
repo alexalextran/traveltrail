@@ -1,0 +1,56 @@
+@import "variables&functions";
+
+.modal {
+    @include absolutefill;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 9999999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    div {
+        @include absolutecenter;
+        background-color: white;
+        width: 30em;
+        height: 20em;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 0.4em;
+        padding: 1em;
+    }
+
+    p {
+        font-size: 1.25em;
+        text-align: center;
+        margin-bottom: 1em;
+    }
+    span {
+        display: flex; /* Makes the span a flex container */
+        justify-content: center; /* Centers the buttons horizontally */
+        gap: 0.4em; /* Adds space between the buttons */
+    }
+
+    button {
+        align-self: center;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 0.2em;
+        padding: 0.5em 1em;
+        cursor: pointer;
+        font-size: 1em;
+        transition: background-color 0.2s;
+        margin: 0.4em; /* Added margin for spacing between buttons */
+
+        &:hover {
+            background-color: #0056b3;
+        }
+
+        &:nth-of-type(1) { /* Specific style for the first button (Cancel) */
+            background-color: #6c757d; /* Bootstrap secondary color */
+        }
+
+        &:nth-of-type(2) { /* Specific style for the second button (Delete) */
+            background-color: #dc3545; /* Bootstrap danger color */
+        }
+    }
+}

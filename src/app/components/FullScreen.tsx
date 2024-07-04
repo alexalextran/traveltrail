@@ -11,7 +11,8 @@ import AddCategoryModal from './addCategoryModal.tsx';
 import { toggleEditModal, toggleFullScreen } from '../store/toggleModals/toggleModalSlice.ts';
 import {  useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store.ts'; // Import the AppDispatch type
-
+import {  MdDeleteForever  } from "react-icons/md";
+import CategoryComponent from '../components/CategoryComponent.tsx'
 interface FullScreenProps {
     pins: Pin[];
     categories: Category[];
@@ -55,7 +56,7 @@ export default function FullScreen({pins, categories }: FullScreenProps) {
             <div className={styles.content}>
                 <div className={styles.categories}>
                     {categories.map((category: Category, index: number) => (
-                        <div key={index}>{category.categoryName}</div>
+                       <CategoryComponent key={index} category={category} />
                     ))}
                 </div>
                 <div className={styles.pins}>
