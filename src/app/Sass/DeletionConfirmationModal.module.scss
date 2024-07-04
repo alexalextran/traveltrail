@@ -8,22 +8,35 @@
     justify-content: center;
     align-items: center;
 
-    div {
+    .mainModal {
         @include absolutecenter;
         background-color: white;
-        width: 30em;
-        height: 20em;
+        width: 35em;
+        height: 25em;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         border-radius: 0.4em;
         padding: 1em;
+        & > :nth-child(2){
+            text-align: center;
+            margin-bottom: 1em;
+        }
     }
 
-    p {
+    .pinsDeleting{
+        height: 60%;
+        overflow-y: scroll;
+        p{
+            text-align: center;
+            background-color: lightgray;
+        }
+    }
+
+    h4 {
         font-size: 1.25em;
         text-align: center;
         margin-bottom: 1em;
     }
-    span {
+    .buttonSpan {
         display: flex; /* Makes the span a flex container */
         justify-content: center; /* Centers the buttons horizontally */
         gap: 0.4em; /* Adds space between the buttons */

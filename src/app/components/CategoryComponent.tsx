@@ -14,7 +14,7 @@ export default function CategoryComponent({ category }: { category: Category }) 
         </div>
         {
             categoryDeleteModal &&
-           <CategoryDeletionModal/>
+           <CategoryDeletionModal setcategoryDeleteModal={setcategoryDeleteModal} category={category}/>
         }
         </>
     );
