@@ -13,7 +13,7 @@ export default function CategoryDeletionConfirmation({setcategoryDeleteModal, ca
         <div className={styles.modal}>
             <div className={styles.mainModal}>
             <h4>Are you sure you want to delete this category?</h4>
-            <p>Deleting <span>{category.categoryName}</span> will result in the following pins being deleted</p>
+            <p>Deleting <span style={{color: `${category.categoryColor}`}}>{category.categoryName}</span> will result in the following pins being deleted</p>
             <div className={styles.pinsDeleting}>
                  {
                 filteredPins.map((pin, index) => (
