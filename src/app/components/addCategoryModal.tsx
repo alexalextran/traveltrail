@@ -12,15 +12,17 @@ export default function AddCategoryModal({ setToggle }: any) {
   const [color, setColor] = useColor("rgb(0,0,0)");
 
   const addCategory = async () => {
-    await writeCategory({
+  const uploadedCategory =  await writeCategory({
       categoryName: categoryToAdd,
       categoryColor: color.hex
     });
+
+
+    console.log(uploadedCategory)
     dispatch(
-      createCategory({
-        categoryName: categoryToAdd,
-        categoryColor: color.hex
-      })
+      createCategory(
+        uploadedCategory
+      )
     );
     setToggle && setToggle(false);
   }

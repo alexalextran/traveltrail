@@ -4,6 +4,9 @@ import { Category } from '../types/categoryData';
 import { selectPins } from '../store/pins/pinsSlice.ts';
 import { useSelector, useDispatch } from 'react-redux';
 import {deleteCategoryAndRelatedPins} from '../firebaseFunctions/Categories.ts';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 export default function CategoryDeletionConfirmation({setcategoryDeleteModal, category}: {setcategoryDeleteModal: any, category: Category}) {
     const pins = useSelector(selectPins);
     var filteredPins = pins.filter(pin => pin.category === category.categoryName);
@@ -11,6 +14,7 @@ export default function CategoryDeletionConfirmation({setcategoryDeleteModal, ca
     
 
     return (
+        <>
         <div className={styles.modal}>
             <div className={styles.mainModal}>
             <h4>Are you sure you want to delete this category?</h4>
@@ -25,10 +29,27 @@ export default function CategoryDeletionConfirmation({setcategoryDeleteModal, ca
            
             <span className={styles.buttonSpan}>
               <button onClick={() => {setcategoryDeleteModal(false)}}>Cancel</button>
-            <button onClick={() => {deleteCategoryAndRelatedPins(category.categoryName, category.categoryID)}}>Delete</button>   
+            <button onClick={() => {
+                
+                deleteCategoryAndRelatedPins(category.categoryName, category.CategoryID)
+                toast('Deleted Successfully!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    });
+                    setcategoryDeleteModal(false)
+                }}>Delete</button>   
             </span>
            
             </div>
         </div>
+        
+
+        </>
     );
 }

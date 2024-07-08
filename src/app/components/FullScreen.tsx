@@ -13,6 +13,8 @@ import {  useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store.ts'; // Import the AppDispatch type
 import {  MdDeleteForever  } from "react-icons/md";
 import CategoryComponent from '../components/CategoryComponent.tsx'
+import { ToastContainer, toast } from 'react-toastify';
+
 interface FullScreenProps {
     pins: Pin[];
     categories: Category[];
@@ -45,6 +47,9 @@ export default function FullScreen({pins, categories }: FullScreenProps) {
       const [child, setchild] = useState(<Modal/>)
 
     return (
+        <>
+                 <ToastContainer /> {/* Add this line */}
+
         <main className={styles.main}>
             <div className={styles.header}>
                 <h1>Travel Trail</h1>
@@ -102,5 +107,6 @@ export default function FullScreen({pins, categories }: FullScreenProps) {
                 
                 </div>
         </main>
+        </>
     );
 }

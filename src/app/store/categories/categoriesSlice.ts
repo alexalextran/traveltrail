@@ -39,7 +39,7 @@ export const fetchCategories = createAsyncThunk(
       const categoryData = doc.data() as Category;
       const categoryWithID = {
         ...categoryData,
-        categoryID: doc.id
+        CategoryID: doc.id
       };
       categoriesArray.push(categoryWithID);
     });
