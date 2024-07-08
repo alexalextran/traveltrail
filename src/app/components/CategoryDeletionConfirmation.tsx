@@ -3,10 +3,11 @@ import styles from '../Sass/DeletionConfirmationModal.module.scss';
 import { Category } from '../types/categoryData';
 import { selectPins } from '../store/pins/pinsSlice.ts';
 import { useSelector, useDispatch } from 'react-redux';
-
+import {deleteCategoryAndRelatedPins} from '../firebaseFunctions/Categories.ts';
 export default function CategoryDeletionConfirmation({setcategoryDeleteModal, category}: {setcategoryDeleteModal: any, category: Category}) {
     const pins = useSelector(selectPins);
     var filteredPins = pins.filter(pin => pin.category === category.categoryName);
+  
     
 
     return (
@@ -24,7 +25,7 @@ export default function CategoryDeletionConfirmation({setcategoryDeleteModal, ca
            
             <span className={styles.buttonSpan}>
               <button onClick={() => {setcategoryDeleteModal(false)}}>Cancel</button>
-            <button>Delete</button>   
+            <button onClick={() => {deleteCategoryAndRelatedPins(category.categoryName, category.categoryID)}}>Delete</button>   
             </span>
            
             </div>
