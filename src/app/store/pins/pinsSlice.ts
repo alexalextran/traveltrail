@@ -53,6 +53,9 @@ const pinsSlice = createSlice({
     selectPin: (state, action: PayloadAction<Pin>) => { 
       state.selectedPin = action.payload;
     },
+    deletePinsByCategoryId: (state, action: PayloadAction<string>) => {
+      state.pins = state.pins.filter(pin => pin.category !== action.payload);
+    },
     addPictures: (state, action: PayloadAction<{id: string, picture: string[]}>) => {
       const pin = state.pins.find(pin => pin.id === action.payload.id);
       if (pin) {
@@ -71,7 +74,7 @@ const pinsSlice = createSlice({
   },
 });
 
-export const { addPin, updatePin, removePinById, addPictures, selectPin } = pinsSlice.actions;
+export const { addPin, updatePin, removePinById, addPictures, selectPin, deletePinsByCategoryId } = pinsSlice.actions;
 
 export const selectPins = createSelector(
   (state: RootState) => state.pins,

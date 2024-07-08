@@ -7,7 +7,10 @@ import { app } from "../firebase";
 const db = getFirestore(app);
 
 // Modify writeToFirestore to return the document ID
-export const writeCategory = async (data: object): Promise<Category> => {
+export const writeCategory = async (data: {
+  categoryName: string;
+  categoryColor: string;
+}): Promise<Category> => {
   try {
     const docRef = await addDoc(collection(db, `users/alextran/categories`), data);
     console.log("Document written with ID: ", docRef.id);

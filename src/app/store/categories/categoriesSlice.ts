@@ -3,6 +3,7 @@ import { RootState } from '../store';
 import { Category } from '@/app/types/categoryData';
 import { app } from "../../firebase";
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import { deletePinsByCategoryId } from '../pins/pinsSlice';
 
 const db = getFirestore(app);
 
@@ -47,6 +48,16 @@ export const fetchCategories = createAsyncThunk(
   }
 );
 
+
+export const deleteCategoryAndRelatedPinsRedux = createAsyncThunk(
+  'categories/deleteCategoryAndRelatedPins',
+   (category: Category, { dispatch }) => {
+    // Dispatch action to delete the category
+    dispatch(deleteCategory( category ));
+    // Dispatch action to delete related pins
+    dispatch(deletePinsByCategoryId(category.categoryName));
+  })
+
 const categoriesSlice = createSlice({
   name: 'categories',
   initialState,
@@ -54,8 +65,8 @@ const categoriesSlice = createSlice({
     createCategory: (state, action: PayloadAction<Category>) => {
       state.categories.push(action.payload);
     },
-    deleteCategory: (state, action: PayloadAction<string>) => {
-      state.categories = state.categories.filter(category => category.categoryName !== action.payload);
+    deleteCategory: (state, action: PayloadAction<Category>) => {
+      state.categories = state.categories.filter(category => category.CategoryID !== action.payload.CategoryID);
     },
   },
   extraReducers: (builder) => {
