@@ -22,32 +22,27 @@ function ImgUpload({pinID}: {pinID: string}) {
   const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files) {
+      const newImageUrls: string[] = [];
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        const reader = new FileReader();
-  
-        reader.onloadend = async () => {
-          const newImageUrl = reader.result as string;
-          setImages(oldImages => [...oldImages, newImageUrl]);
-          dispatch(addPictures({id: pinID, picture: [...images, newImageUrl]}));
-          const storageRef = ref(storage, `${pinID}/${file.name}`);
-          await uploadBytes(storageRef, file);
-          const url = await getDownloadURL(storageRef);
-          addImageReferenceToFirestore(pinID, url);
-
-          // Update selectedPin in Redux store
-          if (selectedPin) {
-            const updatedPin = {
-              ...selectedPin,
-              imageUrls: [...selectedPin.imageUrls, url]
-            };
-            dispatch(updatePin(updatedPin));
-            dispatch(selectPin(updatedPin));
-          }
-        };
-  
-        reader.readAsDataURL(file);
+        const storageRef = ref(storage, `${pinID}/${file.name}`);
+        await uploadBytes(storageRef, file);
+        const url = await getDownloadURL(storageRef);
+        newImageUrls.push(url);
+        await addImageReferenceToFirestore(pinID, url);
       }
+
+      if (selectedPin) {
+        const updatedPin = {
+          ...selectedPin,
+          imageUrls: [...selectedPin.imageUrls, ...newImageUrls]
+        };
+        dispatch(updatePin(updatedPin));
+        dispatch(selectPin(updatedPin));
+      }
+
+      setImages(oldImages => [...oldImages, ...newImageUrls]);
+      dispatch(addPictures({id: pinID, picture: [...images, ...newImageUrls]}));
     }
   }
 
@@ -58,10 +53,10 @@ function ImgUpload({pinID}: {pinID: string}) {
         type="file"
         onChange={handleUpload}
         className={styles.hiddenFileInput}
+        multiple
       />
-        <FaImages onClick={handleClick}/>
+      <FaImages onClick={handleClick} />
     </div>
-    
   );
 }
 
