@@ -1,25 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectSelectedPin } from '../store/pins/pinsSlice';
 import styles from "../Sass/modal.module.scss";
+import { removeImageReferenceFromFirestore } from '../firebaseFunctions/writeDocument';
+import { removeImageFromPin } from '../store/pins/pinsSlice';
 
 export default function ImageModal() {
     const selectedPin = useSelector(selectSelectedPin);
-    const images = selectedPin?.imageUrls;
+    const [images, setImages] = useState<string[]>([]); // Initialize with an empty array
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        // Update images state when selectedPin.imageUrls changes
+        if (selectedPin) {
+            setImages(selectedPin.imageUrls || []); // Handle the case when imageUrls is undefined
+        }
+    }, [selectedPin]); // Depend on selectedPin to trigger useEffect
+
+    const handleDeleteImage = async (imageUrl: string) => {
+        try {
+            await removeImageReferenceFromFirestore(selectedPin.id, imageUrl);
+            dispatch(removeImageFromPin({ pinId: selectedPin.id, imageUrl }));
+            // Optionally, update images state here as well to immediately reflect the change
+            // This is useful if the redux store update does not cause the component to re-render
+            setImages(currentImages => currentImages.filter(url => url !== imageUrl));
+        } catch (error) {
+            console.error("Failed to delete image: ", error);
+        }
+    };
 
     return (
         <div className={styles.imageModal}>
-           {images &&
-           images.map((url, index) => (
-    <div key={index} className={styles.imageDiv}>
-        <img src={url} alt={`Image ${index}`} style={{ width: '100px', height: 'auto' }} />
-        <div>
-            <button>Delete</button>
-        <button>Download</button>
-        </div>
-        
-    </div>
-))}
+            {images && images.map((url, index) => (
+                <div key={index} className={styles.imageDiv}>
+                    <img src={url} alt={`Image ${index}`} style={{ width: '100px', height: 'auto' }} />
+                    <div>
+                        <a onClick={() => handleDeleteImage(url)}>Delete</a>
+                        <a href={url} target='_blank' rel='noopener noreferrer'>Download</a>
+                    </div>
+                </div>
+            ))}
         </div>
     );
 }

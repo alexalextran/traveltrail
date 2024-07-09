@@ -66,6 +66,13 @@ const pinsSlice = createSlice({
         }
       }
     },
+    removeImageFromPin: (state, action: PayloadAction<{ pinId: string; imageUrl: string }>) => {
+      const { pinId, imageUrl } = action.payload;
+      const pin = state.pins.find(pin => pin.id === pinId);
+      if (pin && pin.imageUrls) {
+        pin.imageUrls = pin.imageUrls.filter(url => url !== `${imageUrl}`);
+      }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchPins.fulfilled, (state, action) => {
@@ -74,7 +81,7 @@ const pinsSlice = createSlice({
   },
 });
 
-export const { addPin, updatePin, removePinById, addPictures, selectPin, deletePinsByCategoryId } = pinsSlice.actions;
+export const { addPin, updatePin, removePinById, addPictures, selectPin, deletePinsByCategoryId, removeImageFromPin } = pinsSlice.actions;
 
 export const selectPins = createSelector(
   (state: RootState) => state.pins,

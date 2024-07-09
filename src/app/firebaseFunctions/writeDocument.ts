@@ -1,5 +1,6 @@
+import { deleteObject, getStorage, ref } from "firebase/storage";
 import { app } from "../firebase";
-import { getFirestore, collection, doc, addDoc, deleteDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import { getFirestore, collection, doc, addDoc, deleteDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 
 // firebaseOperations.ts
 
@@ -60,5 +61,31 @@ export const addImageReferenceToFirestore = async (docId: string, imageURL: stri
     });
   } catch (error) {
     console.error('Error adding image reference to document: ', error);
+  }
+};
+
+
+export const removeImageReferenceFromFirestore = async (docId: string, imageUrl: string): Promise<void> => {
+  try {
+    const decodedUrl = decodeURIComponent(imageUrl);
+    const url = new URL(decodedUrl);
+    const pathname = url.pathname;
+    const segments = pathname.split('/');
+    const fileName = segments[6].replace(/%20/g, ' ');
+
+    const storagePath = `${segments[5]}/${fileName}`;
+    const imageRef = ref(getStorage(app), storagePath);
+    await deleteObject(imageRef);
+
+    const docRef = doc(db, 'users/alextran/pins', docId);
+
+    await updateDoc(docRef, {
+      imageUrls: arrayRemove(imageUrl)
+    });
+
+    console.log("Image URL removed from document:", imageUrl);
+  } catch (error) {
+    console.error("Error removing image reference from document:", error);
+    throw new Error("Failed to remove image reference");
   }
 };
