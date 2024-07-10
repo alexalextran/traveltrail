@@ -31,7 +31,7 @@ const CustomizedMarker = ({lat, lng, pinID, userLocation}: {lat: number, lng: nu
     <>
     <AdvancedMarker position={{lat: lat, lng: lng}} ref={markerRef} onClick={handleClick}>
       <Pin background={filteredCategory.categoryColor} glyphColor={'#000'} borderColor={'#000'} />
-      {showInfoWindow && <InfoWindow  anchor={marker} className={styles.infoWindow}><InfoWindowComponent filteredPin={filteredPin} settoggleIWM={settoggleIWM}   /></InfoWindow>}
+      {showInfoWindow && <InfoWindow  anchor={marker} className={styles.infoWindow}><InfoWindowComponent setShowInfoWindow={setShowInfoWindow}  userLocation={userLocation} filteredPin={filteredPin} settoggleIWM={settoggleIWM} filteredCategory={filteredCategory}  /></InfoWindow>}
       
     </AdvancedMarker>
      {toggleIWM && <ExpandedInfoModal pin={filteredPin} settoggleIWM={settoggleIWM}  userLocation={userLocation} filteredCategory={filteredCategory}/> }

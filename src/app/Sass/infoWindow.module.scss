@@ -1,1 +1,49 @@
 @import "variables&functions";
+
+.main {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 1em;
+  border-radius: 0.5em;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 15em;
+  text-align: center;
+  z-index: 100;
+  @include flexCenter(column);
+
+  h1 {
+    color: $webBlue;
+    font-size: 1.5em;
+    margin-bottom: 0.5em;
+  }
+
+  p {
+    margin: 0.5em 0;
+    color: #333;
+  }
+
+  .category {
+    display: inline-block;
+    background-color: white;
+    color: white;
+    padding: 0.2em 0.5em;
+    border-radius: 0.2em;
+    font-weight: bold;
+    margin-right: 0.5em;
+  }
+
+  .expandButton {
+    background-color: $webBlue;
+    color: white;
+    border: none;
+    padding: 0.5em 1em;
+    margin-top: 1em;
+    cursor: pointer;
+    font-size: 1em;
+    border-radius: 0.3em;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: darken($webBlue, 10%);
+    }
+  }
+}

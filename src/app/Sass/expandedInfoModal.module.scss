@@ -10,12 +10,13 @@ position: relative;
       padding: 1em;
       background: rgba( 255, 255, 255, 0.25 );
       border-radius: 1em 1em 0 0;
-      border-bottom: 0.2em solid;
+      border-bottom: 0.2em solid #007bff;
       background-color: white;
 
-      h2{
-         font-size: 1.5em;
-         font-weight: 600;
+      h1{
+         font-size: 1.7em;
+         font-weight: 700;
+         color: #007bff;
          
       }
 
@@ -27,6 +28,32 @@ position: relative;
          cursor: pointer;
       }
    }
+.content{
+   padding: 1em;
+   
+   .expandedModalTags{
+      margin: 1em 0;
+      p{
+         display: inline-block;
+         background-color: #dff0d8;
+         color: white;
+         padding: 0.2em 0.5em;
+         border-radius: 0.2em;
+         font-weight: bold;
+         margin-right: 0.5em;
+         
+      }
+      p:nth-child(2){
+         color: #3c763d;
+      }
+
+   }
+   .description{
+    font-style: italic;
+   color: #666;
+   }
+}
+   
 
    .footer{
       position: absolute; 
@@ -34,8 +61,9 @@ position: relative;
       bottom: 0; 
      
       .carouselcontainer{
-         width: 80%;
-         margin: auto
+         width: 70%;
+         margin: auto;
+         margin-bottom: 2em;
         }
 
        
@@ -43,7 +71,7 @@ position: relative;
          border-radius: 0 0 1em 1em;
          width: 100%;
          @include flexCustom(space-around, center, row);
-         background-color: $green;
+         background-color: #007bff;
          svg{
             width: 1.5em;
            height: 1.5em;
@@ -72,7 +100,7 @@ position: relative;
 
    @include absolutecenter;
    z-index: 99;
-   height: 30em;
+   height: 35em;
    width: 40em;
    background: rgba( 255, 255, 255, 0.25 );
    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );

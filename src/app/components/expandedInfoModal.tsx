@@ -48,15 +48,21 @@ export default function ExpandedInfoModal({pin, settoggleIWM, userLocation, filt
   
   return (
     <main className={styles.main} >
-      <div className={styles.header} style={{ borderBottomColor: filteredCategory.categoryColor }}>
+      <div className={styles.header} >
       <h1>{pin.title}</h1>
       <button onClick={() => settoggleIWM(false)}>Close</button>
       </div>
-      <h5>{pin.category}</h5>
+
+      <div className={styles.content}>
       <p>{pin.address}</p>
       <p>{distanceToUser.toFixed(2)}KM Away</p>
-      <p>{pin.visited}</p>
-      <p>{pin?.description}</p>
+      <div className={styles.expandedModalTags}>
+      <p style={{ backgroundColor: filteredCategory.categoryColor, border: `2px solid ${filteredCategory.categoryColor}`}}>{pin.category}</p>
+      <p>{pin.visited ? "Visited" : "Unvisited"}</p>
+      </div>
+      <p className={styles.description}>{pin?.description}</p>
+      </div>
+     
       <div className={styles.footer}>
       {pin.imageUrls && 
       <Carousel responsive={responsiveConfig} className={styles.carouselcontainer}>
