@@ -1,0 +1,134 @@
+@import "variables&functions";
+
+.main{
+    @include absolutefill;
+    background-color: rgb(250, 250, 250);
+    z-index: 100;
+
+    .header{
+        background-color: $green;
+        height: 5vh;
+    }
+
+    .exitButton{
+        @include exitButton;
+    }
+
+    .content{
+        @include flexCustom(center, flex-start, row);
+    }
+
+    .categories{
+        border-top: 2px solid black;
+        width: 15% !important;
+        div{
+            background-color: $webBlue;
+            padding: 0.8em;
+            font-size: 1.4em;
+            font-weight: 300;
+            color: white;
+            margin-bottom: 0.1em;
+            @include flexCenter(row);
+            p{
+                width: 80%;
+                text-align: center;
+            }
+            svg{
+                cursor: pointer;
+                width: 1em;
+                height: 1em;
+            }
+            &:hover{
+                background-color: white;
+                color: $webBlue;
+            }
+        }
+    }
+
+    .pins {
+        width: 25%;
+        overflow-y: scroll;
+        height: 95vh;
+        .pinContainer {
+            font-size: 0.7em;
+            height: 10.5em;
+            position: relative;
+            padding: 1em;
+            margin-bottom: 1em;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 0.2em;
+            @include flexCustom(space-between, center, row);
+        }
+
+        .pinInfo {
+            height: 100%;
+            width: 70% !important;
+        }
+
+        .carousel {
+            width: 30%;
+            aspect-ratio: 16 / 9;
+            img{
+                width: 100%;
+                height: auto;
+                object-fit: cover;
+                aspect-ratio: 16 / 9;
+            }
+        }
+
+        .pinInfo {
+            width: 50%;
+            h2 {
+                color: #007bff;
+                margin-bottom: 0.5em;
+            }
+            p {
+                margin: 0.25em 0;
+                &:nth-of-type(2) {
+                    display: inline-block;
+                    background-color: #f0f0f0;
+                    color: #333;
+                    padding: 0.2em 0.5em;
+                    border-radius: 0.2em;
+                    font-weight: bold;
+                }
+                &:nth-of-type(3) {
+                    display: inline-block;
+                    background-color: #dff0d8;
+                    color: #3c763d;
+                    padding: 0.2em 0.5em;
+                    border-radius: 0.2em;
+                    font-weight: bold;
+                    margin-left: 0.5em;
+                }
+                &:last-child {
+                    font-style: italic;
+                    color: #666;
+                }
+            }
+        }
+    }
+
+    .form {
+        width: 60%;
+        z-index: 10001;
+        .formBar{
+            width: 100%;
+            select {
+                width: 100%;
+                height: 3em;
+                font-size: 1.3em;
+                padding: 0.5em 1em;
+                border: none;
+                background-color: #007bff;
+                color: white;
+                font-weight: bold;
+                cursor: pointer;
+                &:hover {
+                    background-color: #0056b3;
+                }
+            }
+        }
+    }
+}
