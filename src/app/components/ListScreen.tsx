@@ -4,9 +4,7 @@ import { Pin } from '../types/pinData';
 import { Category } from '../types/categoryData';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import IconBar from '../components/iconBar';
 import Modal from '../components/modal.tsx';
-import AddCategoryModal from './addCategoryModal.tsx';
 import { toggleEditModal, toggleListScreen } from '../store/toggleModals/toggleModalSlice.ts';
 import {  useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../store/store.ts'; // Import the AppDispatch type
@@ -15,7 +13,7 @@ import CategoryComponent from '../components/CategoryComponent.tsx'
 import { ToastContainer, toast } from 'react-toastify';
 import { selectPins } from '../store/pins/pinsSlice';
 import { selectCategories } from '../store/categories/categoriesSlice';
-
+import ManageLists from './ManageLists.tsx'
 
 export default function FullScreen() {
     const dispatch: AppDispatch = useDispatch(); // Use the typed version of useDispatch
@@ -100,6 +98,7 @@ export default function FullScreen() {
                                 {/* Render the available lists */}
                             </select>
                 
+                <button onClick={() => setchild(<ManageLists/>)}>Manage Lists</button>
                 </div>
                   
                     {child}
