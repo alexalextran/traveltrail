@@ -8,6 +8,7 @@ import EditPinModal from './components/EditPinModal.tsx';
 import { useSelector } from 'react-redux';
 import { selectEditModal } from './store/toggleModals/toggleModalSlice.ts'; // Import the ExpandedInfoModal component
 import { ToastContainer } from 'react-toastify';
+import ListComponent  from './components/ListComponent.tsx';
 
 const Page = () => {
     const toggleEdit = useSelector(selectEditModal);
@@ -19,6 +20,7 @@ const Page = () => {
      <ToastContainer /> {/* Add this line */}
       <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLEAPI_API_KEY ?? ''}>
         <Modal />
+        <ListComponent />
         {toggleEdit && <EditPinModal/>}
         <Sidebar />
         <Map />

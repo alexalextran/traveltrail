@@ -5,7 +5,6 @@ import { Category } from '../types/categoryData';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import IconBar from '../components/iconBar';
-import AddPinModal from './addPinModal';
 import Modal from '../components/modal.tsx';
 import AddCategoryModal from './addCategoryModal.tsx';
 import { toggleEditModal, toggleFullScreen } from '../store/toggleModals/toggleModalSlice.ts';
