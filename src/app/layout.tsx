@@ -18,8 +18,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className} style={{overflow:"hidden"}}>
-        <Providers>{children}</Providers>
+      <body className={inter.className} style={{ overflow: "hidden" }}>
+          <Providers>{children}</Providers>
       </body>
     </html>
   );

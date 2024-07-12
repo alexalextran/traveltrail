@@ -35,3 +35,17 @@ export const deleteList = async (listID: string): Promise<void> => {
         throw new Error("Failed to delete list");
     }
 };
+
+export const addPinToList = async (listID: string, pinID: string): Promise<void> => {
+    try {
+        // Add the pin ID to the list
+        const listRef = doc(db, `users/alextran/lists`, listID);
+        await updateDoc(listRef, {
+            pins: arrayUnion(pinID)
+        });
+        console.log(`Pin added to list with ID: ${listID}`);
+    } catch (error) {
+        console.error("Error adding pin to list: ", error);
+        throw new Error("Failed to add pin to list");
+    }
+};

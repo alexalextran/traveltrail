@@ -1,3 +1,4 @@
+// ListScreen.tsx
 import React, { useState, useEffect } from 'react';
 import styles from '../Sass/ListScreen.module.scss';
 import { Pin } from '../types/pinData';
@@ -8,16 +9,17 @@ import Modal from '../components/modal.tsx';
 import { toggleEditModal, toggleListScreen } from '../store/toggleModals/toggleModalSlice.ts';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../store/store.ts'; // Import the AppDispatch type
-import { MdDeleteForever } from "react-icons/md";
-import CategoryComponent from '../components/CategoryComponent.tsx'
+import CategoryComponent from '../components/CategoryComponent.tsx';
 import { ToastContainer, toast } from 'react-toastify';
 import { selectPins } from '../store/pins/pinsSlice';
 import { selectCategories } from '../store/categories/categoriesSlice';
-import ManageLists from './ManageLists.tsx'
+import ManageLists from './ManageLists.tsx';
 import { getFirestore, collection, onSnapshot } from 'firebase/firestore';
 import { app } from "../firebase"; // Ensure this path is correct
-import ListDnD from './ListDnd.tsx'
-function FullScreen() {
+import ListDnD from './ListDnd.tsx';
+import PinCard from './PinCard.tsx';
+
+function ListScreen() {
     const dispatch: AppDispatch = useDispatch(); // Use the typed version of useDispatch
     const pins = useSelector(selectPins);
     const categories = useSelector(selectCategories);
@@ -79,29 +81,19 @@ function FullScreen() {
                             const pinCategory = categories.find(category => category.categoryName === pin.category);
                             const categoryColor = pinCategory ? pinCategory.categoryColor : 'black';
                             return (
-                                <div key={index} className={styles.pinContainer}>
-                                    <div className={styles.pinInfo}>
-                                        <h2>{pin.title}</h2>
-                                        <p>{pin.address}</p>
-                                        <p style={{ color: categoryColor, border: `2px solid ${categoryColor}` }}>{pin.category}</p>
-                                        <p>{pin.visited ? "Visited" : "Unvisited"}</p>
-                                        <p>{pin.description}</p>
-                                    </div>
-                                    {pin.imageUrls && pin.imageUrls.length > 0 && (
-                                        <Carousel responsive={responsiveConfig} className={styles.carousel}>
-                                            {pin.imageUrls.map((src, index) => (
-                                                <img key={index} src={src} alt="" />
-                                            ))}
-                                        </Carousel>
-                                    )}
-                                </div>
+                                <PinCard
+                                    key={index}
+                                    pin={pin}
+                                    responsiveConfig={responsiveConfig}
+                                    categoryColor={categoryColor}
+                                />
                             );
                         })}
                     </div>
                     <div className={styles.form}>
                         <div className={styles.formBar}>
                             <select 
-                            onClick={() => setchild(<ListDnD/>)}
+                            onClick={() => setchild(<ListDnD listId={selectedList}/>)}
                             value={selectedList} // Add this line
                             onChange={(e) => setSelectedList(e.target.value)}
                             >
@@ -120,4 +112,4 @@ function FullScreen() {
     );
 }
 
-export default FullScreen;
+export default ListScreen;

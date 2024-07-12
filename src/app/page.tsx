@@ -9,6 +9,9 @@ import { useSelector } from 'react-redux';
 import { selectEditModal } from './store/toggleModals/toggleModalSlice.ts'; // Import the ExpandedInfoModal component
 import { ToastContainer } from 'react-toastify';
 import ListComponent  from './components/ListComponent.tsx';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+
 
 const Page = () => {
     const toggleEdit = useSelector(selectEditModal);
@@ -17,6 +20,7 @@ const Page = () => {
 
   return (
     <>
+      <DndProvider backend={HTML5Backend}>
      <ToastContainer /> {/* Add this line */}
       <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLEAPI_API_KEY ?? ''}>
         <Modal />
@@ -25,6 +29,8 @@ const Page = () => {
         <Sidebar />
         <Map />
       </APIProvider>
+      </DndProvider>
+
     </>
   );
 };
