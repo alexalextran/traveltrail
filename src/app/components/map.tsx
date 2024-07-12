@@ -9,7 +9,6 @@ import { AppDispatch } from '../store/store.ts'; // Import the AppDispatch type
 import useGeolocation from '../hooks/useGeolocation.ts'; // Import the custom hook
 import { MdPersonPinCircle } from "react-icons/md";
 import styles from '../Sass/page.module.scss';
-import debounce from 'lodash/debounce'; // Assuming lodash is installed for debouncing
 
 
 const MapComponent = () => {
@@ -19,7 +18,7 @@ const MapComponent = () => {
 
   useEffect(() => {
     dispatch(fetchPins());
-  }, [dispatch, location]);
+  }, []);
 
   const INITIAL_CAMERA = useMemo(() => ({
     center: { lat: location.lat, lng: location.lng },
