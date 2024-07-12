@@ -29,7 +29,7 @@ function ListScreen() {
     const pins = useSelector(selectPins);
     const categories = useSelector(selectCategories);
     const [lists, setLists] = useState<{ id: string; listName: string; }[]>([]);
-    const [child, setchild] = useState(<Modal/>);
+    const [child, setchild] = useState(<ManageLists/>);
     const [selectedList, setSelectedList] = useState<string>(''); // Add this line
 
     useEffect(() => {
