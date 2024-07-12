@@ -8,7 +8,7 @@ import { selectPins } from '../store/pins/pinsSlice';
 import { selectCategories } from '../store/categories/categoriesSlice';
 import { Category } from "../types/categoryData";
 
-const CustomizedMarker = ({ lat, lng, pinID, userLocation }: { lat: number, lng: number, pinID: string, userLocation: { lat: number; lng: number; } }) => {
+const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {category: Category, pin: any, lat: number, lng: number, pinID: string, userLocation: { lat: number; lng: number; } }) => {
   const [markerRef, marker] = useAdvancedMarkerRef();
   const [toggleIWM, settoggleIWM] = useState(false);
   const [showInfoWindow, setShowInfoWindow] = useState(false);
@@ -17,34 +17,30 @@ const CustomizedMarker = ({ lat, lng, pinID, userLocation }: { lat: number, lng:
     setShowInfoWindow(prevState => !prevState);
   };
 
-  const pins = useSelector(selectPins);
-  const categories = useSelector(selectCategories);
 
-  const filteredPin = pins.find(pin => pin.id === pinID);
-  const filteredCategory = categories.find(category => category.categoryName === filteredPin?.category) as Category;
   console.log("I was rendered")
   return (
     <>
       <AdvancedMarker position={{ lat, lng }} ref={markerRef} onClick={handleClick}>
-        <Pin background={filteredCategory?.categoryColor} glyphColor={'#000'} borderColor={'#000'} />
+        <Pin background={category?.categoryColor} glyphColor={'#000'} borderColor={'#000'} />
         {showInfoWindow && (
           <InfoWindow anchor={marker} className={styles.infoWindow}>
             <InfoWindowComponent
               setShowInfoWindow={setShowInfoWindow}
               userLocation={userLocation}
-              filteredPin={filteredPin}
+              filteredPin={pin}
               settoggleIWM={settoggleIWM}
-              filteredCategory={filteredCategory}
+              filteredCategory={category}
             />
           </InfoWindow>
         )}
       </AdvancedMarker>
       {toggleIWM && (
         <ExpandedInfoModal
-          pin={filteredPin}
+          pin={pin}
           settoggleIWM={settoggleIWM}
           userLocation={userLocation}
-          filteredCategory={filteredCategory}
+          filteredCategory={category}
         />
       )}
     </>

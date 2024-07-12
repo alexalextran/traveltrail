@@ -10,12 +10,15 @@ import useGeolocation from '../hooks/useGeolocation'; // Import the custom hook
 import { MdPersonPinCircle } from "react-icons/md";
 import styles from '../Sass/page.module.scss';
 import { selectLocation } from '../store/location/locationSlice';
+import { selectCategories } from '../store/categories/categoriesSlice';
 
 const MapComponent = () => {
   const dispatch = useDispatch<AppDispatch>();
   const pins = useSelector(selectPins);
   const { location, error } = useGeolocation();
   const locationRedux = useSelector(selectLocation);
+  const categories = useSelector(selectCategories);
+
 
   useEffect(() => {
     setCameraProps(prevCameraProps => ({
@@ -26,6 +29,7 @@ const MapComponent = () => {
 
   useEffect(() => {
     dispatch(fetchPins());
+
     
   }, []);
 
@@ -62,9 +66,16 @@ const MapComponent = () => {
         gestureHandling={'greedy'}
         disableDefaultUI={true}
       >
-        {pins.map((pin) => (
-          <Pin key={pin.id} pinID={pin.id} lat={pin.lat} lng={pin.lng} userLocation={INITIAL_CAMERA.center} />
-        ))}
+        {pins.map((pin) => {
+          const categoryProp = categories.find(category => category.categoryName === pin.category);
+          if (!categoryProp) {
+            // Handle the case when the category is not found
+            return null;
+          }
+          return (
+            <Pin key={pin.id} category={categoryProp} pinID={pin.id} lat={pin.lat} lng={pin.lng} userLocation={INITIAL_CAMERA.center} pin={pin} />
+          );
+        })}
         <AdvancedMarker position={INITIAL_CAMERA.center}>
           <MdPersonPinCircle className={styles.svg}/>
         </AdvancedMarker>
