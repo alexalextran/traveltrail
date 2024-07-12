@@ -18,12 +18,16 @@ const MapComponent = () => {
   const locationRedux = useSelector(selectLocation);
 
   useEffect(() => {
-    dispatch(fetchPins());
     setCameraProps(prevCameraProps => ({
       ...prevCameraProps,
       center: { lat: locationRedux.lat, lng: locationRedux.lng }
     }));
-  }, [dispatch, locationRedux.lat, locationRedux.lng]);
+  }, [locationRedux.lat, locationRedux.lng]);
+
+  useEffect(() => {
+    dispatch(fetchPins());
+    
+  }, []);
 
   const INITIAL_CAMERA = useMemo(() => ({
     center: { lat: location.lat, lng: location.lng },

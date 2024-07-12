@@ -7,7 +7,6 @@ import { selectCategories } from '../store/categories/categoriesSlice'
 import { Category } from '../types/categoryData.ts';
 import { setLocation } from '../store/location/locationSlice.ts';
 import { AppDispatch } from '../store/store.ts';
-import { Pin } from '@vis.gl/react-google-maps';
 
 
 function PinItem({ pin }: { pin: Pin }) {
