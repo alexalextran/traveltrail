@@ -3,7 +3,7 @@ import { useDrop } from 'react-dnd';
 import { getFirestore, doc, onSnapshot, DocumentSnapshot, DocumentReference, getDoc } from 'firebase/firestore';
 import { app } from "../firebase";
 import { addPinToList } from '../firebaseFunctions/Lists'; // Function to add pin to list
-
+import DnDPin from './DnDPin';
 const ListDnD = ({ listId }: { listId: string }) => {
   const [pinData, setPinData] = useState<{ id: string, pinTitle: string }[]>([]);
   const dropRef = useRef<HTMLDivElement>(null);
@@ -33,8 +33,7 @@ const ListDnD = ({ listId }: { listId: string }) => {
           });
 
           Promise.all(promises).then((results) => {
-            const filteredResults = results.filter((result) => result !== null) as { id: string, pinTitle: string }[];
-            setPinData(filteredResults);
+            setPinData(results);
           });
         }
       } else {
@@ -66,9 +65,7 @@ const ListDnD = ({ listId }: { listId: string }) => {
       Drop pins here to add to the list
       <div>
         {pinData.map((pin) => (
-          <div key={pin.id}>
-            <p>Title: {pin.pinTitle}</p>
-          </div>
+          <DnDPin pin={pin} key={pin.id}/>
         ))}
       </div>
     </div>

@@ -1,13 +1,8 @@
-import { collection, addDoc, getFirestore, doc, deleteDoc, updateDoc, arrayUnion, where, getDocs, query, writeBatch, getDoc  } from "firebase/firestore";
+import { collection, addDoc, getFirestore, doc, deleteDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 import { app } from "../firebase";
-
-// firebaseOperations.ts
-
-// Import Firestore and your Firebase app configuration
 
 const db = getFirestore(app);
 
-// Modify writeToFirestore to return the document ID
 export const writeList = async (data: {
     listName: string;
 }): Promise<any> => {
@@ -26,7 +21,6 @@ export const writeList = async (data: {
 
 export const deleteList = async (listID: string): Promise<void> => {
     try {
-        // Delete the list
         const listRef = doc(db, `users/alextran/lists`, listID);
         await deleteDoc(listRef);
         console.log(`List deleted with ID: ${listID}`);
@@ -38,7 +32,6 @@ export const deleteList = async (listID: string): Promise<void> => {
 
 export const addPinToList = async (listID: string, pinID: string): Promise<void> => {
     try {
-        // Add the pin ID to the list
         const listRef = doc(db, `users/alextran/lists`, listID);
         await updateDoc(listRef, {
             pins: arrayUnion(pinID)
@@ -47,5 +40,18 @@ export const addPinToList = async (listID: string, pinID: string): Promise<void>
     } catch (error) {
         console.error("Error adding pin to list: ", error);
         throw new Error("Failed to add pin to list");
+    }
+};
+
+export const removePinFromList = async (listID: string, pinID: string): Promise<void> => {
+    try {
+        const listRef = doc(db, `users/alextran/lists`, listID);
+        await updateDoc(listRef, {
+            pins: arrayRemove(pinID)
+        });
+        console.log(`Pin removed from list with ID: ${listID}`);
+    } catch (error) {
+        console.error("Error removing pin from list: ", error);
+        throw new Error("Failed to remove pin from list");
     }
 };

@@ -1,5 +1,5 @@
 // ListScreen.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from '../Sass/ListScreen.module.scss';
 import { Pin } from '../types/pinData';
 import { Category } from '../types/categoryData';
@@ -18,8 +18,13 @@ import { getFirestore, collection, onSnapshot } from 'firebase/firestore';
 import { app } from "../firebase"; // Ensure this path is correct
 import ListDnD from './ListDnd.tsx';
 import PinCard from './PinCard.tsx';
+import { useDrop } from 'react-dnd';
+import { removePinFromList } from '../firebaseFunctions/Lists'; // Function to add pin to list
+
 
 function ListScreen() {
+    const dropRef = useRef<HTMLDivElement>(null);
+
     const dispatch: AppDispatch = useDispatch(); // Use the typed version of useDispatch
     const pins = useSelector(selectPins);
     const categories = useSelector(selectCategories);
@@ -60,6 +65,19 @@ function ListScreen() {
         }
     };
 
+
+    const [{ isOver }, drop] = useDrop({
+        accept: 'addedPin',
+        drop: (item: { id: string }) => {
+          if (selectedList) {
+            removePinFromList(selectedList, item.id);
+          }
+        },
+        collect: (monitor) => ({
+          isOver: !!monitor.isOver(),
+        }),
+      });
+      drop(dropRef);
     return (
         <>
             <main className={styles.main}>
@@ -76,7 +94,7 @@ function ListScreen() {
                             <CategoryComponent key={index} category={category} />
                         ))}
                     </div>
-                    <div className={styles.pins}>
+                    <div className={styles.pins} ref={dropRef} >
                         {pins.map((pin: Pin, index: number) => {
                             const pinCategory = categories.find(category => category.categoryName === pin.category);
                             const categoryColor = pinCategory ? pinCategory.categoryColor : 'black';
