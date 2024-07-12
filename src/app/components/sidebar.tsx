@@ -14,7 +14,6 @@ import { HiOutlineArrowsExpand } from "react-icons/hi";
 import FullScreenComponent from '../components/FullScreen.tsx';
 import { selectFullScreen } from '../store/toggleModals/toggleModalSlice.ts';
 import { toggleFullScreen, toggleEditModal, toggleAddModal } from '../store/toggleModals/toggleModalSlice.ts';
-
 function Sidebar() {
     const [toggle, setToggle] = useState(false)
     const [extend, setextend] = useState(false)
