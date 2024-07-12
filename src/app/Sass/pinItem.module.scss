@@ -12,16 +12,11 @@
         width: 100%;
         @include flexCustom(flex-start, center, row);
         div{
-           border-right: solid black 1px; 
-           width: 70%;
+           width: 100%;
+           padding: 0 0.5em;
            
         }
-        div:not(:first-child){
-          text-align: center;
-          width: 30%;
-          border: none;
-          justify-content: center;
-        }
+       
         
     }
 

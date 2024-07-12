@@ -18,7 +18,6 @@ function PinItem({ pin }: { pin: Pin }) {
        
         <div>
         <div>{pin.address}</div>
-        <div>{pin.category}</div>
         </div>
 
 

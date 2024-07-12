@@ -68,11 +68,12 @@
         color: #ffffff;
     }
 }
-
-
 .pinItems{
+    overflow-y: scroll;
     height: 100%;
     background-color: rgb(247,247,247);
+    scrollbar-width: thin;
+    scrollbar-color: $webBlue rgb(247,247,247);
 }
 
 
