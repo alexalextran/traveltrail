@@ -58,6 +58,10 @@ const Modal = () => {
     } catch (error) {
       console.error('Error writing document: ', error);
     }
+
+    setDescription('');
+    setAddress('');
+    setTitle('');
   };
 
   return (

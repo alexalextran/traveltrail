@@ -72,6 +72,11 @@ const Modal = () => {
       dispatch(addPin(completePin)); // Dispatch the action with the complete pin
     })
     .catch((error) => console.error('Error writing document: ', error));
+
+
+    setDescription('');
+    setAddress('');
+    setTitle('');
 };
 
 if (ShowFullScreen) {
