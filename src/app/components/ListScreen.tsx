@@ -44,7 +44,7 @@ function ListScreen() {
         });
 
         return () => unsubscribe(); // Clean up the subscription
-    }, []);
+    }, [selectedList]);
 
     const responsiveConfig = {
         superLargeDesktop: {
@@ -70,6 +70,7 @@ function ListScreen() {
         accept: 'addedPin',
         drop: (item: { id: string }) => {
           if (selectedList) {
+
             removePinFromList(selectedList, item.id);
           }
         },

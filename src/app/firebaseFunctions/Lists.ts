@@ -44,6 +44,7 @@ export const addPinToList = async (listID: string, pinID: string): Promise<void>
 };
 
 export const removePinFromList = async (listID: string, pinID: string): Promise<void> => {
+    console.log(listID, pinID)
     try {
         const listRef = doc(db, `users/alextran/lists`, listID);
         await updateDoc(listRef, {

@@ -46,7 +46,7 @@
     }
 
     .pins {
-        width: 25%;
+        width: 45%;
         overflow-y: scroll;
         height: 95vh;
         .pinContainer {
@@ -111,7 +111,7 @@
     }
 
     .form {
-        width: 60%;
+        width: 40%;
         z-index: 10001;
         .formBar{
             width: 100%;
@@ -132,3 +132,83 @@
         }
     }
 }
+
+
+
+// Assuming this is DnDPin.module.scss (or any appropriate name)
+
+.DnDContainer {
+    border: 1px solid $webBlue;
+    font-size: 0.7em;
+    height: 5.5em;
+    position: relative;
+    padding: 1em;
+    margin-bottom: 1em;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 0.2em;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Align items to the top */
+    transition: all 0.3s ease-in-out;
+
+    & >:nth-child(2){
+        @include flexCenter(column);
+      }
+
+      &:hover{
+        background-color: $webBlue;
+        color: white;
+      }
+    
+    .pinInfo {
+      width: 70%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+
+      
+      
+      h3 {
+        color: #007bff;
+        margin-bottom: 0.5em;
+      }
+      
+      p {
+        margin: 0.25em 0;
+        &:nth-of-type(2) {
+          display: block;
+          background-color: #f0f0f0;
+          color: #333;
+          padding: 0.2em 0.5em;
+          border-radius: 0.2em;
+          font-weight: bold;
+        }
+      }
+    }
+    
+    div {
+      width: 30%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+    
+      
+      p {
+        margin: 0.25em 0;
+        &:nth-of-type(2) {
+          display: block;
+          background-color: #dff0d8;
+          color: #3c763d;
+          padding: 0.2em 0.5em;
+          border-radius: 0.2em;
+          font-weight: bold;
+          margin-left: 0.5em;
+        }
+      }
+    }
+  }
+  
