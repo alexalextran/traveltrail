@@ -21,7 +21,6 @@ function ManageLists() {
         return () => unsubscribe(); // Clean up the subscription
     }, []);
 
-    console.log('Lists:', lists);
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setListName(event.target.value);

@@ -28,7 +28,6 @@ export const fetchPins = createAsyncThunk(
     querySnapshot.forEach((doc) => {
       pinsArray.push({ id: doc.id, ...doc.data() } as Pin);
     });
-    console.log(pinsArray)
     return pinsArray;
    
   }

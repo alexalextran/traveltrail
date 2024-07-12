@@ -1,42 +1,56 @@
+import React, { useState } from "react";
 import { AdvancedMarker, Pin, InfoWindow, useAdvancedMarkerRef } from "@vis.gl/react-google-maps";
-import { useState } from "react";
 import styles from "../Sass/infoWindow.module.scss";
 import InfoWindowComponent from "./InfoWindowComponent";
 import ExpandedInfoModal from "../components/expandedInfoModal";
 import { useSelector } from 'react-redux';
-import { selectPins } from '../store/pins/pinsSlice.ts'; // Import the ExpandedInfoModal component
-import { selectCategories } from '../store/categories/categoriesSlice'
-import { Category } from "../types/categoryData.ts";
-
-
+import { selectPins } from '../store/pins/pinsSlice';
+import { selectCategories } from '../store/categories/categoriesSlice';
+import { Category } from "../types/categoryData";
 
 const CustomizedMarker = ({lat, lng, pinID, userLocation}: {lat: number, lng: number, pinID:string, userLocation: { lat: number; lng: number; }}) => {
   const [markerRef, marker] = useAdvancedMarkerRef();
   const [toggleIWM, settoggleIWM] = useState(false)
-
   const [showInfoWindow, setShowInfoWindow] = useState(false);
+
   const handleClick = () => {
     setShowInfoWindow(prevState => !prevState);
   };
 
-
   const pins = useSelector(selectPins);
   const categories = useSelector(selectCategories);
 
-  const filteredPin:any = pins.filter(pin => pin.id == pinID)[0];
-  const filteredCategory:Category = categories.filter(category => category.categoryName === filteredPin.category)[0]
+  const filteredPin = pins.find(pin => pin.id === pinID);
+  const filteredCategory = categories.find(category => category.categoryName === filteredPin?.category) as Category;
 
+  console.log("CustomizedMarker rendered");
 
   return (
     <>
-    <AdvancedMarker position={{lat: lat, lng: lng}} ref={markerRef} onClick={handleClick}>
-      <Pin background={filteredCategory.categoryColor} glyphColor={'#000'} borderColor={'#000'} />
-      {showInfoWindow && <InfoWindow  anchor={marker} className={styles.infoWindow}><InfoWindowComponent setShowInfoWindow={setShowInfoWindow}  userLocation={userLocation} filteredPin={filteredPin} settoggleIWM={settoggleIWM} filteredCategory={filteredCategory}  /></InfoWindow>}
-      
-    </AdvancedMarker>
-     {toggleIWM && <ExpandedInfoModal pin={filteredPin} settoggleIWM={settoggleIWM}  userLocation={userLocation} filteredCategory={filteredCategory}/> }
+      <AdvancedMarker position={{lat, lng}} ref={markerRef} onClick={handleClick}>
+        <Pin background={filteredCategory?.categoryColor} glyphColor={'#000'} borderColor={'#000'} />
+        {showInfoWindow && (
+          <InfoWindow anchor={marker} className={styles.infoWindow}>
+            <InfoWindowComponent 
+              setShowInfoWindow={setShowInfoWindow} 
+              userLocation={userLocation} 
+              filteredPin={filteredPin} 
+              settoggleIWM={settoggleIWM} 
+              filteredCategory={filteredCategory} 
+            />
+          </InfoWindow>
+        )}
+      </AdvancedMarker>
+      {toggleIWM && (
+        <ExpandedInfoModal 
+          pin={filteredPin} 
+          settoggleIWM={settoggleIWM} 
+          userLocation={userLocation} 
+          filteredCategory={filteredCategory}
+        />
+      )}
     </>
   );
 };
 
-export default CustomizedMarker;
+export default React.memo(CustomizedMarker);
