@@ -29,7 +29,7 @@ const MapComponent = () => {
 
   useEffect(() => {
     dispatch(fetchPins());
-
+  
     
   }, []);
 

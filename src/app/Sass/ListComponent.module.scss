@@ -4,11 +4,11 @@
         box-sizing: border-box;
 
   position: fixed;
-  top: -1em;
+  top: -4em;
   left: 50%;
   transform: translateX(-50%);
   width: 50%;
-  
+  transition: top 0.3s;
   background-color: rgba(255, 255, 255, 0.95);
   z-index: 1;
   border-radius: 0 0 0.5em 0.5em;
@@ -51,10 +51,20 @@
   }
 
   .content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: row;
+    @include flexCenter(row);
+    background-color: lightgray;
+    height: 4em;
+
+    
+  .listItem{
+    cursor: pointer;
+    background-color: white;
+    padding: 0.5em 1em;
+    margin: 0 0.5em;
+    border-radius: 0.4em;
+    color: $webBlue;
+    transition: color, background-color 0.3s ease;
+  }
     
     h1 {
       font-size: 1.5em;
