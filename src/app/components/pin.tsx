@@ -20,7 +20,10 @@ const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {cate
   };
 
   useEffect(() => {
-    if (!selectedList || !selectedList.id) return;
+    if (!selectedList || !selectedList.id) {
+      setallListPins([]); 
+      return;
+    }
 
     const db = getFirestore(app);
     const listDocRef = doc(db, 'users/alextran/lists', selectedList.id);
@@ -41,8 +44,7 @@ const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {cate
   }, [selectedList]);
 
   const pinInList = allListPins.includes(pinID);
-  const backgroundColor = category?.categoryColor + (pinInList ? 'FF' : '50'); // 'FF' for full opacity, '80' for semi-transparent
-
+  const backgroundColor = allListPins.length === 0 ? category?.categoryColor : category?.categoryColor + (pinInList ? 'FF' : '50'); // 'FF' for full opacity, '50' for semi-transparent
 
   console.log("I was rendered");
 
@@ -52,9 +54,8 @@ const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {cate
         position={{ lat, lng }} 
         ref={markerRef} 
         onClick={handleClick}
-        // Adjust opacity based on pin presence
       >
-        <Pin background={backgroundColor}  glyphColor={'#000'} borderColor={'#000'}  />
+        <Pin background={backgroundColor} glyphColor={'#000'} borderColor={'#000'} />
         {showInfoWindow && (
           <InfoWindow anchor={marker} className={styles.infoWindow}>
             <InfoWindowComponent

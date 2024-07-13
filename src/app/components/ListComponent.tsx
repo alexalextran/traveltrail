@@ -42,7 +42,7 @@ const handleListClick = (list: { id: string; listName: string; }) => {
     <>
     <main className={styles.main}  style={{ top: expand ? 0 : '-4em' }}>
       <div className={styles.content}>
-        
+        <div   className={styles.listItem}  onClick={() => handleListClick({id: '', listName: ''})}>All</div>
         {lists.map((list) => 
        <div 
          
