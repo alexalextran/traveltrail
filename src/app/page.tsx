@@ -6,11 +6,12 @@ import { selectEditModal } from './store/toggleModals/toggleModalSlice.ts';
 import LogIn from './components/LogIn';
 import SignUp from './components/SignUp';
 import styles from '../app/Sass/Auth.module.scss';
+import { useRequireAuth } from './hooks/useRequiredAuth.ts';
 
 const Page = () => {
   const toggleEdit = useSelector(selectEditModal);
   const [isLoggingIn, setIsLoggingIn] = useState(true); // Toggle between log in and sign up
-
+  const user = useRequireAuth();
   return (
     <main className={styles['main']} >
     <div className={styles['auth-container']}>

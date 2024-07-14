@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase'; // Ensure this path is correct
+import { useAuth } from '../context/authContext'; // Ensure this path is correct
 import styles from '../Sass/Auth.module.scss';
 
 const SignUp: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const dispatch = useDispatch();
+  const { signup } = useAuth();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,11 +15,11 @@ const SignUp: React.FC = () => {
       return;
     }
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      // Dispatch user sign-up action if needed
+      const userCredential = await signup(email, password);
       console.log('Signed up:', userCredential.user);
     } catch (error) {
       console.error('Error signing up:', error);
+      alert('Error signing up: ' + error.message);
     }
   };
 

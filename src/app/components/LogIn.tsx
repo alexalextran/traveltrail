@@ -1,29 +1,27 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase'; // Ensure this path is correct
 import styles from '../Sass/Auth.module.scss';
-
+import { useAuth } from '../context/authContext';
 const LogIn: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const dispatch = useDispatch();
-
-  const handleLogIn = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      // Dispatch user login action if needed
-      console.log('Logged in:', userCredential.user);
-    } catch (error) {
-      console.error('Error logging in:', error);
-    }
-  };
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const { login } = useAuth();
+  
+    const handleLogin = async (e) => {
+      e.preventDefault();
+      try {
+        console.log(email, password)
+        await login(email, password);
+      } catch (error) {
+        console.error('Error logging in:', error);
+      }
+    };
 
   return (
     <div className={styles['auth-form']}>
       <h2>Log In</h2>
-      <form onSubmit={handleLogIn}>
+      <form onSubmit={handleLogin}>
         <input
           type="email"
           value={email}
