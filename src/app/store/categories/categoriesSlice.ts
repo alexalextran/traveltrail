@@ -33,8 +33,8 @@ const initialState: CategoryState = {
 
 export const fetchCategories = createAsyncThunk(
   'categories/fetchCategories',
-  async () => {
-    const querySnapshot = await getDocs(collection(db, 'users/alextran/categories'));
+  async (userID: string) => {
+    const querySnapshot = await getDocs(collection(db, `users/${userID}/categories`));
     const categoriesArray: Category[] = [];
     querySnapshot.forEach((doc) => {
       const categoryData = doc.data() as Category;

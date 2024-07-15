@@ -4,15 +4,19 @@ import { useDispatch } from 'react-redux';
 import { createCategory } from '../../app/store/categories/categoriesSlice.ts';
 import { ColorPicker, useColor } from "react-color-palette";
 import { writeCategory } from '../firebaseFunctions/Categories.ts';
+import { useAuth } from '../context/authContext'; // Import the useAuth hook
 
 
 export default function AddCategoryModal({ setToggle }: any) {
   const dispatch = useDispatch();
   const [categoryToAdd, setcategoryToAdd] = useState('')
   const [color, setColor] = useColor("rgb(0,0,0)");
+  const { user } = useAuth(); // Use the useAuth hook
 
   const addCategory = async () => {
-  const uploadedCategory =  await writeCategory({
+  const uploadedCategory =  await writeCategory(
+    `users/${user.uid}/categories`,
+    {
       categoryName: categoryToAdd,
       categoryColor: color.hex
     });

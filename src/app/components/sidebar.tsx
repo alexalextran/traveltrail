@@ -14,6 +14,8 @@ import { HiOutlineArrowsExpand } from "react-icons/hi";
 import FullScreenComponent from '../components/FullScreen.tsx';
 import { selectFullScreen } from '../store/toggleModals/toggleModalSlice.ts';
 import { toggleFullScreen, toggleEditModal, toggleAddModal } from '../store/toggleModals/toggleModalSlice.ts';
+import { useAuth } from '../context/authContext'; // Import the useAuth hook
+
 function Sidebar() {
     const [toggle, setToggle] = useState(false)
     const [extend, setextend] = useState(false)
@@ -23,6 +25,7 @@ function Sidebar() {
     const [toggleunNvisted, settoggleunNvisted] = useState<null | Boolean>(null)
     const dispatch: AppDispatch = useDispatch(); // Use the typed version of useDispatch
     const FullScreen = useSelector(selectFullScreen);
+    const { user } = useAuth(); // Use the useAuth hook
 
 
 
@@ -34,7 +37,7 @@ function Sidebar() {
 
 
     useEffect(() => {
-        dispatch(fetchCategories())
+        dispatch(fetchCategories(user.uid))
      
     }, [selectedCategory, pins, dispatch])
     

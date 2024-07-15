@@ -18,7 +18,7 @@ function PinItem({ pin }: { pin: Pin }) {
     const category:Category = categories.filter(category => category.categoryName === pin.category)[0]
   return (
     <main className={styles.main} onClick={() => dispatch(setLocation({lat: pin.lat, lng: pin.lng}))}>
-        <h3 style={{color: `${category.categoryColor}`}}>{pin.title}</h3>
+        <h3 style={{color: `${category?.categoryColor}`}}>{pin.title}</h3>
        
         <div>
         <div>{pin.address}</div>

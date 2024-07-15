@@ -7,12 +7,12 @@ import { app } from "../firebase";
 const db = getFirestore(app);
 
 // Modify writeToFirestore to return the document ID
-export const writeCategory = async (data: {
+export const writeCategory = async (collectionName:string, data: {
   categoryName: string;
   categoryColor: string;
 }): Promise<Category> => {
   try {
-    const docRef = await addDoc(collection(db, `users/alextran/categories`), data);
+    const docRef = await addDoc(collection(db, collectionName), data);
     console.log("Document written with ID: ", docRef.id);
     return {
       CategoryID: docRef.id,
@@ -24,10 +24,10 @@ export const writeCategory = async (data: {
     throw new Error("Failed to write document");
   }
 };
-export const deleteCategoryAndRelatedPins = async (categoryName: string, categoryID: string): Promise<void> => {
+export const deleteCategoryAndRelatedPins = async (userID:string, categoryName: string, categoryID: string): Promise<void> => {
   try {
     // Step 1: Query for all pins related to the category
-    const pinsCollectionRef = collection(db, `users/alextran/pins`);
+    const pinsCollectionRef = collection(db, `users/${userID}/pins`);
     const q = query(pinsCollectionRef, where("category", "==", categoryName));
     const querySnapshot = await getDocs(q);
 
@@ -44,7 +44,7 @@ export const deleteCategoryAndRelatedPins = async (categoryName: string, categor
     }
 
     // Step 3: Delete the category itself
-    const categoryRef = doc(db, `users/alextran/categories`, categoryID);
+    const categoryRef = doc(db, `users/${userID}/categories`, categoryID);
     await deleteDoc(categoryRef);
     console.log(`Category deleted with ID: ${categoryID}`);
   } catch (error) {
