@@ -3,11 +3,11 @@ import { app } from "../firebase";
 
 const db = getFirestore(app);
 
-export const writeList = async (data: {
+export const writeList = async (collectionName:string, data: {
     listName: string;
 }): Promise<any> => {
     try {
-        const docRef = await addDoc(collection(db, `users/alextran/lists`), data);
+        const docRef = await addDoc(collection(db, collectionName), data);
         console.log("Document written with ID: ", docRef.id);
         return {
             listID: docRef.id,
@@ -19,9 +19,9 @@ export const writeList = async (data: {
     }
 };
 
-export const deleteList = async (listID: string): Promise<void> => {
+export const deleteList = async (collectionName:string, listID: string): Promise<void> => {
     try {
-        const listRef = doc(db, `users/alextran/lists`, listID);
+        const listRef = doc(db, collectionName, listID);
         await deleteDoc(listRef);
         console.log(`List deleted with ID: ${listID}`);
     } catch (error) {
@@ -30,9 +30,9 @@ export const deleteList = async (listID: string): Promise<void> => {
     }
 };
 
-export const addPinToList = async (listID: string, pinID: string): Promise<void> => {
+export const addPinToList = async (collectionName:string, listID: string, pinID: string): Promise<void> => {
     try {
-        const listRef = doc(db, `users/alextran/lists`, listID);
+        const listRef = doc(db, collectionName, listID);
         await updateDoc(listRef, {
             pins: arrayUnion(pinID)
         });
@@ -43,10 +43,10 @@ export const addPinToList = async (listID: string, pinID: string): Promise<void>
     }
 };
 
-export const removePinFromList = async (listID: string, pinID: string): Promise<void> => {
+export const removePinFromList = async (collectionName:string, listID: string, pinID: string): Promise<void> => {
     console.log(listID, pinID)
     try {
-        const listRef = doc(db, `users/alextran/lists`, listID);
+        const listRef = doc(db, collectionName, listID);
         await updateDoc(listRef, {
             pins: arrayRemove(pinID)
         });

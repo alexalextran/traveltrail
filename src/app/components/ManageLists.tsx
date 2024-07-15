@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { writeList } from '../firebaseFunctions/Lists'; // Ensure this path is correct
 import { app } from "../firebase"; // Ensure this path is correct
 import { getFirestore, collection, onSnapshot } from 'firebase/firestore';
+import { useAuth } from '../context/authContext'; // Import the useAuth hook
 
 function ManageLists() {
     const [listName, setListName] = useState('');
     const [lists, setLists] = useState<{ id: string; listName: string; }[]>([]);
     const db = getFirestore(app);
+    const { user } = useAuth(); // Use the useAuth hook
 
     useEffect(() => {
-        const listCollectionRef = collection(db, 'users/alextran/lists');
+        const listCollectionRef = collection(db, `users/${user.uid}/lists`);
         const unsubscribe = onSnapshot(listCollectionRef, (snapshot) => {
             const fetchedLists = snapshot.docs.map(doc => ({
                 id: doc.id,
@@ -31,7 +33,7 @@ function ManageLists() {
         if (!listName.trim()) return; // Prevent adding empty lists
 
         try {
-            const result = await writeList({ listName });
+            const result = await writeList(`users/${user.uid}/lists`,{ listName });
             console.log('List added:', result);
             setListName(''); // Reset the input field after successful addition
         } catch (error) {

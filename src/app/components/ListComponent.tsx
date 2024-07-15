@@ -9,16 +9,19 @@ import ListScreenComponent from './ListScreen.tsx';
 import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
 import { app } from "../firebase"; // Ensure this path is correct
 import { setSelectedListRedux } from '../store/List/listSlice';
+import { useAuth } from '../context/authContext'; // Import the useAuth hook
+
 export default function ListComponent() {
   const ListScreen = useSelector(selectListScreen);
   const dispatch = useDispatch();
   const [expand, setexpand] = useState(false)
   const [lists, setLists] = useState<{ id: string; listName: string; }[]>([]);
   const [selectedList, setselectedList] = useState({id: '', listName: ''});
+  const { user } = useAuth(); // Use the useAuth hook
 
   useEffect(() => {
     const db = getFirestore(app);
-    const listCollectionRef = collection(db, 'users/alextran/lists');
+    const listCollectionRef = collection(db, `users/${user.uid}/lists`);
     const unsubscribe = onSnapshot(listCollectionRef, (snapshot) => {
         const fetchedLists = snapshot.docs.map(doc => ({
             id: doc.id,

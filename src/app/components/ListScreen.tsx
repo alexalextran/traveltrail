@@ -20,10 +20,12 @@ import ListDnD from './ListDnd.tsx';
 import PinCard from './PinCard.tsx';
 import { useDrop } from 'react-dnd';
 import { removePinFromList } from '../firebaseFunctions/Lists'; // Function to add pin to list
+import { useAuth } from '../context/authContext'; // Import the useAuth hook
 
 
 function ListScreen() {
     const dropRef = useRef<HTMLDivElement>(null);
+    const { user } = useAuth(); // Use the useAuth hook
 
     const dispatch: AppDispatch = useDispatch(); // Use the typed version of useDispatch
     const pins = useSelector(selectPins);
@@ -34,7 +36,7 @@ function ListScreen() {
 
     useEffect(() => {
         const db = getFirestore(app);
-        const listCollectionRef = collection(db, 'users/alextran/lists');
+        const listCollectionRef = collection(db, `users/${user.uid}/lists`);
         const unsubscribe = onSnapshot(listCollectionRef, (snapshot) => {
             const fetchedLists = snapshot.docs.map(doc => ({
                 id: doc.id,
@@ -71,7 +73,7 @@ function ListScreen() {
         drop: (item: { id: string }) => {
           if (selectedList) {
 
-            removePinFromList(selectedList, item.id);
+            removePinFromList(`users/${user.uid}/lists`, selectedList, item.id);
           }
         },
         collect: (monitor) => ({

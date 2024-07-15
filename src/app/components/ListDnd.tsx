@@ -5,10 +5,13 @@ import { app } from "../firebase";
 import { addPinToList } from '../firebaseFunctions/Lists'; // Function to add pin to list
 import DnDPin from './DnDPin';
 import { Pin } from '../types/pinData';
+import { useAuth } from '../context/authContext'; // Import the useAuth hook
+
 const ListDnD = ({ listId }: { listId: string }) => {
   const [pinData, setPinData] = useState<Pin[]>([]);
   const dropRef = useRef<HTMLDivElement>(null);
   const db = getFirestore(app);
+  const { user } = useAuth(); // Use the useAuth hook
 
   useEffect(() => {
     if (!listId) {
@@ -16,13 +19,13 @@ const ListDnD = ({ listId }: { listId: string }) => {
       return; // Exit early if listId is null or undefined
     }
 
-    const listDocRef = doc(db, `users/alextran/lists/${listId}`);
+    const listDocRef = doc(db, `users/${user.uid}/lists/${listId}`);
     const unsubscribe = onSnapshot(listDocRef, (docSnapshot) => {
       if (docSnapshot.exists()) {
         const listData = docSnapshot.data();
         if (listData && listData.pins) {
           const promises = listData.pins.map(async (pinId: string) => {
-            const pinDocRef = doc(db, `users/alextran/pins/${pinId}`);
+            const pinDocRef = doc(db, `users/${user.uid}/pins/${pinId}`);
             const pinDocSnap = await getDoc(pinDocRef);
             if (pinDocSnap.exists()) {
             return { id: pinDocSnap.id, ...pinDocSnap.data() }
@@ -52,7 +55,7 @@ const ListDnD = ({ listId }: { listId: string }) => {
     accept: 'pin',
     drop: (item: { id: string }) => {
       if (listId) {
-        addPinToList(listId, item.id);
+        addPinToList(`users/${user.uid}/lists`, listId, item.id);
       }
     },
     collect: (monitor) => ({

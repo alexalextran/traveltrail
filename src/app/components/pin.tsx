@@ -8,6 +8,7 @@ import { Category } from "../types/categoryData";
 import { selectSelectedList } from "../store/List/listSlice"; 
 import { doc, getFirestore, onSnapshot } from "firebase/firestore";
 import { app } from "../firebase";
+import { useAuth } from '../context/authContext'; // Import the useAuth hook
 
 const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {category: Category, pin: any, lat: number, lng: number, pinID: string, userLocation: { lat: number; lng: number; } }) => {
   const [markerRef, marker] = useAdvancedMarkerRef();
@@ -15,6 +16,8 @@ const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {cate
   const [showInfoWindow, setShowInfoWindow] = useState(false);
   const selectedList = useSelector(selectSelectedList);
   const [allListPins, setallListPins] = useState<string[]>([]);
+  const { user } = useAuth(); // Use the useAuth hook
+
   const handleClick = () => {
     setShowInfoWindow(prevState => !prevState);
   };
@@ -26,7 +29,7 @@ const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {cate
     }
 
     const db = getFirestore(app);
-    const listDocRef = doc(db, 'users/alextran/lists', selectedList.id);
+    const listDocRef = doc(db, `users/${user.uid}/lists`, selectedList.id);
     const unsubscribe = onSnapshot(listDocRef, (snapshot) => {
       const fetchedList = snapshot.data();
       if (fetchedList && fetchedList.pins) {
