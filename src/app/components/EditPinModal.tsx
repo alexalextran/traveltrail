@@ -11,11 +11,13 @@ import { updateToFirestore } from '../firebaseFunctions/writeDocument.ts'; // Ad
 import { selectFullScreen } from '../store/toggleModals/toggleModalSlice.ts';
 import {toggleEditModal } from '../store/toggleModals/toggleModalSlice.ts';
 import Draggable from 'react-draggable';
+import { useAuth } from '../context/authContext'; // Import the useAuth hook
 
 function EditPinForm({}) {
   const selectedPin = useSelector(selectSelectedPin);
   const categories = useSelector(selectCategories);
   const FullScreen = useSelector(selectFullScreen);
+  const { user } = useAuth(); // Use the useAuth hook
 
 
   const [title, setTitle] = useState(selectedPin?.title );
@@ -57,7 +59,7 @@ function EditPinForm({}) {
   
 
     try {
-      await updateToFirestore(updatedPin); // Assuming this function returns a Promise
+      await updateToFirestore(`users/${user.uid}/pins`,updatedPin); // Assuming this function returns a Promise
       dispatch(updatePin(updatedPin));
     } catch (error) {
       console.error("Failed to update pin:", error);

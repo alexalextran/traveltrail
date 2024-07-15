@@ -11,6 +11,7 @@ import { MdPersonPinCircle } from "react-icons/md";
 import styles from '../Sass/page.module.scss';
 import { selectLocation } from '../store/location/locationSlice';
 import { selectCategories } from '../store/categories/categoriesSlice';
+import { useAuth } from '../context/authContext'; // Import the useAuth hook
 
 const MapComponent = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -18,6 +19,7 @@ const MapComponent = () => {
   const { location, error } = useGeolocation();
   const locationRedux = useSelector(selectLocation);
   const categories = useSelector(selectCategories);
+  const { user } = useAuth(); // Use the useAuth hook
 
 
   useEffect(() => {
@@ -28,7 +30,7 @@ const MapComponent = () => {
   }, [locationRedux.lat, locationRedux.lng]);
 
   useEffect(() => {
-    dispatch(fetchPins());
+    dispatch(fetchPins(user.uid));
   
     
   }, []);

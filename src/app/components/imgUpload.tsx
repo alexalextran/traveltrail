@@ -7,6 +7,7 @@ import { addImageReferenceToFirestore } from '../firebaseFunctions/writeDocument
 import { FaImages } from "react-icons/fa";
 import styles from '../Sass/pinItem.module.scss';
 import { RootState } from '../store/store';
+import { useAuth } from '../context/authContext'; // Import the useAuth hook
 
 function ImgUpload({pinID}: {pinID: string}) {
   const [images, setImages] = useState<string[]>([]);
@@ -14,6 +15,7 @@ function ImgUpload({pinID}: {pinID: string}) {
   const storage = getStorage(app);
   const fileInputRef = useRef<HTMLInputElement>(null!);
   const selectedPin = useSelector((state: RootState) => state.pins.pins.find(pin => pin.id === pinID));
+  const { user } = useAuth(); // Use the useAuth hook
 
   const handleClick = () => {
     fileInputRef.current.click();
@@ -29,7 +31,7 @@ function ImgUpload({pinID}: {pinID: string}) {
         await uploadBytes(storageRef, file);
         const url = await getDownloadURL(storageRef);
         newImageUrls.push(url);
-        await addImageReferenceToFirestore(pinID, url);
+        await addImageReferenceToFirestore(`users/${user.uid}/pins` , pinID, url);
       }
 
       if (selectedPin) {

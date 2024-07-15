@@ -22,8 +22,8 @@ const initialState: PinState = {
 
 export const fetchPins = createAsyncThunk(
   'pins/fetchPins',
-  async () => {
-    const querySnapshot = await getDocs(collection(db, 'users/alextran/pins'));
+  async (userID: string) => {
+    const querySnapshot = await getDocs(collection(db, `users/${userID}/pins`));
     const pinsArray: Pin[] = [];
     querySnapshot.forEach((doc) => {
       pinsArray.push({ id: doc.id, ...doc.data() } as Pin);

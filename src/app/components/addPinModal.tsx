@@ -7,6 +7,7 @@ import { writeToFirestore } from '../firebaseFunctions/writeDocument.ts';
 import { Category } from '../types/categoryData.ts';
 import { selectCategories } from '../store/categories/categoriesSlice';
 import styles from '../Sass/FullScreen.module.scss';
+import { useAuth } from '../context/authContext'; // Import the useAuth hook
 
 const Modal = () => {
   const placesLib = useMapsLibrary('places');
@@ -18,7 +19,8 @@ const Modal = () => {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<string>('Place');
   const dispatch = useDispatch();
-  
+  const { user } = useAuth(); // Use the useAuth hook
+
   const addressInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -52,7 +54,7 @@ const Modal = () => {
     };
 
     try {
-      const docId = await writeToFirestore('users/alextran/pins', newPin);
+      const docId = await writeToFirestore(`users/${user.uid}/pins`, newPin);
       const completePin: Pin = { ...newPin, id: docId };
       dispatch(addPin(completePin));
     } catch (error) {

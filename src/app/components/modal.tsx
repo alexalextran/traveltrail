@@ -12,6 +12,7 @@ import axios from 'axios';
 import { selectAddModal } from '../store/toggleModals/toggleModalSlice.ts';
 import {toggleAddModal } from '../store/toggleModals/toggleModalSlice.ts';
 import { selectFullScreen } from '../store/toggleModals/toggleModalSlice.ts';
+import { useAuth } from '../context/authContext'; // Import the useAuth hook
 
 const Modal = () => {
  
@@ -25,7 +26,8 @@ const Modal = () => {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<string>('Place');
   const dispatch = useDispatch();
-  
+  const { user } = useAuth(); // Use the useAuth hook
+
   const addressInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -66,7 +68,7 @@ const Modal = () => {
       imageUrls: [],
     };
 
-    writeToFirestore('users/alextran/pins', newPin)
+    writeToFirestore(`users/${user.uid}/pins`, newPin)
     .then((docId) => {
       const completePin: Pin = { ...newPin, id: docId };
       dispatch(addPin(completePin)); // Dispatch the action with the complete pin

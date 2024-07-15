@@ -5,12 +5,14 @@ import styles from "../Sass/modal.module.scss";
 import { removeImageReferenceFromFirestore } from '../firebaseFunctions/writeDocument';
 import { removeImageFromPin } from '../store/pins/pinsSlice';
 import Carousel from "react-multi-carousel";
+import { useAuth } from '../context/authContext'; // Import the useAuth hook
 
 export default function ImageModal() {
     const selectedPin = useSelector(selectSelectedPin);
     const [images, setImages] = useState<string[]>([]); // Initialize with an empty array
     const dispatch = useDispatch();
     const [imageFullscreen, setimageFullscreen] = useState(false)
+    const { user } = useAuth(); // Use the useAuth hook
 
 
     const responsiveConfig = {
@@ -44,7 +46,7 @@ export default function ImageModal() {
 
     const handleDeleteImage = async (imageUrl: string) => {
         try {
-            await removeImageReferenceFromFirestore(selectedPin.id, imageUrl);
+            await removeImageReferenceFromFirestore(`users/${user.uid}/pins`, selectedPin.id, imageUrl);
             dispatch(removeImageFromPin({ pinId: selectedPin.id, imageUrl }));
             // Optionally, update images state here as well to immediately reflect the change
             // This is useful if the redux store update does not cause the component to re-render

@@ -11,14 +11,16 @@ import "react-color-palette/css";
 import EditPinModal from '../components/EditPinModal.tsx';
 import ImageModal from '../components/imageModal.tsx';
 import { toggleEditModal } from '../store/toggleModals/toggleModalSlice.ts';
+import { useAuth } from '../context/authContext'; // Import the useAuth hook
 
 export default function IconBar({pin, color, setchild}: {pin: Pin, color: string, setchild?: any}) {
- 
+  const { user } = useAuth(); // Use the useAuth hook
+
 
 
     const dispatch  = useDispatch();
     const deletePin = () => {
-        deleteFromFirestore(`users/alextran/pins`, `${pin.id}`).then(() => {
+        deleteFromFirestore(`users/${user.uid}/pins`, `${pin.id}`).then(() => {
          dispatch(removePinById(pin.id));
         });
        }; 

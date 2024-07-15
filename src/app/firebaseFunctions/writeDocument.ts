@@ -24,7 +24,7 @@ export const writeToFirestore = async (collectionName: string, data: any): Promi
 export const deleteFromFirestore = async (collectionName: string, docId: string): Promise<void> => {
   try {
     // Create a reference to the document to delete
-    const docRef = doc(db, 'users/alextran/pins', docId);
+    const docRef = doc(db, collectionName, docId);
     // Delete the document
     await deleteDoc(docRef);
     console.log("Document deleted with ID: ", docId);
@@ -33,10 +33,10 @@ export const deleteFromFirestore = async (collectionName: string, docId: string)
   }
 };
 
-export const updateToFirestore = async (data: any): Promise<void> => {
+export const updateToFirestore = async (collectionName: string, data: any): Promise<void> => {
   try {
     // Create a reference to the document to update
-    const docRef = doc(db, 'users/alextran/pins', data.id);
+    const docRef = doc(db, collectionName, data.id);
     // Update the document
     await updateDoc(docRef, {
       title: data.title,
@@ -53,9 +53,9 @@ export const updateToFirestore = async (data: any): Promise<void> => {
   }
 };
 
-export const addImageReferenceToFirestore = async (docId: string, imageURL: string) => {
+export const addImageReferenceToFirestore = async (collectionName: string, docId: string, imageURL: string) => {
   try {
-    const docRef = doc(db, 'users/alextran/pins', docId);
+    const docRef = doc(db, collectionName, docId);
     await updateDoc(docRef, {
       imageUrls: arrayUnion(imageURL),  // Use arrayUnion to add the new URL to the array
     });
@@ -65,7 +65,8 @@ export const addImageReferenceToFirestore = async (docId: string, imageURL: stri
 };
 
 
-export const removeImageReferenceFromFirestore = async (docId: string, imageUrl: string): Promise<void> => {
+
+export const removeImageReferenceFromFirestore = async (collectionName: string, docId: string, imageUrl: string): Promise<void> => {
   try {
     const decodedUrl = decodeURIComponent(imageUrl);
     const url = new URL(decodedUrl);
@@ -73,15 +74,19 @@ export const removeImageReferenceFromFirestore = async (docId: string, imageUrl:
     const segments = pathname.split('/');
     const fileName = segments[6].replace(/%20/g, ' ');
 
+
+    console.log(fileName, url)
+
     const storagePath = `${segments[5]}/${fileName}`;
     const imageRef = ref(getStorage(app), storagePath);
     await deleteObject(imageRef);
 
-    const docRef = doc(db, 'users/alextran/pins', docId);
+    const docRef = doc(db, collectionName, docId);
 
     await updateDoc(docRef, {
       imageUrls: arrayRemove(imageUrl)
     });
+
 
     console.log("Image URL removed from document:", imageUrl);
   } catch (error) {
