@@ -63,7 +63,7 @@ export default function SocialMediaComponent() {
     };
 
     return (
-        <div className={styles.socialMediaContainer}>
+        <>
             <h2>Social Media</h2>
             <div className={styles.addFriendSection}>
                 <input
@@ -94,6 +94,6 @@ export default function SocialMediaComponent() {
                     ))}
                 </ul>
             </div>
-        </div>
+        </>
     );
 }
