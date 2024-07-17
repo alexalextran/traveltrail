@@ -12,6 +12,7 @@ export const writeList = async (collectionName:string, data: {
         return {
             listID: docRef.id,
             listName: data.listName,
+            visible: false,
         };
     } catch (error) {
         console.error("Error adding document: ", error);
@@ -54,5 +55,18 @@ export const removePinFromList = async (collectionName:string, listID: string, p
     } catch (error) {
         console.error("Error removing pin from list: ", error);
         throw new Error("Failed to remove pin from list");
+    }
+};
+
+export const updateListVisibility = async (collectionName: string, listID: string, visible: boolean): Promise<void> => {
+    try {
+        const listRef = doc(db, collectionName, listID);
+        await updateDoc(listRef, {
+            visible: visible
+        });
+        console.log(`List visibility updated with ID: ${listID}`);
+    } catch (error) {
+        console.error("Error updating list visibility: ", error);
+        throw new Error("Failed to update list visibility");
     }
 };
