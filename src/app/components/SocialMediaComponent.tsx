@@ -1,7 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../Sass/ProfileComponent.module.scss';
 import { useAuth } from '../context/authContext'; // Adjust the path as needed
-import { collection, getFirestore, onSnapshot, addDoc, updateDoc, doc, getDoc, query, where, getDocs, setDoc } from 'firebase/firestore';
+import {
+    collection,
+    getFirestore,
+    onSnapshot,
+    addDoc,
+    updateDoc,
+    doc,
+    getDoc,
+    query,
+    where,
+    getDocs,
+    setDoc,
+    writeBatch // Import writeBatch for Firestore batch operations
+} from 'firebase/firestore';
 import { app } from "../firebase"; // Ensure this path is correct
 
 export default function SocialMediaComponent() {
@@ -114,7 +127,6 @@ export default function SocialMediaComponent() {
     };
 
     const handleAddToProfile = async (friendId: string, listId: string) => {
-        console.log(`Adding list to profile: ${listId}`);
         const db = getFirestore(app);
         const friendListRef = doc(db, `users/${friendId}/lists/${listId}`);
         const friendListSnapshot = await getDoc(friendListRef);
@@ -127,24 +139,50 @@ export default function SocialMediaComponent() {
         const friendListData = friendListSnapshot.data();
         const pinIDs = friendListData?.pins || [];
 
+        const uniqueCategories = new Set<string>();
         const pins = [];
+
         for (const pinID of pinIDs) {
             const pinRef = doc(db, `users/${friendId}/pins/${pinID}`);
             const pinSnapshot = await getDoc(pinRef);
             if (pinSnapshot.exists()) {
                 const pinData = pinSnapshot.data();
-                // Add the pin data to the current user's pins collection
-                const userPinRef = doc(db, `users/${user.uid}/pins/${pinID}`);
-                await setDoc(userPinRef, pinData);
                 pins.push(pinID);
+
+                // Collect unique categories from each pin
+                if (pinData?.category) {
+                    uniqueCategories.add(pinData.category);
+                }
             }
         }
 
+        // Check if each category already exists before adding
+        const userCategoriesRef = collection(db, `users/${user.uid}/categories`);
+        const batch = writeBatch(db);
+
+        for (const category of uniqueCategories) {
+            const categoryQuery = query(userCategoriesRef, where("categoryName", "==", category));
+            const categorySnapshot = await getDocs(categoryQuery);
+            if (categorySnapshot.empty) {
+                const categoryRef = doc(userCategoriesRef);
+                batch.set(categoryRef, {
+                    categoryName: category,
+                    categoryColor: '#FFFFFF' // Default color in #FFFFFF format
+                });
+            } else {
+                console.log(`Category '${category}' already exists.`);
+            }
+        }
+
+        await batch.commit();
+
+        // Add the list to the user's profile
         const userListRef = collection(db, `users/${user.uid}/lists`);
         const newUserListRef = await addDoc(userListRef, {
             listName: friendListData.listName,
             visible: true,
-            pins
+            pins,
+            categories: Array.from(uniqueCategories) // Convert Set to Array
         });
 
         console.log(`List added to profile with ID: ${newUserListRef.id}`);
@@ -192,6 +230,7 @@ export default function SocialMediaComponent() {
                             }}>
                                 <select onChange={(e) => setListToBeAdded(e.target.value)}>
                                 <option >Pick an option</option>
+
                                     {publicLists
                                         .filter(list => list.friendId === friend.friendID)
                                         .map((list) => (
