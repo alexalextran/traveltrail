@@ -112,7 +112,16 @@ const Modal = () => {
 
 
 
-
+  const handleResetAllFields = () => {
+    setRating(0);
+    setDescription('');
+    setAddress('');
+    setTitle('');
+    setOpeningHours('');
+    setWebsite('');
+    setCategory('');
+    setVisited(false);
+  }
   const handleRating = (rate: number) => {
     setRating(rate);
   };
@@ -198,10 +207,12 @@ const Modal = () => {
           defaultPosition={{ x: window.innerWidth / 1.5, y: window.innerHeight / 6 }}
         >
           <div className={styles.modal}>
+            
             <div className="modal-handle" style={{ cursor: 'move' }}>
               <h1>Add Pin</h1>
               <p>Drag me here!</p>
             </div>
+            <button className={styles.close} onClick={() => dispatch(toggleAddModal(false))}>X</button>
             <form className={styles.form} onSubmit={handleSubmit}>
               <input
                 type="text"
@@ -249,7 +260,7 @@ const Modal = () => {
                 />
 
               <input
-                type="text"
+                type="url"
                 value={website}
                 onChange={(e) => setWebsite(e.target.value)}
                 placeholder="Related Website"
@@ -259,8 +270,12 @@ const Modal = () => {
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Description"
               />
-              <button type="submit">Add Pin</button>
+              <div className={styles.formButtons}>
+             <button className={styles.clearbutton} type="button" onClick={handleResetAllFields}>Clear All</button>
+             <button type="submit">Add Pin</button>
+             </div>
             </form>
+           
           </div>
         </Draggable>
         </div>}

@@ -7,6 +7,7 @@ $white: rgb(243,240,245);
 $blue: rgb(84,101,222);
 $orange: rgba(255,92,53, .7);
 $webBlue: rgb(0,123,255);
+$red: rgb(231, 53, 37);
 
 @mixin button {
   aspect-ratio: 7/2;
@@ -16,7 +17,22 @@ $webBlue: rgb(0,123,255);
   transition: background-color 0.3s ease;
 }
 
-   
+
+
+@mixin closeButtonCorner(){
+    cursor: pointer;
+    position: absolute ;
+    top: 0;
+    right: 0;
+    width: 2em ;
+    height: 2em ;
+    background-color: red;
+    border: none;
+    color: black ;
+    font-size: 1em ;
+    font-weight: 900 ;
+    border-radius: 0 1em 0 0 ;
+}
 
 
 @mixin flexCenter($direction){
