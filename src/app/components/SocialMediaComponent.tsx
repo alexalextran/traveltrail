@@ -180,7 +180,7 @@ export default function SocialMediaComponent() {
         const userListRef = collection(db, `users/${user.uid}/lists`);
         const newUserListRef = await addDoc(userListRef, {
             listName: friendListData.listName,
-            visible: true,
+            visible: false,
             pins,
             categories: Array.from(uniqueCategories) // Convert Set to Array
         });

@@ -1,5 +1,16 @@
 @import "variables&functions";
 
+.modalWrapper{
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: none;
+}
+
 .modal {
   position: absolute;
   z-index: 10;
@@ -12,6 +23,14 @@
   padding: 2em; // Inner spacing
   @include flexCenter(column);
   width: 30em;
+
+  & > :nth-child(1){
+    background-color: $webBlue;
+    text-align: center;
+    width: 100%;
+    padding: 0.4em;
+    color: white;
+  }
   
 
   form {
@@ -29,7 +48,7 @@
     select,
     textarea {
       background-color: #f5f5f5;
-      padding: 0.75rem;
+      padding: 0.50rem;
       border: 1px solid #ccc;
       border-radius: 8px; // Rounded edges
       font-size: 1rem;

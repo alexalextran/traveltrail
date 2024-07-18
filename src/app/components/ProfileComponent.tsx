@@ -1,24 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styles from '../Sass/ProfileComponent.module.scss';
-import SocialMediaComponent from './SocialMediaComponent.tsx';
-import AccountManagementComponent from './AccountManagementComponent.tsx';
+import SocialMediaComponent from './SocialMediaComponent';
+import AccountManagementComponent from './AccountManagementComponent';
 
 export default function ProfileComponent() {
-   const [toggleSocialMedia, settoggleSocialMedia] = useState(false)
-
-
-    
+    const [toggleSocialMedia, setToggleSocialMedia] = useState(false);
+    const [toggleModal, setToggleModal] = useState(false);
 
     return (
-        <div className={styles.profileContainer}>
-            <div className={styles.accountButtons}>
-            <button onClick={() => settoggleSocialMedia(true)}>Friends</button>
-            <button onClick={() => settoggleSocialMedia(false)}>Account</button>
-            </div>
-           {
-            toggleSocialMedia ? <SocialMediaComponent/> : <AccountManagementComponent/>
-           }
+        <>
+            {toggleModal ? (
+                <div className={styles.profileContainer}>
+                    <div className={styles.accountButtons}>
+                    <button onClick={() => setToggleModal(false)}>Close</button>
 
-        </div>
+                        <button onClick={() => setToggleSocialMedia(true)}>Friends</button>
+                        <button onClick={() => setToggleSocialMedia(false)}>Account</button>
+                    </div>
+                    {toggleSocialMedia ? <SocialMediaComponent /> : <AccountManagementComponent />}
+                </div>
+            ) : (
+                <button className={styles.profileButton} onClick={() => setToggleModal(true)}>SM</button>
+            )}
+        </>
     );
 }

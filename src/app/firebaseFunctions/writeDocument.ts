@@ -10,9 +10,9 @@ import { getFirestore, collection, doc, addDoc, deleteDoc, updateDoc, arrayUnion
 const db = getFirestore(app);
 
 // Modify writeToFirestore to return the document ID
-export const writeToFirestore = async (collectionName: string, data: any): Promise<string> => {
+export const writeToFirestore = async (userID: string, data: any): Promise<string> => {
   try {
-    const docRef = await addDoc(collection(db, collectionName), data);
+    const docRef = await addDoc(collection(db, `users/${userID}/pins`), data);
     console.log("Document written with ID: ", docRef.id);
     return docRef.id; // Return the document ID
   } catch (error) {

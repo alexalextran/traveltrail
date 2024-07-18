@@ -14,7 +14,6 @@ function PinItem({ pin }: { pin: Pin }) {
 
     const [show, setshow] = useState(false)
     const categories = useSelector(selectCategories);
-    console.log(categories)
 
     const category:Category = categories.filter(category => category.categoryName === pin.category)[0]
   return (
