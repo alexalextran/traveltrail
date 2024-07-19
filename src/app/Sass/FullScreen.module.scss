@@ -152,6 +152,13 @@
     .form {
         width: 30%;
         z-index: 10001;
+
+        & > :nth-child(2) {
+            margin: auto;
+           width: 90%;
+           margin-top: 1em;
+        }
+
         .formBar{
             width: 100%;    
             button {

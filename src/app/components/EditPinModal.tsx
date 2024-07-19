@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updatePin } from '../store/pins/pinsSlice';
-import { Pin } from '../types/pinData';
 import { selectSelectedPin } from '../store/pins/pinsSlice';
 import styles from "../Sass/modal.module.scss";
 import { Category } from '../types/categoryData';
@@ -71,7 +70,7 @@ function EditPinForm() {
       setWebsite(selectedPin.website || '');
       handleRating(rating)
     }
-  }, [selectedPin]);
+  }, [selectedPin, rating ]);
 
   useEffect(() => {
     if (placesLib && addressInputRef.current) {
