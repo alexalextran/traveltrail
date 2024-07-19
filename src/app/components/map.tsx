@@ -12,6 +12,7 @@ import styles from '../Sass/page.module.scss';
 import { selectLocation } from '../store/location/locationSlice';
 import { selectCategories } from '../store/categories/categoriesSlice';
 import { useAuth } from '../context/authContext'; // Import the useAuth hook
+import { ToastContainer } from 'react-toastify';
 
 const MapComponent = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -55,7 +56,7 @@ const MapComponent = () => {
 
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLEAPI_API_KEY ?? ''}>
-    
+    <ToastContainer />
       <Map
         onCameraChanged={handleCameraChange}
         {...cameraProps}

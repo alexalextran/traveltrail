@@ -40,7 +40,7 @@ const Page = () => {
     <>
     {showContent && (
     <DndProvider backend={HTML5Backend}>
-      <ToastContainer />
+      
       <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLEAPI_API_KEY ?? ''}>
       <Modal />
       <ListComponent />

@@ -15,24 +15,37 @@ import FullScreenComponent from '../components/FullScreen';
 import { selectFullScreen } from '../store/toggleModals/toggleModalSlice';
 import { toggleFullScreen, toggleEditModal, toggleAddModal } from '../store/toggleModals/toggleModalSlice';
 import { useAuth } from '../context/authContext';
+import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
+import { app } from "../firebase"; // Ensure this path is correct
 
 function Sidebar() {
     const [toggle, setToggle] = useState(false);
     const [extend, setExtend] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<null | string>(null);
     const pins = useSelector(selectPins);
-    const categories = useSelector(selectCategories);
     const [toggleUnvisited, setToggleUnvisited] = useState<null | boolean>(null);
     const dispatch: AppDispatch = useDispatch();
     const fullScreen = useSelector(selectFullScreen);
     const { user } = useAuth();
+    const [categories, setcategories] = useState<Category[]>([]);
 
     let filteredPins = selectedCategory ? pins.filter(pin => pin.category === selectedCategory) : pins;
     filteredPins = toggleUnvisited != null ? filteredPins.filter(pin => pin.visited === toggleUnvisited) : filteredPins;
 
     useEffect(() => {
-        dispatch(fetchCategories(user.uid));
-    }, [selectedCategory, pins, dispatch]);
+        const db = getFirestore(app);
+        const listCollectionRef = collection(db, `users/${user.uid}/categories`);
+        const unsubscribe = onSnapshot(listCollectionRef, (snapshot) => {
+            const fetchedCategories = snapshot.docs.map(doc => ({
+                CategoryID: doc.id,
+                categoryName: doc.data().categoryName,
+                categoryColor: doc.data().categoryColor // Fix the typo in the property name
+            }));
+            setcategories(fetchedCategories);
+        });
+    
+        return () => unsubscribe(); // Clean up the subscription
+    }, []);
 
     return (
         <>
@@ -53,9 +66,9 @@ function Sidebar() {
 
 
                     
-                    {categories.map((category: Category, index: number) => (
+                    {categories.map((category: Category) => (
                         <div
-                            key={index}
+                            key={category.CategoryID}
                             onClick={() => setSelectedCategory(category.categoryName)}
                             style={{
                                 backgroundColor: selectedCategory === category.categoryName ? 'rgb(0,123,255)' : undefined,

@@ -47,7 +47,7 @@ export default function FullScreen({pins, categories }: FullScreenProps) {
 
     return (
         <>
-                 <ToastContainer /> {/* Add this line */}
+                
 
         <main className={styles.main}>
             <div className={styles.header}>

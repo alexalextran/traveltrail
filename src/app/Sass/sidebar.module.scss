@@ -59,7 +59,7 @@
     overflow-x: hidden;
     text-align: center;
     overflow-y: scroll;
-    width: 30% !important;
+    width: 40% !important;
     height: 100%;
     border-right: 2px solid $webBlue; // Light grey border for separation
 
@@ -83,7 +83,7 @@
         cursor: pointer;
         background-color: #f0f0f0; // Light grey for a subtle look
         padding: 0.5em;
-        font-size: 1em;
+        font-size: 1.5em;
         color: #333; // Dark grey for text, enhancing readability
         transition: background-color 0.3s, color 0.3s; // Smooth transition for hover effect
         white-space: nowrap;
