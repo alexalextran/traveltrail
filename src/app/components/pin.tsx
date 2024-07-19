@@ -18,6 +18,7 @@ const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {cate
   const [allListPins, setallListPins] = useState<string[]>([]);
   const { user } = useAuth(); // Use the useAuth hook
 
+  console.log("I was rendered");
   const handleClick = () => {
     setShowInfoWindow(prevState => !prevState);
   };

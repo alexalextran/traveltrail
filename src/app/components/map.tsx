@@ -13,15 +13,17 @@ import { selectLocation } from '../store/location/locationSlice';
 import { selectCategories } from '../store/categories/categoriesSlice';
 import { useAuth } from '../context/authContext'; // Import the useAuth hook
 import { ToastContainer } from 'react-toastify';
+import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
+import { app } from "../firebase"; // Ensure this path is correct
+import { Category } from '../types/categoryData.ts';
 
 const MapComponent = () => {
   const dispatch = useDispatch<AppDispatch>();
   const pins = useSelector(selectPins);
   const { location, error } = useGeolocation();
   const locationRedux = useSelector(selectLocation);
-  const categories = useSelector(selectCategories);
   const { user } = useAuth(); // Use the useAuth hook
-
+  const [categories, setcategories] = useState<Category[]>([]);
 
   useEffect(() => {
     setCameraProps(prevCameraProps => ({
@@ -35,6 +37,21 @@ const MapComponent = () => {
   
     
   }, []);
+
+  useEffect(() => {
+    const db = getFirestore(app);
+    const listCollectionRef = collection(db, `users/${user.uid}/categories`);
+    const unsubscribe = onSnapshot(listCollectionRef, (snapshot) => {
+        const fetchedCategories = snapshot.docs.map(doc => ({
+            CategoryID: doc.id,
+            categoryName: doc.data().categoryName,
+            categoryColor: doc.data().categoryColor // Fix the typo in the property name
+        }));
+        setcategories(fetchedCategories);
+    });
+
+    return () => unsubscribe(); // Clean up the subscription
+}, []);
 
   const INITIAL_CAMERA = useMemo(() => ({
     center: { lat: location.lat, lng: location.lng },

@@ -15,10 +15,12 @@ import { selectFullScreen } from '../store/toggleModals/toggleModalSlice.ts';
 import { useAuth } from '../context/authContext'; // Import the useAuth hook
 import { Rating } from 'react-simple-star-rating';
 import { toast } from 'react-toastify';
+import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
+import { app } from "../firebase"; 
 
 const Modal = () => {
   const placesLib = useMapsLibrary('places');
-  const categories = useSelector(selectCategories);
+  const [categories, setcategories] = useState<Category[]>([]);
   const ShowAddModal = useSelector(selectAddModal);
   const ShowFullScreen = useSelector(selectFullScreen);
 
@@ -47,6 +49,21 @@ const Modal = () => {
       });
     }
   }, [placesLib, ShowAddModal]);
+
+  useEffect(() => {
+    const db = getFirestore(app);
+    const listCollectionRef = collection(db, `users/${user.uid}/categories`);
+    const unsubscribe = onSnapshot(listCollectionRef, (snapshot) => {
+        const fetchedCategories = snapshot.docs.map(doc => ({
+            CategoryID: doc.id,
+            categoryName: doc.data().categoryName,
+            categoryColor: doc.data().categoryColor // Fix the typo in the property name
+        }));
+        setcategories(fetchedCategories);
+    });
+
+    return () => unsubscribe(); // Clean up the subscription
+}, []);
 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
