@@ -19,10 +19,8 @@ function PinItem({ pin }: { pin: Pin }) {
   return (
     <main className={styles.main} onClick={() => dispatch(setLocation({lat: pin.lat, lng: pin.lng}))}>
         <h3 style={{color: `${category?.categoryColor}`}}>{pin.title}</h3>
-       
-        <div>
+       <p>Click me to center pin!</p>
         <div>{pin.address}</div>
-        </div>
 
 
 

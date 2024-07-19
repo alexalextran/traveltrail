@@ -55,9 +55,7 @@ const MapComponent = () => {
 
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLEAPI_API_KEY ?? ''}>
-      <button onClick={handleSetCameraToJapan} style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 1000 }}>
-        Go to Japan
-      </button>
+    
       <Map
         onCameraChanged={handleCameraChange}
         {...cameraProps}

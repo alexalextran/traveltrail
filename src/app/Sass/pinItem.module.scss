@@ -2,13 +2,23 @@
 
 .main{
     @include flexCustom(flex-start, center, column);
-    
+    cursor: pointer;
     h3{
         color: $webBlue;
         margin: 0.5em 0
     }
+    
+    p{
+      text-align: center;
+      margin-bottom: 1em;
+      font-style: italic;
+      color: #888888;
+      
+    }
 
-    &>:nth-child(2){
+
+
+    &>:nth-child(3){
         width: 100%;
         @include flexCustom(flex-start, center, row);
         div{

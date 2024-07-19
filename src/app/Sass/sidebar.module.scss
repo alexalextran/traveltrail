@@ -46,20 +46,52 @@
 
 }
 .categories {
-    width: 25% !important;
+    .addCategoryBtn{
+        background-color: black;
+        color: white;
+        text-align: center;
+        white-space: wrap;
+        &:hover{
+            background-color:white;
+            color: black;
+        }
+    }
+    overflow-x: hidden;
+    text-align: center;
+    overflow-y: scroll;
+    width: 30% !important;
     height: 100%;
     border-right: 2px solid $webBlue; // Light grey border for separation
+
+    /* Custom scrollbar styles */
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: $webBlue;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: white;
+        border-radius: 5px;
+    }
+
     div {
+        
+        border-top: 2px solid black; 
         cursor: pointer;
         background-color: #f0f0f0; // Light grey for a subtle look
-        padding: 0.8em;
-        font-size: 1.2em;
+        padding: 0.5em;
+        font-size: 1em;
         color: #333; // Dark grey for text, enhancing readability
         transition: background-color 0.3s, color 0.3s; // Smooth transition for hover effect
-
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         &:hover {
             background-color: $webBlue; // A pleasant blue for hover
-            color: #ffffff; // White text for contrast
+             // White text for contrast
         }
     }
 
