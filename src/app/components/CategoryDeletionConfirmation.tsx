@@ -46,7 +46,7 @@ export default function CategoryDeletionConfirmation({setcategoryDeleteModal, ca
                     dispatch(deleteCategoryAndRelatedPinsRedux(category))
                 })
                 
-                toast('Deleted Successfully!', {
+                toast.success('Category and all relavent pins Successfully!', {
                     position: "top-right",
                     autoClose: 5000,
                     hideProgressBar: false,
@@ -57,6 +57,7 @@ export default function CategoryDeletionConfirmation({setcategoryDeleteModal, ca
                     theme: "light",
                     });
                     setcategoryDeleteModal(false)
+                    
                 }}>Delete</button>   
             </span>
            

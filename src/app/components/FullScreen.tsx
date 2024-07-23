@@ -49,7 +49,7 @@ function FullScreen({ pins, categories }: FullScreenProps) {
         pin.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-
+    const filteredCategories = [...categories].sort((a, b) => a.categoryName.localeCompare(b.categoryName));
 
 
     return (
@@ -69,7 +69,7 @@ function FullScreen({ pins, categories }: FullScreenProps) {
                      <p>All</p>
                     </div>
 
-                        {categories.map((category: Category, index: number) => (
+                        {filteredCategories.map((category: Category, index: number) => (
                             <CategoryComponent key={index} category={category} setselectedCategory={setselectedCategory}/>
                         ))}
                     </div>
