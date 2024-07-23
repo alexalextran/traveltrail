@@ -32,6 +32,7 @@
 
     .iconBar{
         width: 100%;
+        
         @include flexCustom(space-around, center, row);
         background-color: $webBlue;
         svg{
