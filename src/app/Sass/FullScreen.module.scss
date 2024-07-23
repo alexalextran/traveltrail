@@ -49,11 +49,17 @@
     }
 
     .pins {
+        position: relative;
         width: 55%;
         overflow-y: scroll;
         height: 95vh;
+
+        &>:nth-child(2) {
+            margin-top: 4em;
+        }
         .pinContainer {
            
+
             height: 13em;
             position: relative;
            padding: 1em;
@@ -147,6 +153,38 @@
                 }
             }
         }
+        .searchQuery {
+           position: absolute;
+           top: 0;
+           z-index: 19;
+           width: 100%;
+           display: flex;
+           padding: 0.5em 1em;
+
+            input {
+                flex: 1;
+                padding: 0.5em;
+                font-size: 1em;
+                border: 1px solid #ccc;
+                border-radius: 0.2em;
+                margin-right: 0.5em;
+            }
+
+            button {
+                padding: 0.5em 1em;
+                font-size: 1em;
+                border: none;
+                background-color: #007bff;
+                color: white;
+                border-radius: 0.2em;
+                cursor: pointer;
+
+                &:hover {
+                    background-color: #0056b3;
+                }
+            }
+        }
+
     }
 
     .form {
