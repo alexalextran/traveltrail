@@ -20,7 +20,7 @@ const ListDnD = ({ listId }: { listId: string }) => {
     }
 
     const listDocRef = doc(db, `users/${user.uid}/lists/${listId}`);
-    const unsubscribe = onSnapshot(listDocRef, (docSnapshot) => {
+    const unsubscribe = onSnapshot(listDocRef, async (docSnapshot) => {
       if (docSnapshot.exists()) {
         const listData = docSnapshot.data();
         if (listData && listData.pins) {
@@ -28,18 +28,15 @@ const ListDnD = ({ listId }: { listId: string }) => {
             const pinDocRef = doc(db, `users/${user.uid}/pins/${pinId}`);
             const pinDocSnap = await getDoc(pinDocRef);
             if (pinDocSnap.exists()) {
-            return { id: pinDocSnap.id, ...pinDocSnap.data() }
-              
-             
+              return { id: pinDocSnap.id, ...pinDocSnap.data() } as Pin;
             }
             return null;
           });
 
-          Promise.all(promises).then((results) => {
-            setPinData(results);
-          });
-        }else{
-            setPinData([]);
+          const results = await Promise.all(promises);
+          setPinData(results.filter((pin) => pin !== null) as Pin[]);
+        } else {
+          setPinData([]);
         }
       } else {
         console.log('List document does not exist');
@@ -48,8 +45,7 @@ const ListDnD = ({ listId }: { listId: string }) => {
     });
 
     return () => unsubscribe(); // Clean up listener
-  }, [db, listId]);
-
+  }, [db, listId, user]);
 
   const [{ isOver }, drop] = useDrop({
     accept: 'pin',
@@ -65,16 +61,19 @@ const ListDnD = ({ listId }: { listId: string }) => {
 
   // Connect the drop ref to the drop target
   drop(dropRef);
-return (
+
+  console.log(pinData);
+
+  return (
     <div ref={dropRef} style={{ border: isOver ? '2px solid green' : '2px solid gray', padding: '20px', margin: '10px' }}>
-        Drop pins here to add to the list
-        <div>
-            {pinData.map((pin) => (
-                <DnDPin key={pin.id} pin={pin}/>
-            ))}
-        </div>
+      Drop pins here to add to the list
+      <div>
+        {pinData.map((pin) => (
+          <DnDPin key={pin.id} pin={pin} />
+        ))}
+      </div>
     </div>
-);
+  );
 };
 
 export default ListDnD;
