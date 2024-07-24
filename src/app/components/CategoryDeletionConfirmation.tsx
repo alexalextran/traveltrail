@@ -2,20 +2,18 @@ import React from 'react';
 import styles from '../Sass/DeletionConfirmationModal.module.scss';
 import { Category } from '../types/categoryData';
 import { selectPins } from '../store/pins/pinsSlice.ts';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {deleteCategoryAndRelatedPins} from '../firebaseFunctions/Categories.ts';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { deleteCategory } from '../store/categories/categoriesSlice.ts';
 import { deleteCategoryAndRelatedPinsRedux } from '../store/categories/categoriesSlice.ts';
-import { AppDispatch } from '../store/store.ts';
 import { useAuth } from '../context/authContext'; // Import the useAuth hook
 
 
 export default function CategoryDeletionConfirmation({setcategoryDeleteModal, category}: {setcategoryDeleteModal: any, category: Category}) {
     const pins = useSelector(selectPins);
     var filteredPins = pins.filter(pin => pin.category === category.categoryName);
-    const dispatch: AppDispatch = useDispatch(); // Use the typed version of useDispatch
     const { user } = useAuth(); // Use the useAuth hook
 
 
@@ -40,12 +38,10 @@ export default function CategoryDeletionConfirmation({setcategoryDeleteModal, ca
            
             <span className={styles.buttonSpan}>
               <button onClick={() => {setcategoryDeleteModal(false)}}>Cancel</button>
-            <button onClick={() => {
-                
-                deleteCategoryAndRelatedPins(user.uid, category.categoryName, category.CategoryID).then(()=>{
-                    dispatch(deleteCategoryAndRelatedPinsRedux(category))
-                })
-                
+            <button onClick={() => { 
+
+deleteCategoryAndRelatedPins(user.uid, category.categoryName, category.CategoryID)
+
                 toast.success('Category and all relavent pins Successfully!', {
                     position: "top-right",
                     autoClose: 5000,

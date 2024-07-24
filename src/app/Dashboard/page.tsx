@@ -13,12 +13,20 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useRequireAuth } from '../hooks/useRequiredAuth.ts';
 import ProfileComponent from '../components/ProfileComponent.tsx';
+import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
+import { app } from "../firebase"; // Ensure this path is correct
+import { Pin } from '../types/pinData.ts';
+import { useAuth } from '../context/authContext.js';
+
+
 
 const Page = () => {
   const toggleEdit = useSelector(selectEditModal);
-  const user = useRequireAuth();
+  const userRequire = useRequireAuth();
   const { loading } = useRequireAuth();
   const [showContent, setShowContent] = useState(false);
+  const [pins, setPins] = useState<Pin[]>([]);
+  const { user } = useAuth();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -27,6 +35,32 @@ const Page = () => {
 
     return () => clearTimeout(timer);
   }, []);
+
+  
+  useEffect(() => {
+    const db = getFirestore(app);
+    const listCollectionRef = collection(db, `users/${user?.uid}/pins`);
+    const unsubscribe = onSnapshot(listCollectionRef, (snapshot) => {
+        const fetchedPins: Pin[] = snapshot.docs.map(doc => ({
+            id: doc.id,
+            address: doc.data().address,
+            lat: doc.data().lat,
+            lng: doc.data().lng,
+            title: doc.data().title,
+            description: doc.data().description,
+            category: doc.data().category,
+            visited: doc.data().visited,
+            imageUrls: doc.data().imageUrls,
+            openingHours: doc.data().openingHours,
+            rating: doc.data().rating,
+            website: doc.data().website
+        }));
+        setPins(fetchedPins);
+    });
+
+    return () => unsubscribe(); // Clean up the subscription
+}, [user]);
+
 
   if (loading) {
     return <p>Loading...</p>;
@@ -45,7 +79,7 @@ const Page = () => {
       <Modal />
       <ListComponent />
       {toggleEdit && <EditPinModal/>}
-      <Sidebar />
+      <Sidebar pins={pins}/>
           <Map />
           <ProfileComponent />
       </APIProvider>

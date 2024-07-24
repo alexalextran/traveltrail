@@ -21,11 +21,13 @@ export default function IconBar({pin, color, setchild}: {pin: Pin, color: string
 
 
     const dispatch  = useDispatch();
-    const deletePin = () => {
-        deleteFromFirestore(`users/${user.uid}/pins`, `${pin.id}`).then(() => {
-         dispatch(removePinById(pin.id));
-        });
-       }; 
+    const deletePin = async () => {
+      try {
+        await deleteFromFirestore(`users/${user.uid}/pins`, `${pin.id}`);
+      } catch (error) {
+        console.error("Failed to delete pin:", error);
+      }
+    };
 
        const selectNewPin = (child:any) => {
         
@@ -44,7 +46,7 @@ export default function IconBar({pin, color, setchild}: {pin: Pin, color: string
   return (
       <div className={styles.iconBar} style={{backgroundColor: `${color}`}}>
       <RiEditFill onClick={() => {selectNewPin("edit") }}/>
-      <FaCameraRetro pinID={pin.id}/>
+      <ImgUpload pinID={pin.id}/>
       <FaImages onClick={() => {selectNewPin("image") }}/>
       <MdDeleteForever onClick={() => {deletePin()}}/>
     </div>

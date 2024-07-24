@@ -10,7 +10,7 @@ import { AppDispatch } from '../store/store.ts';
 
 
 function PinItem({ pin }: { pin: Pin }) {
-  const dispatch: AppDispatch = useDispatch(); // Use the typed version of useDispatch
+  const dispatch: AppDispatch = useDispatch(); 
 
     const [show, setshow] = useState(false)
     const categories = useSelector(selectCategories);

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { app } from "../firebase";
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { addImageReferenceToFirestore } from '../firebaseFunctions/writeDocument';
-import { FaImages } from "react-icons/fa";
+import { FaCameraRetro } from "react-icons/fa";
 import styles from '../Sass/pinItem.module.scss';
 import { RootState } from '../store/store';
 import { useAuth } from '../context/authContext'; // Import the useAuth hook
@@ -39,7 +39,6 @@ function ImgUpload({pinID}: {pinID: string}) {
           ...selectedPin,
           imageUrls: [...selectedPin.imageUrls, ...newImageUrls]
         };
-        dispatch(updatePin(updatedPin));
         dispatch(selectPin(updatedPin));
       }
 
@@ -57,7 +56,7 @@ function ImgUpload({pinID}: {pinID: string}) {
         className={styles.hiddenFileInput}
         multiple
       />
-      <FaImages onClick={handleClick} />
+      <FaCameraRetro onClick={handleClick} />
     </div>
   );
 }

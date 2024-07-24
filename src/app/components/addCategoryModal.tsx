@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import styles from '../Sass/addCategoryModal.module.scss'
-import { useDispatch } from 'react-redux';
 import { createCategory } from '../../app/store/categories/categoriesSlice.ts';
 import { ColorPicker, useColor } from "react-color-palette";
 import { writeCategory } from '../firebaseFunctions/Categories.ts';
@@ -9,7 +8,6 @@ import { toast } from 'react-toastify';
 
 
 export default function AddCategoryModal({ setToggle }: any) {
-  const dispatch = useDispatch();
   const [categoryToAdd, setcategoryToAdd] = useState('')
   const [color, setColor] = useColor("rgb(0,0,0)");
   const { user } = useAuth(); // Use the useAuth hook
@@ -26,11 +24,7 @@ export default function AddCategoryModal({ setToggle }: any) {
       }
     );
 
-    dispatch(
-      createCategory(
-        uploadedCategory
-      )
-    );
+   
 
     toast.success('Category added successfully!', {
       position: "top-right",

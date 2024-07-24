@@ -107,7 +107,6 @@ function EditPinForm() {
 
     try {
       await updateToFirestore(`users/${user.uid}/pins`, updatedPin);
-      dispatch(updatePin(updatedPin));
       dispatch(toggleEditModal(false))
 
       toast.success('Pin was updated sucessfully!', {

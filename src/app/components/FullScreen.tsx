@@ -10,9 +10,11 @@ import AddCategoryModal from './addCategoryModal.tsx';
 import { toggleEditModal, toggleFullScreen } from '../store/toggleModals/toggleModalSlice.ts';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store.ts'; // Import the AppDispatch type
-import { MdDeleteForever } from "react-icons/md";
 import CategoryComponent from '../components/CategoryComponent.tsx';
-import { ToastContainer, toast } from 'react-toastify';
+import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
+import { app } from "../firebase"
+import { useAuth } from '../context/authContext';
+
 
 interface FullScreenProps {
     pins: Pin[];
@@ -40,6 +42,7 @@ function FullScreen({ pins, categories }: FullScreenProps) {
             items: 1
         }
     };
+    const { user } = useAuth();
     const [child, setchild] = useState(<Modal />);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setselectedCategory] = useState(null as null | Category);

@@ -104,7 +104,6 @@ const Modal = () => {
     writeToFirestore( user.uid, newPin)
       .then((docId) => {
         const completePin: Pin = { ...newPin, id: docId };
-        dispatch(addPin(completePin));
         toast.success('Pin added successfully!', {
           position: "top-right",
           autoClose: 5000,

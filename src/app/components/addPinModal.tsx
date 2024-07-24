@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { addPin } from '../../app/store/pins/pinsSlice.ts';
 import { Pin } from '../../app/types/pinData.ts';
 import { APIProvider, useMapsLibrary } from '@vis.gl/react-google-maps';
@@ -18,7 +18,6 @@ const Modal = () => {
   const [address, setAddress] = useState<string>('');
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<string>('Place');
-  const dispatch = useDispatch();
   const { user } = useAuth(); // Use the useAuth hook
 
   const addressInputRef = useRef<HTMLInputElement | null>(null);
@@ -56,7 +55,6 @@ const Modal = () => {
     try {
       const docId = await writeToFirestore(`users/${user.uid}/pins`, newPin);
       const completePin: Pin = { ...newPin, id: docId };
-      dispatch(addPin(completePin));
     } catch (error) {
       console.error('Error writing document: ', error);
     }

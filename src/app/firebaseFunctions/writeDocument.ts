@@ -1,6 +1,6 @@
 import { deleteObject, getStorage, ref } from "firebase/storage";
 import { app } from "../firebase";
-import { getFirestore, collection, doc, addDoc, deleteDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+import { getFirestore, collection, doc, addDoc, deleteDoc, updateDoc, arrayUnion, arrayRemove, getDoc } from "firebase/firestore";
 
 // firebaseOperations.ts
 
@@ -23,15 +23,28 @@ export const writeToFirestore = async (userID: string, data: any): Promise<strin
 
 export const deleteFromFirestore = async (collectionName: string, docId: string): Promise<void> => {
   try {
-    // Create a reference to the document to delete
     const docRef = doc(db, collectionName, docId);
-    // Delete the document
-    await deleteDoc(docRef);
-    console.log("Document deleted with ID: ", docId);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      const imageUrls = data.imageUrls || [];
+      
+      // Delete images from storage
+      await deleteImagesFromStorage(imageUrls);
+
+      // Delete the document from Firestore
+      await deleteDoc(docRef);
+      console.log("Document and images deleted with ID: ", docId);
+    } else {
+      console.error("No such document with ID: ", docId);
+    }
   } catch (error) {
-    console.error("Error deleting document: ", error);
+    console.error("Error deleting document and images: ", error);
+    throw new Error("Failed to delete document and images");
   }
 };
+
 
 export const updateToFirestore = async (collectionName: string, data: any): Promise<void> => {
   try {
@@ -75,8 +88,7 @@ export const removeImageReferenceFromFirestore = async (collectionName: string, 
     const fileName = segments[6].replace(/%20/g, ' ');
 
 
-    console.log(fileName, url)
-
+    
     const storagePath = `${segments[5]}/${fileName}`;
     const imageRef = ref(getStorage(app), storagePath);
     await deleteObject(imageRef);
@@ -93,4 +105,24 @@ export const removeImageReferenceFromFirestore = async (collectionName: string, 
     console.error("Error removing image reference from document:", error);
     throw new Error("Failed to remove image reference");
   }
+};
+
+
+
+const deleteImagesFromStorage = async (imageUrls: string[]) => {
+  const storage = getStorage(app);
+  const deletePromises = imageUrls.map(async (imageUrl) => {
+    const decodedUrl = decodeURIComponent(imageUrl);
+    const url = new URL(decodedUrl);
+    const pathname = url.pathname;
+    const segments = pathname.split('/');
+    const fileName = segments[6].replace(/%20/g, ' ');
+
+    const storagePath = `${segments[5]}/${fileName}`;
+    console.log(storagePath)
+    const imageRef = ref(storage, storagePath);
+    await deleteObject(imageRef);
+  });
+
+  await Promise.all(deletePromises);
 };

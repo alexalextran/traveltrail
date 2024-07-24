@@ -16,11 +16,10 @@ import { useAuth } from '../context/authContext';
 import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
 import { app } from "../firebase"; // Ensure this path is correct
 
-function Sidebar() {
+function Sidebar({pins}: {pins: Pin[]}) {
     const [toggle, setToggle] = useState(false);
     const [extend, setExtend] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<null | string>(null);
-    const pins = useSelector(selectPins);
     const [toggleUnvisited, setToggleUnvisited] = useState<null | boolean>(null);
     const dispatch: AppDispatch = useDispatch();
     const fullScreen = useSelector(selectFullScreen);
