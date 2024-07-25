@@ -28,7 +28,7 @@ function ListScreen() {
     const { user } = useAuth(); // Use the useAuth hook
 
     const dispatch: AppDispatch = useDispatch(); // Use the typed version of useDispatch
-    const pins = useSelector(selectPins);
+    const [pins, setPins] = useState<Pin[]>([]);
     const [lists, setLists] = useState<{ id: string; listName: string; }[]>([]);
     const [child, setchild] = useState(<ManageLists/>);
     const [selectedList, setSelectedList] = useState<string>(''); // Add this line
@@ -48,6 +48,30 @@ function ListScreen() {
 
         return () => unsubscribe(); // Clean up the subscription
     }, [selectedList]);
+
+    useEffect(() => {
+        const db = getFirestore(app);
+        const listCollectionRef = collection(db, `users/${user?.uid}/pins`);
+        const unsubscribe = onSnapshot(listCollectionRef, (snapshot) => {
+            const fetchedPins: Pin[] = snapshot.docs.map(doc => ({
+                id: doc.id,
+                address: doc.data().address,
+                lat: doc.data().lat,
+                lng: doc.data().lng,
+                title: doc.data().title,
+                description: doc.data().description,
+                category: doc.data().category,
+                visited: doc.data().visited,
+                imageUrls: doc.data().imageUrls,
+                openingHours: doc.data().openingHours,
+                rating: doc.data().rating,
+                website: doc.data().website
+            }));
+            setPins(fetchedPins);
+        });
+    
+        return () => unsubscribe(); // Clean up the subscription
+    }, []);
 
 
     useEffect(() => {

@@ -7,7 +7,7 @@ import styles from '../Sass/ListComponent.module.scss';
 import { MdDeleteForever } from 'react-icons/md';
 import { deleteList } from '../firebaseFunctions/Lists';
 import { list } from 'firebase/storage';
-
+import { toast } from 'react-toastify';
 function ManageLists() {
     const [listName, setListName] = useState('');
     const [lists, setLists] = useState<{ id: string; listName: string; }[]>([]);
@@ -38,16 +38,60 @@ function ManageLists() {
 
         try {
             const result = await writeList(`users/${user.uid}/lists`,{ listName });
-            console.log('List added:', result);
+            console.log(result);
             setListName(''); // Reset the input field after successful addition
+            toast.success('List was addeded sucessfully', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+              });
         } catch (error) {
-            console.error('Error adding list:', error);
+            console.log(error)
+            toast.error('Something went wrong', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+              });
         }
     };
 
 
     const callDeleteList =  async (listId: string) => {
-        await deleteList(`users/${user.uid}/lists` ,listId);
+        try {
+            await deleteList(`users/${user.uid}/lists`, listId);
+            toast.success('List was deleted sucessfully', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        } catch (error) {
+            console.log(error);
+            toast.error('Something went wrong', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
     }
 
    return (
@@ -60,6 +104,7 @@ function ManageLists() {
                         onChange={handleInputChange}
                         placeholder="Enter list name"
                         className={styles.input}
+                        required
                     />
                     <button type="submit" className={styles.button}>Add List</button>
                 </form>

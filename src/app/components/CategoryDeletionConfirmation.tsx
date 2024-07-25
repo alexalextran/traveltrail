@@ -23,22 +23,22 @@ export default function CategoryDeletionConfirmation({setcategoryDeleteModal, ca
         
         <>
         <span className={styles.modal}>
-            <div className={styles.mainModal}>
+            <span className={styles.mainModal}>
             <h4>Are you sure you want to delete this category?</h4>
             <p>Deleting <span style={{color: `${category.categoryColor}`}}>{category.categoryName}</span> will result in the following pins being deleted</p>
-            <div className={styles.pinsDeleting}>
+            <span className={styles.pinsDeleting}>
                  {
                 filteredPins.map((pin, index) => (
                     <p key={index}>{pin.title}</p>
                 ))
             }
-            </div>
+            </span>
            
             <span className={styles.buttonSpan}>
               <button onClick={() => {setcategoryDeleteModal(false)}}>Cancel</button>
             <button onClick={() => { 
 
-deleteCategoryAndRelatedPins(user.uid, category.categoryName, category.CategoryID)
+            deleteCategoryAndRelatedPins(user.uid, category.categoryName, category.CategoryID)
 
                 toast.success('Category and all relavent pins Successfully!', {
                     position: "top-right",
@@ -55,7 +55,7 @@ deleteCategoryAndRelatedPins(user.uid, category.categoryName, category.CategoryI
                 }}>Delete</button>   
             </span>
            
-            </div>
+            </span>
         </span>
         
 

@@ -6,7 +6,6 @@ import { addPinToList } from '../firebaseFunctions/Lists'; // Function to add pi
 import DnDPin from './DnDPin';
 import { Pin } from '../types/pinData';
 import { useAuth } from '../context/authContext'; // Import the useAuth hook
-import styles from '../Sass/ListComponent.module.scss';
 
 
 const ListDnD = ({ listId }: { listId: string }) => {
@@ -64,11 +63,10 @@ const ListDnD = ({ listId }: { listId: string }) => {
   // Connect the drop ref to the drop target
   drop(dropRef);
 
-  console.log(pinData);
 
   return (
     <div ref={dropRef} style={{ border: isOver ? '2px solid green' : '2px solid gray', padding: '20px', margin: '10px' }}>
-      Drop pins here to add to the list
+      <p>Drag and drop pins here to add and remove to the list</p>
       <div>
         {pinData.map((pin) => (
           <DnDPin key={pin.id} pin={pin} />

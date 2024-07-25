@@ -1,6 +1,6 @@
 import { deleteObject, getStorage, ref } from "firebase/storage";
 import { app } from "../firebase";
-import { getFirestore, collection, doc, addDoc, deleteDoc, updateDoc, arrayUnion, arrayRemove, getDoc } from "firebase/firestore";
+import { getFirestore, collection, doc, addDoc, deleteDoc, updateDoc, arrayUnion, arrayRemove, getDoc, getDocs, where, query } from "firebase/firestore";
 
 // firebaseOperations.ts
 
@@ -29,9 +29,21 @@ export const deleteFromFirestore = async (collectionName: string, docId: string)
     if (docSnap.exists()) {
       const data = docSnap.data();
       const imageUrls = data.imageUrls || [];
-      
+
       // Delete images from storage
       await deleteImagesFromStorage(imageUrls);
+
+      // Find and update all lists containing this pin
+      const userListsRef = collection(db, `users/${data.userID}/lists`);
+      const listsQuery = query(userListsRef, where("pins", "array-contains", docId));
+      const listsSnapshot = await getDocs(listsQuery);
+
+      listsSnapshot.forEach(async (listDoc) => {
+        await updateDoc(listDoc.ref, {
+          pins: arrayRemove(docId)
+        });
+        console.log(`Pin removed from list: ${listDoc.id}`);
+      });
 
       // Delete the document from Firestore
       await deleteDoc(docRef);
