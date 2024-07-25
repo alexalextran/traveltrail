@@ -2,11 +2,11 @@
 
 .modal {
     @include absolutefill;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.6) !important;
     z-index: 9999999;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: center !important;
+    align-items: center !important;
 
     .mainModal {
         @include absolutecenter;

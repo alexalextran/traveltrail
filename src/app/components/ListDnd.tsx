@@ -6,6 +6,8 @@ import { addPinToList } from '../firebaseFunctions/Lists'; // Function to add pi
 import DnDPin from './DnDPin';
 import { Pin } from '../types/pinData';
 import { useAuth } from '../context/authContext'; // Import the useAuth hook
+import styles from '../Sass/ListComponent.module.scss';
+
 
 const ListDnD = ({ listId }: { listId: string }) => {
   const [pinData, setPinData] = useState<Pin[]>([]);

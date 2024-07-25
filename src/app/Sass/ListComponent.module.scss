@@ -51,6 +51,7 @@
   }
 
   .content {
+    overflow-y: hidden;
     @include flexCenter(row);
     background-color: lightgray;
     height: 4em;
@@ -73,3 +74,91 @@
     }
   }
 }
+
+
+
+
+
+  .Listcontent {
+    margin-top: 0.1vw;
+    height: 90vh;
+    overflow-y: scroll;
+      background-color: lightgray;
+      padding-top: 1vw;
+      padding-bottom: 1em;
+
+      form {
+        width: 100%;
+        padding: 1em;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5em;
+      }
+
+      .input {
+        width: 70%;
+          padding: 0.5em;
+          border-radius: 0.25em;
+          border: 1px solid #ccc;
+      }
+
+      .button {
+          padding: 0.5em 1em;
+          border: none;
+          border-radius: 0.25em;
+          background-color: $webBlue;
+          color: white;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+
+          &:hover {
+              background-color: darken($webBlue, 10%);
+          }
+      }
+
+      .lists {
+          display: flex;
+          margin-top: 1em;
+          @include flexCenter(column);
+          width: 100%;
+      }
+
+      .listItem {
+        background-color: $webBlue;
+        padding: 0.4em;
+        font-size: 1.4em;
+        font-weight: 300;
+        color: white;
+        @include flexCenter(row);
+        width: 100%;
+
+        &:nth-child(even) {
+          background-color: $webBlueAlt;
+        }
+      
+        p{
+            width: 80%;
+            text-align: center;
+        }
+        
+            svg{
+                cursor: pointer;
+                width: 1em;
+                height: 1em;
+            
+            }
+
+          &:hover {
+              background-color: lighten($webBlue, 40%);
+              color: darken($webBlue, 20%);
+          }
+      }
+
+      h1 {
+          font-size: 1.5em;
+          color: $webBlue;
+          margin: 0;
+      }
+  }
+

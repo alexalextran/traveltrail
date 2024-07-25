@@ -6,28 +6,12 @@
     z-index: 100;
 
     .header{
-        background-color: black;
-        color: white;
-        text-align: center;
-        height: 5vh;
+       @include header;
     }
 
     .exitButton{
         @include exitButton;
-        text-align: center;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-        position: absolute;
-        top: 0;
-        right: 0;
-        background-color: red;
-        border: none;
-        color: black;
-        font-size: 1.5em;
-        font-weight: 1000;
-        height: 5VH
+      
     }
 
     .content{

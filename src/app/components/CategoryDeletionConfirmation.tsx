@@ -6,8 +6,6 @@ import { useSelector } from 'react-redux';
 import {deleteCategoryAndRelatedPins} from '../firebaseFunctions/Categories.ts';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { deleteCategory } from '../store/categories/categoriesSlice.ts';
-import { deleteCategoryAndRelatedPinsRedux } from '../store/categories/categoriesSlice.ts';
 import { useAuth } from '../context/authContext'; // Import the useAuth hook
 
 
@@ -24,7 +22,7 @@ export default function CategoryDeletionConfirmation({setcategoryDeleteModal, ca
     return (
         
         <>
-        <div className={styles.modal}>
+        <span className={styles.modal}>
             <div className={styles.mainModal}>
             <h4>Are you sure you want to delete this category?</h4>
             <p>Deleting <span style={{color: `${category.categoryColor}`}}>{category.categoryName}</span> will result in the following pins being deleted</p>
@@ -58,7 +56,7 @@ deleteCategoryAndRelatedPins(user.uid, category.categoryName, category.CategoryI
             </span>
            
             </div>
-        </div>
+        </span>
         
 
         </>

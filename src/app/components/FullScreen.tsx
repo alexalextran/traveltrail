@@ -67,7 +67,6 @@ function FullScreen({ pins, categories }: FullScreenProps) {
                 </div>
                 <div className={styles.content}>
                     <div className={styles.categories}>
-
                     <div className={styles.category} onClick={() => setselectedCategory(null)}>
                      <p>All</p>
                     </div>

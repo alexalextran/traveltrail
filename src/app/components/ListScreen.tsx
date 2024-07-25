@@ -29,10 +29,11 @@ function ListScreen() {
 
     const dispatch: AppDispatch = useDispatch(); // Use the typed version of useDispatch
     const pins = useSelector(selectPins);
-    const categories = useSelector(selectCategories);
     const [lists, setLists] = useState<{ id: string; listName: string; }[]>([]);
     const [child, setchild] = useState(<ManageLists/>);
     const [selectedList, setSelectedList] = useState<string>(''); // Add this line
+    const [categories, setcategories] = useState<Category[]>([]);
+
 
     useEffect(() => {
         const db = getFirestore(app);
@@ -47,6 +48,22 @@ function ListScreen() {
 
         return () => unsubscribe(); // Clean up the subscription
     }, [selectedList]);
+
+
+    useEffect(() => {
+        const db = getFirestore(app);
+        const listCollectionRef = collection(db, `users/${user.uid}/categories`);
+        const unsubscribe = onSnapshot(listCollectionRef, (snapshot) => {
+            const fetchedCategories = snapshot.docs.map(doc => ({
+                CategoryID: doc.id,
+                categoryName: doc.data().categoryName,
+                categoryColor: doc.data().categoryColor // Fix the typo in the property name
+            }));
+            setcategories(fetchedCategories);
+        });
+    
+        return () => unsubscribe(); // Clean up the subscription
+    }, []);
 
     const responsiveConfig = {
         superLargeDesktop: {
@@ -81,6 +98,18 @@ function ListScreen() {
         }),
       });
       drop(dropRef);
+
+      const [searchQuery, setSearchQuery] = useState('');
+      const [selectedCategory, setselectedCategory] = useState(null as null | Category);
+
+      var filteredPins = selectedCategory ? pins.filter(pin => pin.category === selectedCategory.categoryName) : pins;
+      filteredPins = filteredPins.filter(pin =>
+          pin.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+  
+      const filteredCategories = [...categories].sort((a, b) => a.categoryName.localeCompare(b.categoryName));
+
+
     return (
         <>
             <main className={styles.main}>
@@ -93,12 +122,25 @@ function ListScreen() {
                 </div>
                 <div className={styles.content}>
                     <div className={styles.categories}>
-                        {categories.map((category: Category, index: number) => (
-                            <CategoryComponent key={index} category={category} />
+                    <div className={styles.category} onClick={() => setselectedCategory(null)}>
+                     <p>All</p>
+                    </div>
+
+                        {filteredCategories.map((category: Category, index: number) => (
+                            <CategoryComponent key={index} category={category} setselectedCategory={setselectedCategory}/>
                         ))}
                     </div>
                     <div className={styles.pins} ref={dropRef} >
-                        {pins.map((pin: Pin, index: number) => {
+                    <div className={styles.searchQuery}>
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="Search by title"
+                            />
+                            <button onClick={() => setSearchQuery('')}>Clear</button>
+                        </div>
+                        {filteredPins.map((pin: Pin, index: number) => {
                             const pinCategory = categories.find(category => category.categoryName === pin.category);
                             const categoryColor = pinCategory ? pinCategory.categoryColor : 'black';
                             return (

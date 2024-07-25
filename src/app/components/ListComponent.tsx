@@ -10,6 +10,7 @@ import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
 import { app } from "../firebase"; // Ensure this path is correct
 import { setSelectedListRedux } from '../store/List/listSlice';
 import { useAuth } from '../context/authContext'; // Import the useAuth hook
+import { MdDeleteForever } from 'react-icons/md';
 
 export default function ListComponent() {
   const ListScreen = useSelector(selectListScreen);

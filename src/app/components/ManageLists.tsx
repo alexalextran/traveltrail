@@ -3,6 +3,10 @@ import { writeList } from '../firebaseFunctions/Lists'; // Ensure this path is c
 import { app } from "../firebase"; // Ensure this path is correct
 import { getFirestore, collection, onSnapshot } from 'firebase/firestore';
 import { useAuth } from '../context/authContext'; // Import the useAuth hook
+import styles from '../Sass/ListComponent.module.scss';
+import { MdDeleteForever } from 'react-icons/md';
+import { deleteList } from '../firebaseFunctions/Lists';
+import { list } from 'firebase/storage';
 
 function ManageLists() {
     const [listName, setListName] = useState('');
@@ -41,24 +45,35 @@ function ManageLists() {
         }
     };
 
-    return (
-        <main>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    value={listName}
-                    onChange={handleInputChange}
-                    placeholder="Enter list name"
-                />
-                <button type="submit">Add List</button>
-            </form>
-            <div>
-                {lists.map(list => (
-                    <div key={list.id}>{list.listName}</div> // Ensure your documents have a 'title' field
-                ))}
+
+    const callDeleteList =  async (listId: string) => {
+        await deleteList(`users/${user.uid}/lists` ,listId);
+    }
+
+   return (
+         
+            <div className={styles.Listcontent}>
+                <form onSubmit={handleSubmit}>
+                    <input
+                        type="text"
+                        value={listName}
+                        onChange={handleInputChange}
+                        placeholder="Enter list name"
+                        className={styles.input}
+                    />
+                    <button type="submit" className={styles.button}>Add List</button>
+                </form>
+                <div className={styles.lists}>
+                    {lists.map(list => (
+                        <div key={list.id} className={styles.listItem}>
+                             <MdDeleteForever onClick={() => callDeleteList(list.id)}/>
+                            <p>{list.listName}</p>
+                        </div>
+                    ))}
+                </div>
             </div>
-        </main>
     );
 }
+
 
 export default ManageLists;
