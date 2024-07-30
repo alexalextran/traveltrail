@@ -204,10 +204,16 @@
       width: 100vw; 
       height: 100vh; 
       background-color: rgba(0, 0, 0, 0.8); 
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      @include flexCenter(column);
       z-index: 1050;
+
+      button{
+        @include button;
+        z-index: 1051;
+        color: red;
+        font-size: 1.6em;
+        padding: 0.4em;
+      }
     
       .FSmodal {
         width: 90vw;

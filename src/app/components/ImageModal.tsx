@@ -76,6 +76,7 @@ export default function ImageModal() {
 
         {imageFullscreen && 
         <div className={styles.imageModalFullScreen}>
+          <button onClick={() => {setimageFullscreen(false)}}>Exit FullScreen</button>
            <div className={styles.FSmodal}>
         <Carousel 
         responsive={responsiveConfig} 
