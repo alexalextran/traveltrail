@@ -1,3 +1,5 @@
+@import "variables&functions";
+
 .profileContainer {
     position: fixed;
     top: 1rem;
@@ -7,19 +9,18 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 1rem;
-    width: fit-content;
+    height: auto;
+    width: 300px;
+    @include flexCustom(flex-start, flex-start, column);
 }
 
 .main {
+    padding: 1em;
+    margin-top: 2em;
     display: flex;
     flex-direction: column;
     align-items: center;
-  
 }
-
-
-
 
 .profileInfo {
     margin-bottom: 1rem;
@@ -34,9 +35,10 @@
     margin-bottom: 0.5rem;
 }
 
-.profileInfo span, .profileInfo input {
+.profileInfo p, .profileInfo input {
     width: 100%;
     margin-bottom: 0.5rem;
+    color: $webBlue;
 }
 
 .profileInfo button {
@@ -49,11 +51,29 @@
     margin: 0;
 }
 
-.accountButtons{
+.accountButtons {
     z-index: 99999;
-    position: absolute;
-    top: 0;
-    right: 0;
+    width: 100%;
+    @include flexCenter(row);
+
+    :nth-child(3) {
+        background-color: red;
+        &:hover {
+            background-color: #631414 !important;
+        }
+    }
+    button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 0.3rem 0.6rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        width: 40%;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
 }
 
 .logoutButton, .resetButton {
@@ -76,16 +96,6 @@
 .logoutButton:focus, .resetButton:focus {
     outline: none;
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
-}
-
-.socialMediaContainer {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 1rem;
-    width: 300px;
-    margin-top: 1rem;
 }
 
 .addFriendSection {
@@ -115,7 +125,7 @@
     }
 }
 
-.friendRequestsSection, .friendsSection {
+ .friendsSection {
     margin-bottom: 1rem;
 
     h3 {
@@ -126,15 +136,24 @@
     ul {
         list-style: none;
         padding: 0;
+        height: 6em;
+        background-color: #f9f9f9;
+        overflow-y: scroll;
+        border: 1px solid #ccc;
 
         li {
+            p{
+                font-size: 0.8em;;
+            }
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            flex-direction: row;
             padding: 0.5rem;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-bottom: 0.5rem;
+            border-top: 1px solid $webBlue;
+            border-bottom: 1px solid $webBlue;
+            width: 90%;
+            margin: auto;
+            margin-top: 0.5rem;
 
             span {
                 flex: 1;
@@ -149,6 +168,8 @@
                 cursor: pointer;
                 transition: background-color 0.3s ease;
                 margin-left: 0.5rem;
+                width: 35%;
+                font-size: 0.6em;
 
                 &:hover {
                     background-color: #0056b3;
@@ -156,6 +177,7 @@
             }
 
             select {
+                width: 65%;
                 margin-left: 0.5rem;
                 padding: 0.3rem;
                 border: 1px solid #ccc;
@@ -163,11 +185,80 @@
             }
         }
     }
+    .friendsListForm{
+        @include flexCenter(row);
+        width: 100%;
+       
+    }
 }
 
-
-.profileButton{
+.profileButton {
     position: absolute;
     top: 0;
     right: 0;
 }
+
+.socialMediaMain {
+    margin-top: 1em;
+    width: 100%;
+    @include flexCustom(flex-start, flex-start, column);
+
+    h2 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        color: $webBlue;
+    }
+
+    .SocialMedia {
+       width: 100%;
+        ul {
+            list-style: none;
+            padding: 0;
+            height: 6em;
+            overflow-y: scroll;
+            width: 100%;
+
+            li {
+                display: flex;
+                align-items: center;
+                padding: 0.5rem;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                margin-bottom: 0.5rem;
+                background-color: #f9f9f9;
+
+                input {
+                    margin-right: 0.5rem;
+                    cursor: pointer;
+                }
+
+                &:hover {
+                    background-color: #e9e9e9;
+                }
+            }
+        }
+    }
+    
+}
+
+
+.socialMediaMain{
+    padding: 1em;
+    width: 100%;
+    .addFriendSection{
+        width: 100%;
+    }
+
+    .friendRequestsSection{
+        width: 100%;
+        ul{
+            width: 100%;
+            height: 3em;
+            overflow-y: scroll;
+            background-color: rgb(243, 240, 240);
+        }
+
+       
+    }
+}
+

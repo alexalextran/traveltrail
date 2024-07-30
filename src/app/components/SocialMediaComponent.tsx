@@ -189,7 +189,7 @@ export default function SocialMediaComponent() {
     };
 
     return (
-        <>
+        <main className={styles.socialMediaMain}>
             <h2>Social Media</h2>
             <div className={styles.addFriendSection}>
                 <input
@@ -223,8 +223,8 @@ export default function SocialMediaComponent() {
                 <ul>
                     {friends.map((friend) => (
                         <li key={friend.friendID}>
-                            {friend.displayName}
-                            <form onSubmit={(e) => {
+                            <p>{friend.displayName}</p>
+                            <form className={styles.friendsListForm} onSubmit={(e) => {
                                 e.preventDefault();
                                 handleAddToProfile(friend.friendID, listToBeAdded);
                             }}>
@@ -243,6 +243,6 @@ export default function SocialMediaComponent() {
                     ))}
                 </ul>
             </div>
-        </>
+        </main>
     );
 }

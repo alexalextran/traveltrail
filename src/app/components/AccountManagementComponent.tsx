@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../Sass/ProfileComponent.module.scss';
 import { useAuth } from '../context/authContext';  // Adjust the path as needed
-import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
+import { collection, doc, getFirestore, onSnapshot, updateDoc } from 'firebase/firestore';
 import { app } from "../firebase"; // Ensure this path is correct
 import { updateListVisibility } from '../firebaseFunctions/Lists';
 export default function ProfileComponent() {
     const { logout, user } = useAuth();
     const [displayName, setDisplayName] = useState(user?.displayName || '');
-    const [newPassword, setNewPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
     const [lists, setLists] = useState<{ id: string; listName: string; visible:boolean }[]>([]);
+
 
 
     useEffect(() => {
@@ -23,17 +22,37 @@ export default function ProfileComponent() {
             }));
             setLists(fetchedLists);
         });
-    
-        return () => unsubscribe(); // Clean up the subscription
+
+        const userDocRef = doc(db, `users/${user.uid}`);
+        const userDocUnsubscribe = onSnapshot(userDocRef, (doc) => {
+            if (doc.exists()) {
+                const userData = doc.data();
+                setDisplayName(userData.displayName);
+            }
+        });
+
+        return () => {
+            unsubscribe(); // Clean up the list subscription
+            userDocUnsubscribe(); // Clean up the user document subscription
+        };
     }, []);
 
-    const handleResetPassword = () => {
-      
-    };
+    
 
     const updateList = (id: string, checked: boolean) => {
         updateListVisibility(`users/${user.uid}/lists`, id, checked);
     }
+
+    const updateDisplayName = async () => {
+        try {
+            const userDocRef = doc(getFirestore(app), `users/${user.uid}`);
+            await updateDoc(userDocRef, { displayName });
+            console.log('Display name updated successfully!');
+        } catch (error) {
+            console.error('Error updating display name:', error);
+        }
+    }
+    
 
     return (
         <div className={styles.profileContainer}>
@@ -41,12 +60,12 @@ export default function ProfileComponent() {
                 <h2>Profile</h2>
                 <div className={styles.profileInfo}>
                     <label>Email:</label>
-                    <span>{user?.email}</span>
+                    <p>{user?.email}</p>
                 </div>
 
                 <div className={styles.profileInfo}>
                     <label>My Freind Code:</label>
-                    <span>{user?.uid}</span>
+                    <p>{user?.uid}</p>
                 </div>
                 
                 <div className={styles.profileInfo}>
@@ -57,26 +76,16 @@ export default function ProfileComponent() {
                         onChange={(e) => setDisplayName(e.target.value)}
                     />
                 </div>
-                <div className={styles.profileInfo}>
-                    <label>New Password:</label>
-                    <input
-                        type="password"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                    />
-                </div>
-                <button onClick={handleResetPassword} className={styles.resetButton}>
+              
+                <button onClick={updateDisplayName} className={styles.resetButton}>
                     Update Display Name
                 </button>
                 <button onClick={() => logout()} className={styles.logoutButton}>
                     Logout
                 </button>
-            </main>
 
-            <main>
-            Social Media
-            <div>
-                <h2>Lists</h2>
+                <div className={styles.socialMediaMain}>
+                <h2>My Public Lists</h2>
                 <div className={styles.SocialMedia}>
                 <ul>
                     {lists.map((list) => (
@@ -94,6 +103,8 @@ export default function ProfileComponent() {
                 </div>
             </div>
             </main>
+
+           
 
         </div>
     );

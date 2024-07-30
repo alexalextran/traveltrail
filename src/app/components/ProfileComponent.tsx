@@ -12,10 +12,10 @@ export default function ProfileComponent() {
             {toggleModal ? (
                 <div className={styles.profileContainer}>
                     <div className={styles.accountButtons}>
-                    <button onClick={() => setToggleModal(false)}>Close</button>
-
                         <button onClick={() => setToggleSocialMedia(true)}>Friends</button>
                         <button onClick={() => setToggleSocialMedia(false)}>Account</button>
+                        <button onClick={() => setToggleModal(false)}>Close</button>
+
                     </div>
                     {toggleSocialMedia ? <SocialMediaComponent /> : <AccountManagementComponent />}
                 </div>
