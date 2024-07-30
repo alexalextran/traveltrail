@@ -196,6 +196,18 @@
     position: absolute;
     top: 0;
     right: 0;
+    height: 5em;
+    width: 5em;
+    background: none;
+    border: none;
+    border-radius: 3EM;
+    background-color: $webBlue;
+    cursor: pointer;
+    svg{
+        color: white;
+        height: 100%;
+        width: 100%;
+    }
 }
 
 .socialMediaMain {
@@ -253,7 +265,7 @@
         width: 100%;
         ul{
             width: 100%;
-            height: 3em;
+            height: 6em;
             overflow-y: scroll;
             background-color: rgb(243, 240, 240);
         }

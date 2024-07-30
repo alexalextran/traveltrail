@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styles from '../Sass/ProfileComponent.module.scss';
 import SocialMediaComponent from './SocialMediaComponent';
 import AccountManagementComponent from './AccountManagementComponent';
+import { CgProfile } from "react-icons/cg";
 
 export default function ProfileComponent() {
     const [toggleSocialMedia, setToggleSocialMedia] = useState(false);
@@ -20,7 +21,7 @@ export default function ProfileComponent() {
                     {toggleSocialMedia ? <SocialMediaComponent /> : <AccountManagementComponent />}
                 </div>
             ) : (
-                <button className={styles.profileButton} onClick={() => setToggleModal(true)}>SM</button>
+                <button className={styles.profileButton} onClick={() => setToggleModal(true)}><CgProfile /></button>
             )}
         </>
     );
