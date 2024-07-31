@@ -1,6 +1,6 @@
 'use client';
 import { APIProvider, Map, AdvancedMarker, MapCameraProps, MapCameraChangedEvent } from '@vis.gl/react-google-maps';
-import Pin from './pin.tsx';
+import PinComponent from './pin.tsx';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectPins } from '../store/pins/pinsSlice';
 import { fetchPins } from '../store/pins/pinsSlice';
@@ -16,10 +16,10 @@ import { ToastContainer } from 'react-toastify';
 import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
 import { app } from "../firebase"; // Ensure this path is correct
 import { Category } from '../types/categoryData.ts';
+import { Pin } from '../types/pinData.ts';
 
-const MapComponent = () => {
+const MapComponent = ({pins}: {pins: Pin[]}) => {
   const dispatch = useDispatch<AppDispatch>();
-  const pins = useSelector(selectPins);
   const { location, error } = useGeolocation();
   const locationRedux = useSelector(selectLocation);
   const { user } = useAuth(); // Use the useAuth hook
@@ -91,7 +91,7 @@ const MapComponent = () => {
             return null;
           }
           return (
-            <Pin key={pin.id} category={categoryProp} pinID={pin.id} lat={pin.lat} lng={pin.lng} userLocation={INITIAL_CAMERA.center} pin={pin} />
+            <PinComponent key={pin.id} category={categoryProp} pinID={pin.id} lat={pin.lat} lng={pin.lng} userLocation={INITIAL_CAMERA.center} pin={pin} />
           );
         })}
         <AdvancedMarker position={INITIAL_CAMERA.center}>

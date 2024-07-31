@@ -80,7 +80,7 @@ const Page = () => {
       <ListComponent />
       {toggleEdit && <EditPinModal/>}
       <Sidebar pins={pins}/>
-          <Map />
+          <Map  pins={pins}/>
           <ProfileComponent />
       </APIProvider>
     </DndProvider>
