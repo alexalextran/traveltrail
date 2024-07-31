@@ -15,7 +15,7 @@ import { useAuth } from '../context/authContext'; // Import the useAuth hook
 import { FaCameraRetro } from "react-icons/fa";
 import { FaImages } from "react-icons/fa";
 
-export default function IconBar({pin, color, setchild}: {pin: Pin, color: string, setchild?: any}) {
+export default function IconBar({pin, color, setchild, enableImage}: {pin: Pin, color: string, setchild?: any, enableImage:Boolean}) {
   const { user } = useAuth(); // Use the useAuth hook
 
 
@@ -42,12 +42,11 @@ export default function IconBar({pin, color, setchild}: {pin: Pin, color: string
         ;
        }; 
        
-       
   return (
       <div className={styles.iconBar} style={{backgroundColor: `${color}`}}>
       <RiEditFill onClick={() => {selectNewPin("edit") }}/>
       <ImgUpload pinID={pin.id}/>
-      <FaImages onClick={() => {selectNewPin("image") }}/>
+      {enableImage != null ? <FaImages onClick={() => {selectNewPin("image") }}/> : null}
       <MdDeleteForever onClick={() => {deletePin()}}/>
     </div>
     )

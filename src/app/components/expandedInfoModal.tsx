@@ -7,6 +7,7 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { useMapsLibrary, useMap } from '@vis.gl/react-google-maps';
 import IconBar from '../components/iconBar.tsx';
+import { Rating } from 'react-simple-star-rating';
 
 export default function ExpandedInfoModal({pin, settoggleIWM, userLocation, filteredCategory}: {filteredCategory: Category, pin: Pin, settoggleIWM: any, userLocation: { lat: number, lng: number }}) {
   const responsiveConfig = {
@@ -45,7 +46,7 @@ export default function ExpandedInfoModal({pin, settoggleIWM, userLocation, filt
   };
 
   const distanceToUser = calculateDistance(pin.lat, pin.lng, userLocation.lat, userLocation.lng);
-  
+  console.log(pin.rating)
   return (
     <main className={styles.main} >
       <div className={styles.header} >
@@ -54,13 +55,25 @@ export default function ExpandedInfoModal({pin, settoggleIWM, userLocation, filt
       </div>
 
       <div className={styles.content}>
-      <p>{pin.address}</p>
-      <p>{distanceToUser.toFixed(2)}KM Away</p>
+        <div className={styles.info}>
+          <div>
+          <p className={styles.address}>{pin.address}</p>
+          <p><span>{distanceToUser.toFixed(2)}</span>KM Away</p>
+          {pin.website && <a href={pin.website} target='_blank'>Check Link</a>}
+          </div>
+
+          <div>
+           { pin.rating != 0 && pin.rating && <Rating initialValue={pin.rating} readonly></Rating>}
+          <p>{pin?.openingHours}</p>
+          </div>
+        
+        </div>
+      
       <div className={styles.expandedModalTags}>
       <p style={{ backgroundColor: filteredCategory.categoryColor, border: `2px solid ${filteredCategory.categoryColor}`}}>{pin.category}</p>
       <p>{pin.visited ? "Visited" : "Unvisited"}</p>
       </div>
-      <p className={styles.description}>{pin?.description}</p>
+     { pin.description && <p className={styles.description}>{pin?.description}</p>}
       </div>
      
       <div className={styles.footer}>

@@ -104,7 +104,7 @@ function FullScreen({ pins, categories }: FullScreenProps) {
                                             ))}
                                         </Carousel>
                                     )}
-                                    <IconBar setchild={setchild} pin={pin} color={'rgb(0,123,255)'} />
+                                    <IconBar setchild={setchild} pin={pin} color={'rgb(0,123,255)'}  enableImage={true}  />
                                 </div>
                             );
                         })}
