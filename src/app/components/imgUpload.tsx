@@ -37,7 +37,7 @@ function ImgUpload({pinID}: {pinID: string}) {
       if (selectedPin) {
         const updatedPin = {
           ...selectedPin,
-          imageUrls: [...selectedPin.imageUrls, ...newImageUrls]
+          imageUrls: [...(selectedPin.imageUrls ?? []), ...newImageUrls]
         };
         dispatch(selectPin(updatedPin));
       }
