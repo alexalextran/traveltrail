@@ -11,7 +11,17 @@ import { useRequireAuth } from './hooks/useRequiredAuth.ts';
 const Page = () => {
   const toggleEdit = useSelector(selectEditModal);
   const [isLoggingIn, setIsLoggingIn] = useState(true); // Toggle between log in and sign up
+
   const user = useRequireAuth();
+
+  if(user.loading || user.user != null){
+    return <div>
+<iframe className={styles.loadingAnimation} src="https://lottie.host/embed/6599d90e-2886-4785-86fc-f7fb10f4a8ad/gvM3MrH0Q5.json"></iframe>
+      
+    </div>
+  }
+
+  else if( user.user == null && user.loading === false){ 
   return (
     <main className={styles['main']} >
     <div className={styles['auth-container']}>
@@ -34,5 +44,6 @@ const Page = () => {
     </main>
   );
 };
+}
 
 export default Page;

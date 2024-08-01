@@ -9,7 +9,7 @@ const SignUp: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [displayName, setdisplayName] = useState('');
-  const { signup, user } = useAuth();
+  const { signup} = useAuth();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();

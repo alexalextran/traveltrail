@@ -17,6 +17,7 @@ import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
 import { app } from "../firebase"; // Ensure this path is correct
 import { Pin } from '../types/pinData.ts';
 import { useAuth } from '../context/authContext.js';
+import styles from '../Sass/Auth.module.scss';
 
 
 
@@ -63,7 +64,10 @@ const Page = () => {
 
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <div>
+    <iframe className={styles.loadingAnimation} src="https://lottie.host/embed/6599d90e-2886-4785-86fc-f7fb10f4a8ad/gvM3MrH0Q5.json"></iframe>
+          
+        </div>
   }
 
   if (!user) {
@@ -72,7 +76,7 @@ const Page = () => {
 
   return (
     <>
-    {showContent && (
+    {showContent ? (
     <DndProvider backend={HTML5Backend}>
       
       <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLEAPI_API_KEY ?? ''}>
@@ -84,7 +88,10 @@ const Page = () => {
           <ProfileComponent />
       </APIProvider>
     </DndProvider>
-    )}
+    ): <div>
+    <iframe className={styles.loadingAnimation} src="https://lottie.host/embed/6599d90e-2886-4785-86fc-f7fb10f4a8ad/gvM3MrH0Q5.json"></iframe>
+          
+        </div>}
     </>
   );
 };
