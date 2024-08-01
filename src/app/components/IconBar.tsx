@@ -8,10 +8,10 @@ import { deleteFromFirestore } from '../firebaseFunctions/writeDocument.ts';
 import { useDispatch } from 'react-redux';
 import { removePinById, selectPin } from '../store/pins/pinsSlice.ts'; 
 import "react-color-palette/css";
-import EditPinModal from '../components/EditPinModal.tsx';
-import ImageModal from '../components/imageModal.tsx';
+import EditPinModal from './EditPinModal.tsx';
+import ImageModal from './imageModal.tsx';
 import { toggleEditModal } from '../store/toggleModals/toggleModalSlice.ts';
-import { useAuth } from '../context/authContext'; // Import the useAuth hook
+import { useAuth } from '../context/authContext.js'; // Import the useAuth hook
 import { FaCameraRetro } from "react-icons/fa";
 import { FaImages } from "react-icons/fa";
 
