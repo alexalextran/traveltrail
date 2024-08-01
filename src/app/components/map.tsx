@@ -38,6 +38,18 @@ const MapComponent = ({pins}: {pins: Pin[]}) => {
     
   }, []);
 
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setCameraProps({
+        center: { lat: location.lat, lng: location.lng },
+        zoom: 13
+      });
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [location]);
+
   useEffect(() => {
     const db = getFirestore(app);
     const listCollectionRef = collection(db, `users/${user.uid}/categories`);
@@ -94,7 +106,7 @@ const MapComponent = ({pins}: {pins: Pin[]}) => {
             <PinComponent key={pin.id} category={categoryProp} pinID={pin.id} lat={pin.lat} lng={pin.lng} userLocation={INITIAL_CAMERA.center} pin={pin} />
           );
         })}
-        <AdvancedMarker position={INITIAL_CAMERA.center}>
+        <AdvancedMarker position={{ lat: location.lat, lng: location.lng }}>
           <MdPersonPinCircle className={styles.svg}/>
         </AdvancedMarker>
       </Map>
