@@ -46,11 +46,13 @@ export default function ImageModal() {
 
     const handleDeleteImage = async (imageUrl: string) => {
         try {
-            await removeImageReferenceFromFirestore(`users/${user.uid}/pins`, selectedPin.id, imageUrl);
-            dispatch(removeImageFromPin({ pinId: selectedPin.id, imageUrl }));
-            // Optionally, update images state here as well to immediately reflect the change
-            // This is useful if the redux store update does not cause the component to re-render
-            setImages(currentImages => currentImages.filter(url => url !== imageUrl));
+            if (selectedPin) {
+                await removeImageReferenceFromFirestore(`users/${user.uid}/pins`, selectedPin.id, imageUrl);
+                dispatch(removeImageFromPin({ pinId: selectedPin.id, imageUrl }));
+                // Optionally, update images state here as well to immediately reflect the change
+                // This is useful if the redux store update does not cause the component to re-render
+                setImages(currentImages => currentImages.filter(url => url !== imageUrl));
+            }
         } catch (error) {
             console.error("Failed to delete image: ", error);
         }
