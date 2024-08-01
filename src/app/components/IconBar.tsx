@@ -46,7 +46,7 @@ export default function IconBar({pin, color, setchild, enableImage}: {pin: Pin, 
       <div className={styles.iconBar} style={{backgroundColor: `${color}`}}>
       <RiEditFill onClick={() => {selectNewPin("edit") }}/>
       <ImgUpload pinID={pin.id}/>
-      {enableImage != null ? <FaImages onClick={() => {selectNewPin("image") }}/> : null}
+      {enableImage != null || enableImage == false ? <FaImages onClick={() => {selectNewPin("image") }}/> : null}
       <MdDeleteForever onClick={() => {deletePin()}}/>
     </div>
     )
