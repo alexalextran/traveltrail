@@ -16,8 +16,16 @@ export const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-  const signup = (email, password) => {
-    return createUserWithEmailAndPassword(auth, email, password);
+  const signup = async (email, password) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      // Successfully signed up
+      console.log('Signed up:', userCredential.user);
+      return userCredential.user.uid; // Return the user ID
+    } catch (error) {
+      console.error('Error signing up:', error);
+      throw error; // Rethrow the error to propagate it to the caller
+    }
   };
 
   const login = async (email, password) => {
