@@ -23,7 +23,37 @@ const Page = () => {
 
   else if( user.user == null && user.loading === false){ 
   return (
-    <main className={styles['main']} >
+  <main className={styles['main']}>
+    <div className={styles.infoPanel}>
+
+      <div>
+      <h2>Travel Trail</h2>
+      <p>Welcome to Travel Trail Version 0.8</p>
+      <p>A <span>free</span> advanced travel planner developed by me, Alex Tran as a way to plan my own japan trip. However feel free to use it as much as you like. Disclaimer: Travel Trail is still in early beta, so you may come across some unexpected bugs, please let me know if you find any!</p>
+      </div>
+
+      <div>
+      <h4>Current Implemented Features</h4>
+      <p>Interactive Google Maps</p>
+      <p>Realtime Database</p>
+      <p>Multiple Ways To Sort Places And Activities</p>
+      <p>Integrated Social Media System To Share Information</p>
+      <p>Download To CSV Avaliable</p>
+      </div>
+
+      <div>
+      <h4>Planned Features</h4>
+      <p>Animations & Improved UI</p>
+      <p>AI reccomendations</p>
+      <p>Reccomednations based on proximity</p>
+      <p>Collabarative Lists</p>
+      <p>Import using excel</p>
+      <p>Integration with instagram, google maps, pintrest etc</p>
+      <p>Mobile App using react Native</p>
+      </div>
+    </div>
+
+    <main  >
     <div className={styles['auth-container']}>
       <div className={styles['toggle-buttons']}>
         <button
@@ -41,6 +71,7 @@ const Page = () => {
       </div>
       {isLoggingIn ? <LogIn /> : <SignUp />}
     </div>
+    </main>
     </main>
   );
 };
