@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Pin } from '../types/pinData'
 import styles from '../Sass/pinItem.module.scss'
 import { useDispatch, useSelector } from 'react-redux';
-import IconBar from './iconBar.tsx';
+import IconBar from '../components/iconBar.tsx';
 import { selectCategories } from '../store/categories/categoriesSlice'
 import { Category } from '../types/categoryData.ts';
 import { setLocation } from '../store/location/locationSlice.ts';
