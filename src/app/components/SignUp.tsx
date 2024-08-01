@@ -24,7 +24,8 @@ const SignUp: React.FC = () => {
       console.log('Signed up:', userCredential.user);
     } catch (error) {
       console.error('Error signing up:', error);
-      alert('Error signing up: ' + error.message);
+      const errorMessage = (error as Error).message;
+      alert('Error signing up: ' + errorMessage);
     }
   };
 
