@@ -39,16 +39,7 @@ const MapComponent = ({pins}: {pins: Pin[]}) => {
   }, []);
 
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setCameraProps({
-        center: { lat: location.lat, lng: location.lng },
-        zoom: 13
-      });
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, [location]);
+ 
 
   useEffect(() => {
     const db = getFirestore(app);
@@ -76,9 +67,9 @@ const MapComponent = ({pins}: {pins: Pin[]}) => {
     setCameraProps(ev.detail);
   }, []);
 
-  const handleSetCameraToJapan = () => {
+  const centerCamera = () => {
     setCameraProps({
-      center: { lat: 35.6895, lng: 139.6917 },
+      center: { lat: location.lat, lng: location.lng },
       zoom: 13
     });
   };
@@ -96,6 +87,7 @@ const MapComponent = ({pins}: {pins: Pin[]}) => {
         gestureHandling={'greedy'}
         disableDefaultUI={true}
       >
+         <button className={styles.centerButton} onClick={centerCamera}>Click To Center</button>
         {pins.map((pin) => {
           const categoryProp = categories.find(category => category.categoryName === pin.category);
           if (!categoryProp) {

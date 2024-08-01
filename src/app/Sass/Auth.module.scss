@@ -102,3 +102,14 @@
   width: 100vw;
   padding: 10%;
 }
+
+.centerButton{
+  @include absolutecenter;
+  bottom: 0;
+  margin-bottom: 2em;
+  @include button;
+  background-color: $webBlue;
+  color: white;
+  font-size: 1em;
+  padding: 0.6em;
+}
