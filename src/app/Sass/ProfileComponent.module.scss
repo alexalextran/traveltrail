@@ -268,7 +268,33 @@
             height: 6em;
             overflow-y: scroll;
             background-color: rgb(243, 240, 240);
+            * {
+                text-align: center;
+                @include flexCenter(row);
+                width: 33%;
+            }
+            li{
+                width: 100%;
+                span{
+                    color: $webBlue;
+                }
+    
+                button{
+                    text-decoration: underline;
+                    background: none;
+                    border: none;
+                }
+
+                :nth-child(2){
+                    color: rgb(12, 177, 12);
+                }
+                :nth-child(3){
+                    color: red;
+                }
+            }
         }
+
+       
 
        
     }
