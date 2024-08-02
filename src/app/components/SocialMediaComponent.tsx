@@ -84,9 +84,14 @@ export default function SocialMediaComponent() {
         if (friendCode.trim() === '') return;
         const db = getFirestore(app);
         const friendRequestsRef = collection(db, `users/${friendCode}/friendRequests`);
+        const userDocRef = doc(db, `users/${user.uid}`);
+        const userDocSnapshot = await getDoc(userDocRef);
+
+        
+
         await addDoc(friendRequestsRef, {
             from: user.uid,
-            displayName: user.displayName,
+            displayName: userDocSnapshot.data()?.displayName,
             status: 'pending'
         });
         setFriendCode('');
@@ -208,8 +213,10 @@ export default function SocialMediaComponent() {
                 <h3>Friend Requests</h3>
                 <ul>
                     {friendRequests.map((request) => {
+                        console.log(request)
                         if (request.status === 'pending') {
                             return (
+                            
                                 <li key={request.id}>
                                     <span>{request.displayName}</span>
                                     <button onClick={() => handleAcceptRequest(request.id, request.from)}>Accept</button>
