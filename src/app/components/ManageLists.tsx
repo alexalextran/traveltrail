@@ -12,19 +12,19 @@ function ManageLists() {
     const [listName, setListName] = useState('');
     const [lists, setLists] = useState<{ id: string; listName: string; }[]>([]);
     const db = getFirestore(app);
-    const { user } = useAuth(); // Use the useAuth hook
+    const { user } = useAuth();
 
     useEffect(() => {
         const listCollectionRef = collection(db, `users/${user.uid}/lists`);
         const unsubscribe = onSnapshot(listCollectionRef, (snapshot) => {
             const fetchedLists = snapshot.docs.map(doc => ({
                 id: doc.id,
-                listName: doc.data().listName, // Add the listName property
+                listName: doc.data().listName, 
             }));
             setLists(fetchedLists);
         });
 
-        return () => unsubscribe(); // Clean up the subscription
+        return () => unsubscribe(); 
     }, []);
 
 
@@ -37,9 +37,8 @@ function ManageLists() {
         if (!listName.trim()) return; // Prevent adding empty lists
 
         try {
-            const result = await writeList(`users/${user.uid}/lists`,{ listName });
-            console.log(result);
-            setListName(''); // Reset the input field after successful addition
+            await writeList(`users/${user.uid}/lists`,{ listName });
+            setListName(''); 
             toast.success('List was addeded sucessfully', {
                 position: "top-right",
                 autoClose: 5000,

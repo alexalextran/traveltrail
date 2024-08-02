@@ -12,7 +12,7 @@ const ListDnD = ({ listId }: { listId: string }) => {
   const [pinData, setPinData] = useState<Pin[]>([]);
   const dropRef = useRef<HTMLDivElement>(null);
   const db = getFirestore(app);
-  const { user } = useAuth(); // Use the useAuth hook
+  const { user } = useAuth(); 
 
   useEffect(() => {
     if (!listId) {

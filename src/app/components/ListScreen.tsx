@@ -3,16 +3,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import styles from '../Sass/ListScreen.module.scss';
 import { Pin } from '../types/pinData';
 import { Category } from '../types/categoryData';
-import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import Modal from '../components/modal.tsx';
 import { toggleEditModal, toggleListScreen } from '../store/toggleModals/toggleModalSlice.ts';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../store/store.ts'; // Import the AppDispatch type
 import CategoryComponent from '../components/CategoryComponent.tsx';
 import { ToastContainer, toast } from 'react-toastify';
-import { selectPins } from '../store/pins/pinsSlice';
-import { selectCategories } from '../store/categories/categoriesSlice';
 import ManageLists from './ManageLists.tsx';
 import { getFirestore, collection, onSnapshot } from 'firebase/firestore';
 import { app } from "../firebase"; // Ensure this path is correct
@@ -25,19 +21,19 @@ import { useAuth } from '../context/authContext'; // Import the useAuth hook
 
 function ListScreen() {
     const dropRef = useRef<HTMLDivElement>(null);
-    const { user } = useAuth(); // Use the useAuth hook
+    const { user } = useAuth(); 
 
-    const dispatch: AppDispatch = useDispatch(); // Use the typed version of useDispatch
+    const dispatch: AppDispatch = useDispatch(); 
     const [pins, setPins] = useState<Pin[]>([]);
     const [lists, setLists] = useState<{ id: string; listName: string; }[]>([]);
     const [child, setchild] = useState(<ManageLists/>);
-    const [selectedList, setSelectedList] = useState<string>(''); // Add this line
+    const [selectedList, setSelectedList] = useState<string>(''); 
     const [categories, setcategories] = useState<Category[]>([]);
 
 
     useEffect(() => {
         const db = getFirestore(app);
-        const listCollectionRef = collection(db, `users/${user.uid}/lists`);
+        const listCollectionRef = collection(db, `users/${user.uid}/lists`); 
         const unsubscribe = onSnapshot(listCollectionRef, (snapshot) => {
             const fetchedLists = snapshot.docs.map(doc => ({
                 id: doc.id,
@@ -46,7 +42,7 @@ function ListScreen() {
             setLists(fetchedLists);
         });
 
-        return () => unsubscribe(); // Clean up the subscription
+        return () => unsubscribe(); 
     }, [selectedList]);
 
     useEffect(() => {
@@ -70,7 +66,7 @@ function ListScreen() {
             setPins(fetchedPins);
         });
     
-        return () => unsubscribe(); // Clean up the subscription
+        return () => unsubscribe(); 
     }, []);
 
 
@@ -81,12 +77,12 @@ function ListScreen() {
             const fetchedCategories = snapshot.docs.map(doc => ({
                 CategoryID: doc.id,
                 categoryName: doc.data().categoryName,
-                categoryColor: doc.data().categoryColor // Fix the typo in the property name
+                categoryColor: doc.data().categoryColor 
             }));
             setcategories(fetchedCategories);
         });
     
-        return () => unsubscribe(); // Clean up the subscription
+        return () => unsubscribe(); 
     }, []);
 
     const responsiveConfig = {

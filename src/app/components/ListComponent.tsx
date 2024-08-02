@@ -10,7 +10,6 @@ import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
 import { app } from "../firebase"; // Ensure this path is correct
 import { setSelectedListRedux } from '../store/List/listSlice';
 import { useAuth } from '../context/authContext'; // Import the useAuth hook
-import { MdDeleteForever } from 'react-icons/md';
 
 export default function ListComponent() {
   const ListScreen = useSelector(selectListScreen);
@@ -18,7 +17,7 @@ export default function ListComponent() {
   const [expand, setexpand] = useState(false)
   const [lists, setLists] = useState<{ id: string; listName: string; }[]>([]);
   const [selectedList, setselectedList] = useState({id: '', listName: ''});
-  const { user } = useAuth(); // Use the useAuth hook
+  const { user } = useAuth(); 
 
   useEffect(() => {
     const db = getFirestore(app);
@@ -31,7 +30,7 @@ export default function ListComponent() {
         setLists(fetchedLists);
     });
 
-    return () => unsubscribe(); // Clean up the subscription
+    return () => unsubscribe(); 
 }, []);
 
 

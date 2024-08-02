@@ -16,9 +16,8 @@ const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {cate
   const [showInfoWindow, setShowInfoWindow] = useState(false);
   const selectedList = useSelector(selectSelectedList);
   const [allListPins, setallListPins] = useState<string[]>([]);
-  const { user } = useAuth(); // Use the useAuth hook
+  const { user } = useAuth(); 
 
-  console.log("I was rendered");
   const handleClick = () => {
     setShowInfoWindow(prevState => !prevState);
   };
@@ -50,7 +49,6 @@ const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {cate
   const pinInList = allListPins.includes(pinID);
   const backgroundColor = allListPins.length === 0 ? category?.categoryColor : category?.categoryColor + (pinInList ? 'FF' : '50'); // 'FF' for full opacity, '50' for semi-transparent
 
-  console.log("I was rendered");
 
   return (
     <>

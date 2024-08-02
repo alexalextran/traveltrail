@@ -17,7 +17,7 @@ export default function InfoWindowComponent({ setShowInfoWindow, filteredPin, se
     setShowInfoWindow(false)
   };
 
-  const geometryLibrary = useMapsLibrary('geometry');
+  const geometryLibrary = useMapsLibrary('geometry'); //calculate distance between user and pin
   const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
     if (!geometryLibrary) {
       console.error('geometry library not loaded.');
