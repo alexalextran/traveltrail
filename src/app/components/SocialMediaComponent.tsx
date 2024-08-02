@@ -213,7 +213,6 @@ export default function SocialMediaComponent() {
                 <h3>Friend Requests</h3>
                 <ul>
                     {friendRequests.map((request) => {
-                        console.log(request)
                         if (request.status === 'pending') {
                             return (
                             

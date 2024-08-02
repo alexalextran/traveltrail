@@ -44,11 +44,11 @@ const Page = () => {
       <div>
       <h4>Planned Features</h4>
       <p>Animations & Improved UI</p>
-      <p>AI reccomendations</p>
-      <p>Reccomednations based on proximity</p>
-      <p>Collabarative Lists</p>
+      <p>AI recommendations</p>
+      <p>Recommendations based on proximity</p>
+      <p>Collaborative Lists</p>
       <p>Import using excel</p>
-      <p>Integration with instagram, google maps, pintrest etc</p>
+      <p>Integration with Instagram, google maps, Pinterest etc.</p>
       <p>Mobile App using react Native</p>
       </div>
     </div>

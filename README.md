@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Welcome to Travel Trail!
 
-## Getting Started
 
-First, run the development server:
+Welcome to Travel Trail Version **0.8**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+A **free** advanced travel planner developed by me, Alex Tran as a way to plan my own Japan trip. However feel free to use it as much as you like. Disclaimer: Travel Trail is still in early beta, so you may come across some unexpected bugs, please let me know if you find any!
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**The application is available at traveltrailalextran.com**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Also If you wish to explore more, my website is **alextranportfolio.com**
+# Tech-Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Travel Trail was developed using several languages such as Typescript, React, NextJs, Firebase, Sass and Redux. Travel Trail also uses several React libraries such as 
 
-## Learn More
+ - React Google Maps
+ - Redux
+ - Axios
+ - Firebase
+ - React Drag and Drop
+ - React Draggable
+ - React Multi Carousel
+ - React Tostify
+ - A number of other smaller libraries
 
-To learn more about Next.js, take a look at the following resources:
+## API keys
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Please note the API keys are hidden using a .env.local file that is not tracked by git.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## List Of Current Features
+ -       Interactive Google Maps
+ -      Realtime Database
+ -     Multiple Ways To Sort Places And Activities
+ -	   Integrated Social Media System To Share Information
+ -     Download To CSV Available
 
-## Deploy on Vercel
+## Planned Features
+ -       Animations & Improved UI
+ -      AI recommendations
+ -     Recommendations based on proximity
+ -	   Collaborative Lists
+ -     Import using excel
+ -	   Integration with Instagram, google maps, Pinterest etc.
+ -     Mobile App using react Native
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
