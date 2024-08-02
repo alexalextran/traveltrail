@@ -1,4 +1,4 @@
-const getUserLocation = async () => {
+const getUserLocation = async () => {   //function to get users current loction
     if (!navigator.geolocation) {
       throw new Error('Geolocation is not supported by this browser.');
     }

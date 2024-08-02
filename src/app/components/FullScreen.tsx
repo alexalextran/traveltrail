@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styles from '../Sass/FullScreen.module.scss';
 import { Pin } from '../types/pinData';
 import { Category } from '../types/categoryData';
@@ -9,12 +9,9 @@ import Modal from '../components/modal.tsx';
 import AddCategoryModal from './addCategoryModal.tsx';
 import { toggleEditModal, toggleFullScreen } from '../store/toggleModals/toggleModalSlice.ts';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../store/store.ts'; // Import the AppDispatch type
+import { AppDispatch } from '../store/store.ts'; 
 import CategoryComponent from '../components/CategoryComponent.tsx';
-import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
-import { app } from "../firebase"
 import { useAuth } from '../context/authContext';
-
 
 interface FullScreenProps {
     pins: Pin[];
@@ -25,7 +22,6 @@ function FullScreen({ pins, categories }: FullScreenProps) {
     const dispatch: AppDispatch = useDispatch(); // Use the typed version of useDispatch
     const responsiveConfig = {
         superLargeDesktop: {
-            // the naming can be any, depends on you.
             breakpoint: { max: 4000, min: 3000 },
             items: 1
         },
@@ -42,9 +38,10 @@ function FullScreen({ pins, categories }: FullScreenProps) {
             items: 1
         }
     };
+
     const { user } = useAuth();
     const [child, setchild] = useState(<Modal />);
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState<string>('');
     const [selectedCategory, setselectedCategory] = useState(null as null | Category);
 
     var filteredPins = selectedCategory ? pins.filter(pin => pin.category === selectedCategory.categoryName) : pins;
@@ -53,7 +50,6 @@ function FullScreen({ pins, categories }: FullScreenProps) {
     );
 
     const filteredCategories = [...categories].sort((a, b) => a.categoryName.localeCompare(b.categoryName));
-
 
     return (
         <>
@@ -67,10 +63,9 @@ function FullScreen({ pins, categories }: FullScreenProps) {
                 </div>
                 <div className={styles.content}>
                     <div className={styles.categories}>
-                    <div className={styles.category} onClick={() => setselectedCategory(null)}>
-                     <p>All</p>
-                    </div>
-
+                        <div className={styles.category} onClick={() => setselectedCategory(null)}>
+                            <p>All</p>
+                        </div>
                         {filteredCategories.map((category: Category, index: number) => (
                             <CategoryComponent key={index} category={category} setselectedCategory={setselectedCategory}/>
                         ))}
@@ -89,7 +84,7 @@ function FullScreen({ pins, categories }: FullScreenProps) {
                             const pinCategory = categories.find(category => category.categoryName === pin.category);
                             const categoryColor = pinCategory ? pinCategory.categoryColor : 'black';
                             return (
-                                <div key={index} className={styles.pinContainer}> {/* Flex container for pin info and carousel */}
+                                <div key={index} className={styles.pinContainer}>
                                     <div className={styles.pinInfo}>
                                         <h2>{pin.title}</h2>
                                         <p>{pin.address}</p>

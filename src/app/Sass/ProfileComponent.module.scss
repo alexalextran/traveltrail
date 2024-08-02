@@ -141,6 +141,11 @@
         overflow-y: scroll;
         border: 1px solid #ccc;
 
+        *{
+            width: 33%;
+            
+        }
+
         li {
             p{
                 font-size: 0.8em;;
@@ -151,13 +156,14 @@
             padding: 0.5rem;
             border-top: 1px solid $webBlue;
             border-bottom: 1px solid $webBlue;
-            width: 90%;
+            width: 100%;
             margin: auto;
             margin-top: 0.5rem;
 
             span {
                 flex: 1;
             }
+      
 
             button {
                 background-color: #007bff;
@@ -177,6 +183,7 @@
             }
 
             select {
+                font-size: 0.6em;
                 width: 65%;
                 margin-left: 0.5rem;
                 padding: 0.3rem;

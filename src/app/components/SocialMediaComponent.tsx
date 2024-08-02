@@ -81,13 +81,25 @@ export default function SocialMediaComponent() {
     }, [friends]);
 
     const handleAddFriend = async () => {
-        if (friendCode.trim() === '') return;
         const db = getFirestore(app);
+        if (friendCode.trim() === '') return;
+
+          // Check if the user is already a friend
+          const friendsRef = collection(db, `users/${user.uid}/friends`);
+          const friendsSnapshot = await getDocs(friendsRef);
+          const isFriend = friendsSnapshot.docs.some(doc => doc.data().friendID === friendCode);
+          if (isFriend) {
+              console.log('User is already a friend');
+              return;
+          }
+
+        
+        //get current users display name
         const friendRequestsRef = collection(db, `users/${friendCode}/friendRequests`);
         const userDocRef = doc(db, `users/${user.uid}`);
         const userDocSnapshot = await getDoc(userDocRef);
 
-        
+      
 
         await addDoc(friendRequestsRef, {
             from: user.uid,
@@ -212,7 +224,7 @@ export default function SocialMediaComponent() {
             <div className={styles.friendRequestsSection}>
                 <h3>Friend Requests</h3>
                 <ul>
-                    {friendRequests.map((request) => {
+                    {friendRequests.map((request, index) => {
                         if (request.status === 'pending') {
                             return (
                             

@@ -64,7 +64,7 @@ const Modal = () => {
   }, []);
 
   useEffect(() => {
-    if (categories.length === 0 && ShowAddModal || categories.length === 0 && ShowFullScreen) { //notify the user if there are no categories
+    if ((categories.length === 0 && ShowAddModal)) { //notify the user if there are no categories
       toast.error('You do not have any categories, try adding some in the sidebar to the left', {
         position: "top-right",  
         autoClose: 5000,
@@ -76,7 +76,7 @@ const Modal = () => {
         theme: "light",
       });
     }
-  }, [ShowAddModal, ShowFullScreen]);
+  }, [ShowAddModal, ShowFullScreen, ]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();

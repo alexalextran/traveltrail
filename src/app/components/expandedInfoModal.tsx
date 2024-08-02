@@ -1,11 +1,10 @@
 import React from 'react'
 import { Pin } from '../types/pinData'
 import { Category } from '../types/categoryData.ts'
-
 import styles from '../Sass/expandedInfoModal.module.scss'
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import { useMapsLibrary, useMap } from '@vis.gl/react-google-maps';
+import { useMapsLibrary } from '@vis.gl/react-google-maps';
 import IconBar from './IconBar.tsx';
 import { Rating } from 'react-simple-star-rating';
 
@@ -46,7 +45,6 @@ export default function ExpandedInfoModal({pin, settoggleIWM, userLocation, filt
   };
 
   const distanceToUser = calculateDistance(pin.lat, pin.lng, userLocation.lat, userLocation.lng);
-  console.log(pin.rating)
   return (
     <main className={styles.main} >
       <div className={styles.header} >
