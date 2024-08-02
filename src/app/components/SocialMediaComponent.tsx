@@ -16,6 +16,7 @@ import {
     writeBatch // Import writeBatch for Firestore batch operations
 } from 'firebase/firestore';
 import { app } from "../firebase"; // Ensure this path is correct
+import { toast } from 'react-toastify';
 
 export default function SocialMediaComponent() {
     const { user } = useAuth();
@@ -88,8 +89,19 @@ export default function SocialMediaComponent() {
           const friendsRef = collection(db, `users/${user.uid}/friends`);
           const friendsSnapshot = await getDocs(friendsRef);
           const isFriend = friendsSnapshot.docs.some(doc => doc.data().friendID === friendCode);
+          const friendsName = friendsSnapshot.docs.find(doc => doc.data().friendID === friendCode);
+
           if (isFriend) {
-              console.log('User is already a friend');
+            toast.error(`${friendsName?.data().displayName} has already been added as a friend`, {
+                position: "top-right",  
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+              });
               return;
           }
 

@@ -4,9 +4,8 @@ import { Category } from '../types/categoryData';
 import { selectPins } from '../store/pins/pinsSlice.ts';
 import { useSelector } from 'react-redux';
 import {deleteCategoryAndRelatedPins} from '../firebaseFunctions/Categories.ts';
-import { toast } from 'react-toastify';
 import { useAuth } from '../context/authContext'; // Import the useAuth hook
-
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function CategoryDeletionConfirmation({setcategoryDeleteModal, category}: {setcategoryDeleteModal: any, category: Category}) {
     const pins = useSelector(selectPins);

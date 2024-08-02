@@ -17,6 +17,7 @@ import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
 import { app } from "../firebase"; // Ensure this path is correct
 import { Category } from '../types/categoryData.ts';
 import { Pin } from '../types/pinData.ts';
+import 'react-toastify/dist/ReactToastify.css';
 
 const MapComponent = ({pins}: {pins: Pin[]}) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -76,7 +77,7 @@ const MapComponent = ({pins}: {pins: Pin[]}) => {
 
   return (
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLEAPI_API_KEY ?? ''}>
-    <ToastContainer />
+         <ToastContainer />
       <Map
         onCameraChanged={handleCameraChange}
         {...cameraProps}
