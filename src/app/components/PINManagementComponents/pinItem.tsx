@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
-import { Pin } from '../types/pinData'
-import styles from '../Sass/pinItem.module.scss'
+import { Pin } from '../../types/pinData.ts'
+import styles from '../../Sass/pinItem.module.scss'
 import { useDispatch, useSelector } from 'react-redux';
-import IconBar from './IconBar.tsx';
-import { selectCategories } from '../store/categories/categoriesSlice'
-import { Category } from '../types/categoryData.ts';
-import { setLocation } from '../store/location/locationSlice.ts';
-import { AppDispatch } from '../store/store.ts';
+import IconBar from '../ImageComponents/IconBar.tsx';
+import { selectCategories } from '../../store/categories/categoriesSlice.ts'
+import { Category } from '../../types/categoryData.ts';
+import { setLocation } from '../../store/location/locationSlice.ts';
+import { AppDispatch } from '../../store/store.ts';
 
 
 function PinItem({ pin }: { pin: Pin }) {

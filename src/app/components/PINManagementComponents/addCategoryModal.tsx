@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import styles from '../Sass/addCategoryModal.module.scss';
+import styles from '../../Sass/addCategoryModal.module.scss';
 import { ColorPicker, useColor } from "react-color-palette";
-import { writeCategory } from '../firebaseFunctions/Categories.ts';
-import { useAuth } from '../context/authContext';
+import { writeCategory } from '../../firebaseFunctions/Categories.ts';
+import { useAuth } from '../../context/authContext.js';
 import { toast } from 'react-toastify';
 
 export default function AddCategoryModal({ setToggle }: any) {

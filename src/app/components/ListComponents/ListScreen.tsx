@@ -1,22 +1,22 @@
 // ListScreen.tsx
 import React, { useState, useEffect, useRef } from 'react';
-import styles from '../Sass/ListScreen.module.scss';
-import { Pin } from '../types/pinData';
-import { Category } from '../types/categoryData';
+import styles from '../../Sass/ListScreen.module.scss';
+import { Pin } from '../../types/pinData.ts';
+import { Category } from '../../types/categoryData.ts';
 import "react-multi-carousel/lib/styles.css";
-import { toggleEditModal, toggleListScreen } from '../store/toggleModals/toggleModalSlice.ts';
+import { toggleEditModal, toggleListScreen } from '../../store/toggleModals/toggleModalSlice.ts';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch } from '../store/store.ts'; // Import the AppDispatch type
-import CategoryComponent from '../components/CategoryComponent.tsx';
+import { AppDispatch } from '../../store/store.ts'; // Import the AppDispatch type
+import CategoryComponent from '../PINManagementComponents/CategoryComponent.tsx';
 import { ToastContainer, toast } from 'react-toastify';
 import ManageLists from './ManageLists.tsx';
 import { getFirestore, collection, onSnapshot } from 'firebase/firestore';
-import { app } from "../firebase"; // Ensure this path is correct
+import { app } from "../../firebase.js"; // Ensure this path is correct
 import ListDnD from './ListDnd.tsx';
 import PinCard from './PinCard.tsx';
 import { useDrop } from 'react-dnd';
-import { removePinFromList } from '../firebaseFunctions/Lists'; // Function to add pin to list
-import { useAuth } from '../context/authContext'; // Import the useAuth hook
+import { removePinFromList } from '../../firebaseFunctions/Lists.ts'; // Function to add pin to list
+import { useAuth } from '../../context/authContext.js'; // Import the useAuth hook
 
 
 function ListScreen() {

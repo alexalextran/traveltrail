@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { useDrag } from 'react-dnd';
-import { Pin } from '../types/pinData';
-import styles from '../Sass/ListScreen.module.scss';
+import { Pin } from '../../types/pinData';
+import styles from '../../Sass/ListScreen.module.scss';
 
 const DnDPin = ({ pin }: { pin: Pin }) => {
   const divRef = useRef<HTMLDivElement>(null); // Create a ref for the div

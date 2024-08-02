@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import styles from '../Sass/FullScreen.module.scss';
+import styles from '../../Sass/FullScreen.module.scss';
 import { MdDeleteForever } from 'react-icons/md';
-import { Category } from '../types/categoryData';
+import { Category } from '../../types/categoryData';
 import CategoryDeletionModal from './CategoryDeletionConfirmation'
 
 export default function CategoryComponent({ category, setselectedCategory }: { category: Category, setselectedCategory:any }) {

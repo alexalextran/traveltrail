@@ -1,6 +1,6 @@
 import React from 'react';
-import styles from "../Sass/infoWindow.module.scss";
-import { Category } from '../types/categoryData';
+import styles from "../../Sass/infoWindow.module.scss";
+import { Category } from '../../types/categoryData';
 import { useMapsLibrary, useMap } from '@vis.gl/react-google-maps';
 
 interface InfoWindowProps {

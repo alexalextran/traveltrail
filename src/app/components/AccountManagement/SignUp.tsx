@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useAuth } from '../context/authContext'; // Ensure this path is correct
-import styles from '../Sass/Auth.module.scss';
+import { useAuth } from '../../context/authContext'; // Ensure this path is correct
+import styles from '../../Sass/Auth.module.scss';
 import { doc, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
-import { app } from "../firebase"; // Ensure this path is correct
+import { app } from "../../firebase"; // Ensure this path is correct
 
 const SignUp: React.FC = () => {
   const [email, setEmail] = useState('');

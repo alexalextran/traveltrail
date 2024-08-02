@@ -1,13 +1,10 @@
-import React, { useRef, useState } from 'react';
-import { addPictures, updatePin, selectPin } from '../store/pins/pinsSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { app } from "../firebase";
+import React, { useRef } from 'react';
+import { app } from "../../firebase";
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { addImageReferenceToFirestore } from '../firebaseFunctions/writeDocument';
+import { addImageReferenceToFirestore } from '../../firebaseFunctions/writeDocument';
 import { FaCameraRetro } from "react-icons/fa";
-import styles from '../Sass/pinItem.module.scss';
-import { RootState } from '../store/store';
-import { useAuth } from '../context/authContext'; // Import the useAuth hook
+import styles from '../../Sass/pinItem.module.scss';
+import { useAuth } from '../../context/authContext'; // Import the useAuth hook
 
 function ImgUpload({pinID}: {pinID: string}) {
   const storage = getStorage(app);

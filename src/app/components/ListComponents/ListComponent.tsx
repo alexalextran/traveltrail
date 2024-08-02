@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import styles from '../Sass/ListComponent.module.scss';
+import styles from '../../Sass/ListComponent.module.scss';
 import { RiArrowRightDoubleFill } from "react-icons/ri";
 import { HiOutlineArrowsExpand } from "react-icons/hi";
-import { toggleListScreen } from '../store/toggleModals/toggleModalSlice.ts';
-import { selectListScreen } from '../store/toggleModals/toggleModalSlice.ts';
+import { toggleListScreen } from '../../store/toggleModals/toggleModalSlice.ts';
+import { selectListScreen } from '../../store/toggleModals/toggleModalSlice.ts';
 import { useSelector, useDispatch } from 'react-redux';
 import ListScreenComponent from './ListScreen.tsx';
 import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
-import { app } from "../firebase"; // Ensure this path is correct
-import { setSelectedListRedux } from '../store/List/listSlice';
-import { useAuth } from '../context/authContext'; // Import the useAuth hook
+import { app } from "../../firebase.js"; // Ensure this path is correct
+import { setSelectedListRedux } from '../../store/List/listSlice.ts';
+import { useAuth } from '../../context/authContext.js'; // Import the useAuth hook
 
 export default function ListComponent() {
   const ListScreen = useSelector(selectListScreen);

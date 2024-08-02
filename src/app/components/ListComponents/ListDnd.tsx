@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDrop } from 'react-dnd';
 import { getFirestore, doc, onSnapshot, DocumentSnapshot, DocumentReference, getDoc } from 'firebase/firestore';
-import { app } from "../firebase";
-import { addPinToList } from '../firebaseFunctions/Lists'; // Function to add pin to list
+import { app } from "../../firebase";
+import { addPinToList } from '../../firebaseFunctions/Lists'; // Function to add pin to list
 import DnDPin from './DnDPin';
-import { Pin } from '../types/pinData';
-import { useAuth } from '../context/authContext'; // Import the useAuth hook
+import { Pin } from '../../types/pinData';
+import { useAuth } from '../../context/authContext'; // Import the useAuth hook
 
 
 const ListDnD = ({ listId }: { listId: string }) => {

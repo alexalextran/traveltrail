@@ -1,20 +1,20 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Draggable from 'react-draggable';
-import styles from "../Sass/modal.module.scss";
+import styles from "../../Sass/modal.module.scss";
 import { useDispatch, useSelector } from 'react-redux';
-import { Pin } from '../../app/types/pinData.ts';
+import { Pin } from '../../types/pinData.ts';
 import { useMapsLibrary } from '@vis.gl/react-google-maps';
-import { writeToFirestore } from '../firebaseFunctions/writeDocument.ts'; // Adjust the import path as necessary
-import { Category } from '../types/categoryData.ts';
+import { writeToFirestore } from '../../firebaseFunctions/writeDocument.ts'; // Adjust the import path as necessary
+import { Category } from '../../types/categoryData.ts';
 import axios from 'axios';
-import { selectAddModal } from '../store/toggleModals/toggleModalSlice.ts';
-import { toggleAddModal } from '../store/toggleModals/toggleModalSlice.ts';
-import { selectFullScreen } from '../store/toggleModals/toggleModalSlice.ts';
-import { useAuth } from '../context/authContext'; // Import the useAuth hook
+import { selectAddModal } from '../../store/toggleModals/toggleModalSlice.ts';
+import { toggleAddModal } from '../../store/toggleModals/toggleModalSlice.ts';
+import { selectFullScreen } from '../../store/toggleModals/toggleModalSlice.ts';
+import { useAuth } from '../../context/authContext.js'; // Import the useAuth hook
 import { Rating } from 'react-simple-star-rating';
 import { toast } from 'react-toastify';
 import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
-import { app } from "../firebase"; 
+import { app } from "../../firebase.js"; 
 
 const Modal = () => {
   const placesLib = useMapsLibrary('places');  //from google maps api

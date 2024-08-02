@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import styles from "../Sass/sidebar.module.scss";
+import styles from "../../Sass/sidebar.module.scss";
 import { useSelector, useDispatch } from 'react-redux';
-import { selectPins } from '../store/pins/pinsSlice';
-import { Pin } from '../types/pinData';
-import PinItem from '../components/pinItem';
-import AddCategoryModal from '../components/addCategoryModal';
-import { Category } from '../types/categoryData';
-import { AppDispatch } from '../store/store';
+import { selectPins } from '../../store/pins/pinsSlice';
+import { Pin } from '../../types/pinData';
+import PinItem from './pinItem';
+import AddCategoryModal from './addCategoryModal';
+import { Category } from '../../types/categoryData';
+import { AppDispatch } from '../../store/store';
 import { RiArrowRightDoubleFill } from "react-icons/ri";
 import { HiOutlineArrowsExpand } from "react-icons/hi";
-import FullScreenComponent from '../components/FullScreen';
-import { selectFullScreen } from '../store/toggleModals/toggleModalSlice';
-import { toggleFullScreen, toggleEditModal, toggleAddModal } from '../store/toggleModals/toggleModalSlice';
-import { useAuth } from '../context/authContext';
+import FullScreenComponent from './FullScreen';
+import { selectFullScreen } from '../../store/toggleModals/toggleModalSlice';
+import { toggleFullScreen, toggleEditModal, toggleAddModal } from '../../store/toggleModals/toggleModalSlice';
+import { useAuth } from '../../context/authContext';
 import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
-import { app } from "../firebase"; // Ensure this path is correct
+import { app } from "../../firebase"; // Ensure this path is correct
 
 function Sidebar({pins}: {pins: Pin[]}) {
     const [toggle, setToggle] = useState(false);

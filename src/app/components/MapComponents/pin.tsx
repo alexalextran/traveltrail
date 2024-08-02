@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { AdvancedMarker, Pin, InfoWindow, useAdvancedMarkerRef } from "@vis.gl/react-google-maps";
-import styles from "../Sass/infoWindow.module.scss";
+import styles from "../../Sass/infoWindow.module.scss";
 import InfoWindowComponent from "./InfoWindowComponent";
-import ExpandedInfoModal from "../components/expandedInfoModal";
+import ExpandedInfoModal from "./expandedInfoModal";
 import { useSelector } from 'react-redux';
-import { Category } from "../types/categoryData";
-import { selectSelectedList } from "../store/List/listSlice"; 
+import { Category } from "../../types/categoryData";
+import { selectSelectedList } from "../../store/List/listSlice"; 
 import { doc, getFirestore, onSnapshot } from "firebase/firestore";
-import { app } from "../firebase";
-import { useAuth } from '../context/authContext'; // Import the useAuth hook
+import { app } from "../../firebase";
+import { useAuth } from '../../context/authContext'; // Import the useAuth hook
 
 const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {category: Category, pin: any, lat: number, lng: number, pinID: string, userLocation: { lat: number; lng: number; } }) => {
   const [markerRef, marker] = useAdvancedMarkerRef();

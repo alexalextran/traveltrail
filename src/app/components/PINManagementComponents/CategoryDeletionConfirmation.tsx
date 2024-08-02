@@ -1,10 +1,10 @@
 import React from 'react';
-import styles from '../Sass/DeletionConfirmationModal.module.scss';
-import { Category } from '../types/categoryData';
-import { selectPins } from '../store/pins/pinsSlice.ts';
+import styles from '../../Sass/DeletionConfirmationModal.module.scss';
+import { Category } from '../../types/categoryData.ts';
+import { selectPins } from '../../store/pins/pinsSlice.ts';
 import { useSelector } from 'react-redux';
-import {deleteCategoryAndRelatedPins} from '../firebaseFunctions/Categories.ts';
-import { useAuth } from '../context/authContext'; // Import the useAuth hook
+import {deleteCategoryAndRelatedPins} from '../../firebaseFunctions/Categories.ts';
+import { useAuth } from '../../context/authContext.js'; // Import the useAuth hook
 import { ToastContainer, toast } from 'react-toastify';
 
 export default function CategoryDeletionConfirmation({setcategoryDeleteModal, category}: {setcategoryDeleteModal: any, category: Category}) {

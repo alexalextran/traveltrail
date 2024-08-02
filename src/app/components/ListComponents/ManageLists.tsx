@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { writeList } from '../firebaseFunctions/Lists'; // Ensure this path is correct
-import { app } from "../firebase"; // Ensure this path is correct
+import { writeList } from '../../firebaseFunctions/Lists'; // Ensure this path is correct
+import { app } from "../../firebase"; // Ensure this path is correct
 import { getFirestore, collection, onSnapshot } from 'firebase/firestore';
-import { useAuth } from '../context/authContext'; // Import the useAuth hook
-import styles from '../Sass/ListComponent.module.scss';
+import { useAuth } from '../../context/authContext'; // Import the useAuth hook
+import styles from '../../Sass/ListComponent.module.scss';
 import { MdDeleteForever } from 'react-icons/md';
-import { deleteList } from '../firebaseFunctions/Lists';
+import { deleteList } from '../../firebaseFunctions/Lists';
 import { list } from 'firebase/storage';
 import { toast } from 'react-toastify';
 function ManageLists() {

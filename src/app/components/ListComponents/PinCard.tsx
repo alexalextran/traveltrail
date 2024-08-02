@@ -1,8 +1,8 @@
 // PinContainer.tsx
 import React, { useRef } from 'react';
 import { useDrag } from 'react-dnd';
-import styles from '../Sass/ListScreen.module.scss';
-import { Pin } from '../types/pinData';
+import styles from '../../Sass/ListScreen.module.scss';
+import { Pin } from '../../types/pinData';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 

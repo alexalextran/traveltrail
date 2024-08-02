@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectSelectedPin } from '../store/pins/pinsSlice';
-import styles from "../Sass/modal.module.scss";
-import { Category } from '../types/categoryData';
+import { selectSelectedPin } from '../../store/pins/pinsSlice';
+import styles from "../../Sass/modal.module.scss";
+import { Category } from '../../types/categoryData';
 import axios from 'axios';
-import { updateToFirestore } from '../firebaseFunctions/writeDocument';
-import { selectFullScreen } from '../store/toggleModals/toggleModalSlice';
-import { toggleEditModal } from '../store/toggleModals/toggleModalSlice';
+import { updateToFirestore } from '../../firebaseFunctions/writeDocument';
+import { selectFullScreen } from '../../store/toggleModals/toggleModalSlice';
+import { toggleEditModal } from '../../store/toggleModals/toggleModalSlice';
 import Draggable from 'react-draggable';
-import { useAuth } from '../context/authContext';
+import { useAuth } from '../../context/authContext';
 import { Rating } from 'react-simple-star-rating';
 import { useMapsLibrary } from '@vis.gl/react-google-maps';
 import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
-import { app } from "../firebase"; 
+import { app } from "../../firebase"; 
 import { toast } from 'react-toastify';
 
 function EditPinForm() {

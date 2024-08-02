@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import styles from '../Sass/FullScreen.module.scss';
-import { Pin } from '../types/pinData';
-import { Category } from '../types/categoryData';
+import styles from '../../Sass/FullScreen.module.scss';
+import { Pin } from '../../types/pinData.ts';
+import { Category } from '../../types/categoryData.ts';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import IconBar from './IconBar.tsx';
-import Modal from '../components/modal.tsx';
+import IconBar from '../ImageComponents/IconBar.tsx';
+import Modal from './modal.tsx';
 import AddCategoryModal from './addCategoryModal.tsx';
-import { toggleEditModal, toggleFullScreen } from '../store/toggleModals/toggleModalSlice.ts';
+import { toggleEditModal, toggleFullScreen } from '../../store/toggleModals/toggleModalSlice.ts';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../store/store.ts'; 
-import CategoryComponent from '../components/CategoryComponent.tsx';
-import { useAuth } from '../context/authContext';
+import { AppDispatch } from '../../store/store.ts'; 
+import CategoryComponent from './CategoryComponent.tsx';
+import { useAuth } from '../../context/authContext.js';
 
 interface FullScreenProps {
     pins: Pin[];

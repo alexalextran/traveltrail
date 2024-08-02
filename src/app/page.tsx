@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { selectEditModal } from './store/toggleModals/toggleModalSlice.ts';
-import LogIn from './components/LogIn';
-import SignUp from './components/SignUp';
+import LogIn from './components/AccountManagement/LogIn.tsx';
+import SignUp from './components/AccountManagement/SignUp.tsx';
 import styles from '../app/Sass/Auth.module.scss';
 import { useRequireAuth } from './hooks/useRequiredAuth.ts';
 

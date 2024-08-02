@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../context/authContext';
-import { removeImageReferenceFromFirestore } from '../firebaseFunctions/writeDocument';
-import styles from '../Sass/modal.module.scss';
+import { useAuth } from '../../context/authContext';
+import { removeImageReferenceFromFirestore } from '../../firebaseFunctions/writeDocument';
+import styles from '../../Sass/modal.module.scss';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import { app } from "../firebase"; // Ensure this path is correct
+import { app } from "../../firebase"; // Ensure this path is correct
 import { useSelector } from 'react-redux';
-import { selectSelectedPin } from '../store/pins/pinsSlice';
+import { selectSelectedPin } from '../../store/pins/pinsSlice';
 import { getFirestore, collection, onSnapshot, doc } from 'firebase/firestore';
 
 export default function ImageModal() {

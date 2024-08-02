@@ -2,21 +2,21 @@
 import { APIProvider, Map, AdvancedMarker, MapCameraProps, MapCameraChangedEvent } from '@vis.gl/react-google-maps';
 import PinComponent from './pin.tsx';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectPins } from '../store/pins/pinsSlice';
-import { fetchPins } from '../store/pins/pinsSlice';
+import { selectPins } from '../../store/pins/pinsSlice.ts';
+import { fetchPins } from '../../store/pins/pinsSlice.ts';
 import { useEffect, useState, useCallback, useMemo } from 'react';
-import { AppDispatch } from '../store/store'; // Import the AppDispatch type
-import useGeolocation from '../hooks/useGeolocation'; // Import the custom hook
+import { AppDispatch } from '../../store/store.ts'; // Import the AppDispatch type
+import useGeolocation from '../../hooks/useGeolocation.ts'; // Import the custom hook
 import { MdPersonPinCircle } from "react-icons/md";
-import styles from '../Sass/page.module.scss';
-import { selectLocation } from '../store/location/locationSlice';
-import { selectCategories } from '../store/categories/categoriesSlice';
-import { useAuth } from '../context/authContext'; // Import the useAuth hook
+import styles from '../../Sass/page.module.scss';
+import { selectLocation } from '../../store/location/locationSlice.ts';
+import { selectCategories } from '../../store/categories/categoriesSlice.ts';
+import { useAuth } from '../../context/authContext.js'; // Import the useAuth hook
 import { ToastContainer } from 'react-toastify';
 import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
-import { app } from "../firebase"; // Ensure this path is correct
-import { Category } from '../types/categoryData.ts';
-import { Pin } from '../types/pinData.ts';
+import { app } from "../../firebase.js"; // Ensure this path is correct
+import { Category } from '../../types/categoryData.ts';
+import { Pin } from '../../types/pinData.ts';
 import 'react-toastify/dist/ReactToastify.css';
 
 const MapComponent = ({pins}: {pins: Pin[]}) => {
