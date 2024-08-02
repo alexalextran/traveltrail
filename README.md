@@ -8,6 +8,7 @@ A **free** advanced travel planner developed by me, Alex Tran as a way to plan m
 **The application is available at traveltrailalextran.com**
 
 Also If you wish to explore more, my website is **alextranportfolio.com**
+
 # Tech-Stack
 
 Travel Trail was developed using several languages such as Typescript, React, NextJs, Firebase, Sass and Redux. Travel Trail also uses several React libraries such as 
@@ -32,6 +33,7 @@ Please note the API keys are hidden using a .env.local file that is not tracked 
  -     Multiple Ways To Sort Places And Activities
  -	   Integrated Social Media System To Share Information
  -     Download To CSV Available
+ -      Drag and drop UI
 
 ## Planned Features
  -       Animations & Improved UI

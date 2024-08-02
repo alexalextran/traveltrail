@@ -173,7 +173,9 @@ const Modal = () => {
               <option key={index} value={category.categoryName}>{category.categoryName}</option>
             ))}
           </select>
+         
           <label>
+            
             <input
               type="checkbox"
               checked={visited}
@@ -255,6 +257,8 @@ const Modal = () => {
                   <option key={index} value={category.categoryName}>{category.categoryName}</option>
                 ))}
               </select>
+              <hr></hr>
+              <i>Optional Fields</i>
               <label>
                 <input
                   type="checkbox"
