@@ -10,11 +10,8 @@ import { RootState } from '../store/store';
 import { useAuth } from '../context/authContext'; // Import the useAuth hook
 
 function ImgUpload({pinID}: {pinID: string}) {
-  const [images, setImages] = useState<string[]>([]);
-  const dispatch = useDispatch();
   const storage = getStorage(app);
   const fileInputRef = useRef<HTMLInputElement>(null!);
-  const selectedPin = useSelector((state: RootState) => state.pins.pins.find(pin => pin.id === pinID));
   const { user } = useAuth(); // Use the useAuth hook
 
   const handleClick = () => {
@@ -33,17 +30,6 @@ function ImgUpload({pinID}: {pinID: string}) {
         newImageUrls.push(url);
         await addImageReferenceToFirestore(`users/${user.uid}/pins` , pinID, url);
       }
-
-      if (selectedPin) {
-        const updatedPin = {
-          ...selectedPin,
-          imageUrls: [...(selectedPin.imageUrls ?? []), ...newImageUrls]
-        };
-        dispatch(selectPin(updatedPin));
-      }
-
-      setImages(oldImages => [...oldImages, ...newImageUrls]);
-      dispatch(addPictures({id: pinID, picture: [...images, ...newImageUrls]}));
     }
   }
 
@@ -55,6 +41,7 @@ function ImgUpload({pinID}: {pinID: string}) {
         onChange={handleUpload}
         className={styles.hiddenFileInput}
         multiple
+        accept="image/jpeg, image/gif, image/png"
       />
       <FaCameraRetro onClick={handleClick} />
     </div>
