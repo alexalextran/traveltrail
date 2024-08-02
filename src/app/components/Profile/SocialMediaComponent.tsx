@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import styles from '../Sass/ProfileComponent.module.scss';
-import { useAuth } from '../context/authContext'; // Adjust the path as needed
+import styles from '../../Sass/ProfileComponent.module.scss';
+import { useAuth } from '../../context/authContext'; 
 import {
     collection,
     getFirestore,
@@ -15,7 +15,7 @@ import {
     setDoc,
     writeBatch // Import writeBatch for Firestore batch operations
 } from 'firebase/firestore';
-import { app } from "../firebase"; // Ensure this path is correct
+import { app } from "../../firebase"; // Ensure this path is correct
 import { toast } from 'react-toastify';
 
 export default function SocialMediaComponent() {

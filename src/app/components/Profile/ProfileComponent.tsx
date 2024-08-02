@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from '../Sass/ProfileComponent.module.scss';
+import styles from '../../Sass/ProfileComponent.module.scss';
 import SocialMediaComponent from './SocialMediaComponent';
 import AccountManagementComponent from './AccountManagementComponent';
 import { CgProfile } from "react-icons/cg";

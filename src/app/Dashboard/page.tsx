@@ -12,7 +12,7 @@ import ListComponent from '../components/ListComponent.tsx';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useRequireAuth } from '../hooks/useRequiredAuth.ts';
-import ProfileComponent from '../components/ProfileComponent.tsx';
+import ProfileComponent from '../components/Profile/ProfileComponent.tsx';
 import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
 import { app } from "../firebase"; // Ensure this path is correct
 import { Pin } from '../types/pinData.ts';
