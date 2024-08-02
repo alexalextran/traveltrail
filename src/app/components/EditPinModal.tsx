@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { updatePin } from '../store/pins/pinsSlice';
 import { selectSelectedPin } from '../store/pins/pinsSlice';
 import styles from "../Sass/modal.module.scss";
 import { Category } from '../types/categoryData';
@@ -48,12 +47,12 @@ function EditPinForm() {
         const fetchedCategories = snapshot.docs.map(doc => ({
             CategoryID: doc.id,
             categoryName: doc.data().categoryName,
-            categoryColor: doc.data().categoryColor // Fix the typo in the property name
+            categoryColor: doc.data().categoryColor 
         }));
         setcategories(fetchedCategories);
     });
 
-    return () => unsubscribe(); // Clean up the subscription
+    return () => unsubscribe();
 }, []);
 
 

@@ -2,12 +2,10 @@ import React, { useEffect, useState, useRef } from 'react';
 import Draggable from 'react-draggable';
 import styles from "../Sass/modal.module.scss";
 import { useDispatch, useSelector } from 'react-redux';
-import { addPin } from '../../app/store/pins/pinsSlice.ts';
 import { Pin } from '../../app/types/pinData.ts';
-import {  useMapsLibrary } from '@vis.gl/react-google-maps';
+import { useMapsLibrary } from '@vis.gl/react-google-maps';
 import { writeToFirestore } from '../firebaseFunctions/writeDocument.ts'; // Adjust the import path as necessary
 import { Category } from '../types/categoryData.ts';
-import { selectCategories } from '../store/categories/categoriesSlice';
 import axios from 'axios';
 import { selectAddModal } from '../store/toggleModals/toggleModalSlice.ts';
 import { toggleAddModal } from '../store/toggleModals/toggleModalSlice.ts';
@@ -19,10 +17,10 @@ import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
 import { app } from "../firebase"; 
 
 const Modal = () => {
-  const placesLib = useMapsLibrary('places');
+  const placesLib = useMapsLibrary('places');  //from google maps api
   const [categories, setcategories] = useState<Category[]>([]);
-  const ShowAddModal = useSelector(selectAddModal);
-  const ShowFullScreen = useSelector(selectFullScreen);
+  const ShowAddModal = useSelector(selectAddModal); //redux toggle state for the modal
+  const ShowFullScreen = useSelector(selectFullScreen);  //redux toggle state for the fullscreen version modal
 
   const [description, setDescription] = useState<string>('');
   const [visited, setVisited] = useState<boolean>(false);
@@ -38,7 +36,7 @@ const Modal = () => {
 
   const addressInputRef = useRef<HTMLInputElement | null>(null);
 
-  useEffect(() => {
+  useEffect(() => { //handle the autocomplete feature for the address input field
     if (placesLib && addressInputRef.current) {
       const autocomplete = new google.maps.places.Autocomplete(addressInputRef.current);
       autocomplete.addListener('place_changed', () => {
@@ -50,28 +48,42 @@ const Modal = () => {
     }
   }, [placesLib, ShowAddModal]);
 
-  useEffect(() => {
+  useEffect(() => { //fetch categories from firestore
     const db = getFirestore(app);
     const listCollectionRef = collection(db, `users/${user.uid}/categories`);
     const unsubscribe = onSnapshot(listCollectionRef, (snapshot) => {
-        const fetchedCategories = snapshot.docs.map(doc => ({
-            CategoryID: doc.id,
-            categoryName: doc.data().categoryName,
-            categoryColor: doc.data().categoryColor // Fix the typo in the property name
-        }));
-        setcategories(fetchedCategories);
+      const fetchedCategories = snapshot.docs.map(doc => ({
+        CategoryID: doc.id,
+        categoryName: doc.data().categoryName,
+        categoryColor: doc.data().categoryColor 
+      }));
+      setcategories(fetchedCategories);
     });
 
-    return () => unsubscribe(); // Clean up the subscription
-}, []);
+    return () => unsubscribe(); 
+  }, []);
 
+  useEffect(() => {
+    if (categories.length === 0 && ShowAddModal || categories.length === 0 && ShowFullScreen) { //notify the user if there are no categories
+      toast.error('You do not have any categories, try adding some in the sidebar to the left', {
+        position: "top-right",  
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  }, [ShowAddModal, ShowFullScreen]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     
-    const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.NEXT_PUBLIC_GOOGLEAPI_API_KEY}`);
+    const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.NEXT_PUBLIC_GOOGLEAPI_API_KEY}`); //get the coordinates of the address
     const data = response.data;
-    if(data.status === 'ZERO_RESULTS') {
+    if(data.status === 'ZERO_RESULTS') {  //if address is invalid throw an error
       toast.error('Could not add a pin, please enter a valid address!', {
         position: "top-right",
         autoClose: 5000,
@@ -101,12 +113,12 @@ const Modal = () => {
       website: website
     };
 
-    writeToFirestore( user.uid, newPin)
+    writeToFirestore(user.uid, newPin)
       .then((docId) => {
-        const completePin: Pin = { ...newPin, id: docId };
+        const completePin: Pin = { ...newPin, id: docId }; //ignore, redux (not used)
         toast.success('Pin added successfully!', {
           position: "top-right",
-          autoClose: 5000,
+          autoClose: 2000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -114,19 +126,27 @@ const Modal = () => {
           progress: undefined,
           theme: "light",
         });
-
       })
-      .catch((error) => console.error('Error writing document: ', error));
+      .catch((error) =>
+        toast.success(error, {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        })
+      );
 
-    // Reset form fields
+    // Reset form fields besides category and visited since user might want to add another pin with the same category or visited status
     setDescription('');
     setAddress('');
     setTitle('');
     setOpeningHours('');
     setWebsite('');
   };
-
-
 
   const handleResetAllFields = () => {
     setRating(0);
@@ -138,10 +158,10 @@ const Modal = () => {
     setCategory('');
     setVisited(false);
   }
+
   const handleRating = (rate: number) => {
     setRating(rate);
   };
-
 
   if (ShowFullScreen) {
     return (
@@ -173,9 +193,7 @@ const Modal = () => {
               <option key={index} value={category.categoryName}>{category.categoryName}</option>
             ))}
           </select>
-         
           <label>
-            
             <input
               type="checkbox"
               checked={visited}
@@ -209,7 +227,6 @@ const Modal = () => {
         </form>
       </>
     );
-    
   }
 
   return (
@@ -220,12 +237,11 @@ const Modal = () => {
       {ShowAddModal &&
       <div className={styles.modalWrapper}>
         <Draggable
-        bounds="parent"
+          bounds="parent"
           handle=".modal-handle"
           defaultPosition={{ x: window.innerWidth / 1.5, y: window.innerHeight / 6 }}
         >
           <div className={styles.modal}>
-            
             <div className="modal-handle" style={{ cursor: 'move' }}>
               <h1>Add Pin</h1>
               <p>Drag me here!</p>
@@ -252,7 +268,7 @@ const Modal = () => {
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
               >
-                 <option value="">Select a category</option>
+                <option value="">Select a category</option>
                 {categories.map((category: Category, index: number) => (
                   <option key={index} value={category.categoryName}>{category.categoryName}</option>
                 ))}
@@ -273,12 +289,11 @@ const Modal = () => {
                 onChange={(e) => setOpeningHours(e.target.value)}
                 placeholder="Opening Hours e.g 11am - 8pm"
               />
-               <Rating
+              <Rating
                 onClick={handleRating} 
                 initialValue={rating}
                 allowFraction={true}
-                />
-
+              />
               <input
                 type="url"
                 value={website}
@@ -291,14 +306,13 @@ const Modal = () => {
                 placeholder="Description"
               />
               <div className={styles.formButtons}>
-             <button className={styles.clearbutton} type="button" onClick={handleResetAllFields}>Clear All</button>
-             <button type="submit">Add Pin</button>
-             </div>
+                <button className={styles.clearbutton} type="button" onClick={handleResetAllFields}>Clear All</button>
+                <button type="submit">Add Pin</button>
+              </div>
             </form>
-           
           </div>
         </Draggable>
-        </div>}
+      </div>}
     </>
   );
 };

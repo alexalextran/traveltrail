@@ -4,8 +4,7 @@ import { Category } from '../types/categoryData';
 import { selectPins } from '../store/pins/pinsSlice.ts';
 import { useSelector } from 'react-redux';
 import {deleteCategoryAndRelatedPins} from '../firebaseFunctions/Categories.ts';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import { useAuth } from '../context/authContext'; // Import the useAuth hook
 
 
