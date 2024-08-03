@@ -1,0 +1,44 @@
+{
+    "helpItems": [
+      {
+        "helpTitle": "Adding and deleting a category",
+        "helpImage": "../assets/categories.gif",
+        "helpDescription": "To add a category, navigate to the categories section and click 'Add Category'. To delete, select the category and click 'Delete'."
+      },
+      {
+        "helpTitle": "Adding, editing and deleting a pin",
+        "helpImage": "../assets/images/pin.gif",
+        "helpDescription": "Adding a pin usually works by clicking on the map at the desired location. To edit a pin, click on it and select 'Edit'. To delete, select the pin and click 'Delete'."
+      },
+      {
+        "helpTitle": "Using the map",
+        "helpImage": "../assets/images/map.gif",
+        "helpDescription": "Use the map by dragging to pan and scrolling to zoom in and out. Click on locations to interact with pins or categories."
+      },
+      {
+        "helpTitle": "FullScreen Mode",
+        "helpImage": "../assets/images/fullscreen.gif",
+        "helpDescription": "To enter FullScreen mode, click the 'FullScreen' button on the map interface. To exit, click the 'Exit FullScreen' button."
+      },
+      {
+        "helpTitle": "Managing Images",
+        "helpImage": "../assets/images/manage_images.gif",
+        "helpDescription": "Manage images by uploading them to the gallery. You can edit or delete images by selecting them and choosing the appropriate action."
+      },
+      {
+        "helpTitle": "Managing Lists",
+        "helpImage": "../assets/images/manage_lists.gif",
+        "helpDescription": "Lists can be managed by adding items through the 'Add Item' button, editing items by selecting them, and deleting items by clicking the 'Delete' button."
+      },
+      {
+        "helpTitle": "Export To CSV",
+        "helpImage": "../assets/images/export_csv.gif",
+        "helpDescription": "Export data to CSV by navigating to the export section and clicking 'Export to CSV'. Follow the prompts to save the file to your device."
+      },
+      {
+        "helpTitle": "Social Media",
+        "helpImage": "../assets/images/social_media.gif",
+        "helpDescription": "Share your pins and categories on social media by clicking the 'Share' button and selecting the desired platform."
+      }
+    ]
+  }

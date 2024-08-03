@@ -20,7 +20,7 @@ import { useAuth } from '../context/authContext.js';
 import styles from '../Sass/Auth.module.scss';
 import { mkConfig, generateCsv, download } from "export-to-csv";
 import { FaFileCsv } from "react-icons/fa";
-
+import HelpComponent from '../components/HelpComponent.tsx';
 type CSVPin = {
   id: string;
   address: string;
@@ -38,6 +38,7 @@ type CSVPin = {
 
 const Page = () => {
   const toggleEdit = useSelector(selectEditModal);
+  const [helpScreen, sethelpScreen] = useState(false)
   const userRequire = useRequireAuth();
   const { loading } = useRequireAuth();
   const [showContent, setShowContent] = useState(false);
@@ -126,6 +127,8 @@ const Page = () => {
             <Sidebar pins={pins} />
             <Map pins={pins} />
             <ProfileComponent />
+            {helpScreen && <HelpComponent sethelpScreen={sethelpScreen}/>}
+            <button className={styles.helpButton} onClick={() => sethelpScreen(true)}>?</button>
             <button className={styles.csvButton} onClick={downloadCSV}>
               <FaFileCsv />
             </button>
