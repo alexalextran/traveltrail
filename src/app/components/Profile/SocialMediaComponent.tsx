@@ -59,7 +59,7 @@ export default function SocialMediaComponent() {
             const db = getFirestore(app);
             const publicLists: { friendId: string; listId: string; listName: string }[] = [];
 
-            for (const friend of friends) {
+            for (const friend of friends) { 
                 const listsRef = collection(db, `users/${friend.friendID}/lists`);
                 const q = query(listsRef, where("visible", "==", true));
                 const snapshot = await getDocs(q);
@@ -84,16 +84,13 @@ export default function SocialMediaComponent() {
     const handleAddFriend = async () => {
         const db = getFirestore(app);
         if (friendCode.trim() === '') return;
-
-          // Check if the user is already a friend
-          const friendsRef = collection(db, `users/${user.uid}/friends`);
-          const friendsSnapshot = await getDocs(friendsRef);
-          const isFriend = friendsSnapshot.docs.some(doc => doc.data().friendID === friendCode);
-          const friendsName = friendsSnapshot.docs.find(doc => doc.data().friendID === friendCode);
-
-          if (isFriend) {
-            toast.error(`${friendsName?.data().displayName} has already been added as a friend`, {
-                position: "top-right",  
+    
+        // Check if the friendCode exists
+        const friendDocRef = doc(db, `users/${friendCode}`);
+        const friendDocSnapshot = await getDoc(friendDocRef);
+        if (!friendDocSnapshot.exists() || friendCode === user.uid) {
+            toast.error("Invalid friend code. Please try again.", {
+                position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
                 closeOnClick: true,
@@ -101,22 +98,50 @@ export default function SocialMediaComponent() {
                 draggable: true,
                 progress: undefined,
                 theme: "light",
-              });
-              return;
-          }
-
-        
-        //get current users display name
+            });
+            setFriendCode('');
+            return;
+        }
+    
+        // Check if the user is already a friend
+        const friendsRef = collection(db, `users/${user.uid}/friends`);
+        const friendsSnapshot = await getDocs(friendsRef);
+        const isFriend = friendsSnapshot.docs.some(doc => doc.data().friendID === friendCode);
+        const friendsName = friendsSnapshot.docs.find(doc => doc.data().friendID === friendCode);
+    
+        if (isFriend) {
+            toast.error(`${friendsName?.data().displayName} has already been added as a friend`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+    
+        // Get current user's display name
         const friendRequestsRef = collection(db, `users/${friendCode}/friendRequests`);
         const userDocRef = doc(db, `users/${user.uid}`);
         const userDocSnapshot = await getDoc(userDocRef);
-
-      
-
+    
         await addDoc(friendRequestsRef, {
             from: user.uid,
             displayName: userDocSnapshot.data()?.displayName,
             status: 'pending'
+        });
+        toast.success(`friendrequest was sent`, {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
         });
         setFriendCode('');
     };
