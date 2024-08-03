@@ -7,7 +7,9 @@ import LogIn from './components/AccountManagement/LogIn.tsx';
 import SignUp from './components/AccountManagement/SignUp.tsx';
 import styles from '../app/Sass/Auth.module.scss';
 import { useRequireAuth } from './hooks/useRequiredAuth.ts';
-
+import authImage from '../app/assets/authImage.png'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const Page = () => {
   const toggleEdit = useSelector(selectEditModal);
   const [isLoggingIn, setIsLoggingIn] = useState(true); // Toggle between log in and sign up
@@ -24,13 +26,23 @@ const Page = () => {
   else if( user.user == null && user.loading === false){ 
   return (
   <main className={styles['main']}>
-    <div className={styles.infoPanel}>
+         <ToastContainer />
+         <div className={styles.infoPanel}>
 
       <div>
       <h2>Travel Trail</h2>
-      <p>Welcome to Travel Trail Version 0.8</p>
+      <p>Welcome to Travel Trail Version 0.9</p>
       <p>A <span>free</span> advanced travel planner developed by me, Alex Tran as a way to plan my own japan trip. However feel free to use it as much as you like. Disclaimer: Travel Trail is still in early beta, so you may come across some unexpected bugs, please let me know if you find any!</p>
+
+      <div className={styles.helpInfo}>
+      <img src={authImage.src}></img>
+      <p>If your new to travel trail, you can press the question-mark button for a short tutorial; once you are logged in!</p>
       </div>
+      
+
+      </div>
+
+      
 
       <div>
       <h4>Current Implemented Features</h4>

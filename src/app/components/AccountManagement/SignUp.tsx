@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/authContext'; // Ensure this path is correct
 import styles from '../../Sass/Auth.module.scss';
-import { doc, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, getFirestore, setDoc } from 'firebase/firestore';
 import { app } from "../../firebase"; // Ensure this path is correct
+import { toast } from 'react-toastify';
 
 const SignUp: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -14,18 +15,45 @@ const SignUp: React.FC = () => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      alert("Passwords don't match");
+      toast.error(`Passwords do not match!`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
       return;
     }
     try {
       const userCredential = await signup(email, password);
       const userDocRef = doc(getFirestore(app), `users/${userCredential}`);
       await setDoc(userDocRef, { displayName: displayName });
-      console.log('Signed up:', userCredential.user);
+      toast.success(`Account creation successful`, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     } catch (error) {
       console.error('Error signing up:', error);
       const errorMessage = (error as Error).message;
-      alert('Error signing up: ' + errorMessage);
+      toast.error(`Password should be at least 6 characters`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   };
 
@@ -51,14 +79,14 @@ const SignUp: React.FC = () => {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
+          placeholder="Password (Min 6 characters)"
           required
         />
         <input
           type="password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
-          placeholder="Confirm Password"
+          placeholder="Confirm Password (Min 6 characters)"
           required
         />
         <button type="submit">Sign Up</button>

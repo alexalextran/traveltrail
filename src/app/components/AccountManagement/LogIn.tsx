@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { auth } from '../../firebase'; // Ensure this path is correct
+import { toast } from 'react-toastify';
 import styles from '../../Sass/Auth.module.scss';
 import { useAuth } from '../../context/authContext';
 const LogIn: React.FC = () => {
@@ -10,10 +10,18 @@ const LogIn: React.FC = () => {
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       try {
-        console.log(email, password)
         await login(email, password);
       } catch (error) {
-        console.error('Error logging in:', error);
+        toast.error(`Invalid details, please try again`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
     };
 
