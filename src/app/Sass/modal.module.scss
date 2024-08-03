@@ -49,11 +49,11 @@
 .button {
   font-size: 1.5em; // Adjusted for better visibility
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 1em;
+  right: 1em;
   z-index: 40;
-  width: 60px; // Adjusted size
-  height: 60px; // Adjusted size
+  width: 2.5em; // Adjusted size
+  height: 2.5em; // Adjusted size
   border-radius: 50%;
   background-color: $webBlue; // Matching theme
   color: white; // For contrast
