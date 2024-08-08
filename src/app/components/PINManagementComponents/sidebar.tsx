@@ -14,9 +14,10 @@ import { selectFullScreen } from '../../store/toggleModals/toggleModalSlice';
 import { toggleFullScreen, toggleEditModal, toggleAddModal } from '../../store/toggleModals/toggleModalSlice';
 import { useAuth } from '../../context/authContext';
 import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
-import { app } from "../../firebase"; // Ensure this path is correct
+import { app } from "../../firebase";
+import { useTransition, animated } from '@react-spring/web';
 
-function Sidebar({pins}: {pins: Pin[]}) {
+function Sidebar({ pins }: { pins: Pin[] }) {
     const [toggle, setToggle] = useState(false);
     const [extend, setExtend] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<null | string>(null);
@@ -36,22 +37,28 @@ function Sidebar({pins}: {pins: Pin[]}) {
             const fetchedCategories = snapshot.docs.map(doc => ({
                 CategoryID: doc.id,
                 categoryName: doc.data().categoryName,
-                categoryColor: doc.data().categoryColor // Fix the typo in the property name
+                categoryColor: doc.data().categoryColor 
             }));
             setcategories(fetchedCategories);
         });
     
-        return () => unsubscribe(); // Clean up the subscription
+        return () => unsubscribe(); 
     }, []);
+
+    const transitions = useTransition(extend ? filteredPins : [], {
+        from: { opacity: 0, y: -50 },
+        enter: { opacity: 1, y: 0 },
+        leave: { opacity: 0, y: -50 },
+        update: { opacity: 1, y: 0 },
+        keys: (pin: Pin) => pin.id, 
+    });
 
     return (
         <>
             <main className={styles.main} style={{ left: extend ? '0vw' : '-32vw' }}>
                 <div className={styles.categories}>
-
-                <div className={styles.addCategoryBtn} onClick={() => setToggle(true)}>Add Category</div>
-
-                <div
+                    <div className={styles.addCategoryBtn} onClick={() => setToggle(true)}>Add Category</div>
+                    <div
                         onClick={() => setSelectedCategory(null)}
                         style={{
                             backgroundColor: selectedCategory === null ? 'rgb(0,123,255)' : undefined,
@@ -60,9 +67,6 @@ function Sidebar({pins}: {pins: Pin[]}) {
                     >
                         Show All
                     </div>
-
-
-                    
                     {categories.map((category: Category) => (
                         <div
                             key={category.CategoryID}
@@ -75,8 +79,6 @@ function Sidebar({pins}: {pins: Pin[]}) {
                             {category.categoryName}
                         </div>
                     ))}
-                    
-                 
                 </div>
                 <div className={styles.pinItems}>
                     <div className={styles.unNvisitedButtons}>
@@ -93,7 +95,11 @@ function Sidebar({pins}: {pins: Pin[]}) {
                             Unvisited
                         </button>
                     </div>
-                    {filteredPins.map((pin: Pin, index: number) => <PinItem key={index} pin={pin} />)}
+                    {transitions((style, pin, _, index) => (
+                        <animated.div style={style}>
+                            <PinItem key={index} index={index} pin={pin} />
+                        </animated.div>
+                    ))}
                 </div>
                 <div className={styles.rightExtender}>
                     <div onClick={() => { setExtend(!extend) }} className={extend ? styles.rotated : ''}><RiArrowRightDoubleFill /></div>

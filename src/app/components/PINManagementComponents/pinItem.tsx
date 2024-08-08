@@ -9,11 +9,12 @@ import { setLocation } from '../../store/location/locationSlice.ts';
 import { AppDispatch } from '../../store/store.ts';
 
 
-function PinItem({ pin }: { pin: Pin }) {
+function PinItem({ pin, index }: { pin: Pin, index: number }) {
   const dispatch: AppDispatch = useDispatch(); 
 
-    const [show, setshow] = useState(false)
     const categories = useSelector(selectCategories);
+
+  
 
     const category:Category = categories.filter(category => category.categoryName === pin.category)[0]
   return (
@@ -25,7 +26,6 @@ function PinItem({ pin }: { pin: Pin }) {
 
 
 
-        {show && <div>{pin.description}</div> }
       <IconBar enableImage={false} pin={pin} setchild={null} color={category?.categoryColor}/>
           </main>
   )
