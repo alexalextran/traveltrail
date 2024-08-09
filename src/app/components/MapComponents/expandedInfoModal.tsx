@@ -7,6 +7,8 @@ import "react-multi-carousel/lib/styles.css";
 import { useMapsLibrary } from '@vis.gl/react-google-maps';
 import IconBar from '../ImageComponents/IconBar.tsx';
 import { Rating } from 'react-simple-star-rating';
+import { useSpring, animated } from '@react-spring/web';
+import { transform } from 'next/dist/build/swc/index';
 
 export default function ExpandedInfoModal({pin, settoggleIWM, userLocation, filteredCategory}: {filteredCategory: Category, pin: Pin, settoggleIWM: any, userLocation: { lat: number, lng: number }}) {
   const responsiveConfig = {
@@ -30,6 +32,13 @@ export default function ExpandedInfoModal({pin, settoggleIWM, userLocation, filt
   }
   }
 
+
+  const fadeIn = useSpring({
+    from: { opacity: 0, transform: `translate(50%, 50%)` },
+    to: { opacity: 1, transform: `translate(-50%, 50%)`},
+    config: { tension: 200, friction: 20 },
+});
+
   const geometryLibrary = useMapsLibrary('geometry');
   const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
     if (!geometryLibrary) {
@@ -46,7 +55,8 @@ export default function ExpandedInfoModal({pin, settoggleIWM, userLocation, filt
 
   const distanceToUser = calculateDistance(pin.lat, pin.lng, userLocation.lat, userLocation.lng);
   return (
-    <main className={styles.main} >
+    
+    <animated.div style={fadeIn} className={styles.main} >
       <div className={styles.header} >
       <h1>{pin.title}</h1>
       <button onClick={() => settoggleIWM(false)}>Close</button>
@@ -82,6 +92,6 @@ export default function ExpandedInfoModal({pin, settoggleIWM, userLocation, filt
         <IconBar enableImage={false} pin={pin} setchild={null} color={filteredCategory.categoryColor}/>
       </div>
       
-    </main>
+    </animated.div>
   )
 }
