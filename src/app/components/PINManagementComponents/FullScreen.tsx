@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store/store.ts'; 
 import CategoryComponent from './CategoryComponent.tsx';
 import { useAuth } from '../../context/authContext.js';
+import { useSpring, animated } from '@react-spring/web';
 
 interface FullScreenProps {
     pins: Pin[];
@@ -51,9 +52,17 @@ function FullScreen({ pins, categories }: FullScreenProps) {
 
     const filteredCategories = [...categories].sort((a, b) => a.categoryName.localeCompare(b.categoryName));
 
+    // UseSpring for fade-in animation
+    const fadeIn = useSpring({
+        from: { opacity: 0, transform: 'scale(0.8)' },
+        to: { opacity: 1, transform: 'scale(1)' },
+        config: { tension: 200, friction: 20 }, 
+        delay: 100
+    });
+
     return (
         <>
-            <main className={styles.main}>
+            <animated.main style={fadeIn} className={styles.main}>
                 <div className={styles.header}>
                     <h1>Travel Trail</h1>
                     <button className={styles.exitButton} onClick={() => {
@@ -112,7 +121,7 @@ function FullScreen({ pins, categories }: FullScreenProps) {
                         {child}
                     </div>
                 </div>
-            </main>
+            </animated.main>
         </>
     );
 }

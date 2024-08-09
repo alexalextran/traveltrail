@@ -17,6 +17,7 @@ import PinCard from './PinCard.tsx';
 import { useDrop } from 'react-dnd';
 import { removePinFromList } from '../../firebaseFunctions/Lists.ts'; // Function to add pin to list
 import { useAuth } from '../../context/authContext.js'; // Import the useAuth hook
+import { useSpring, animated } from '@react-spring/web';
 
 
 function ListScreen() {
@@ -104,6 +105,14 @@ function ListScreen() {
         }
     };
 
+    const fadeIn = useSpring({
+        from: { opacity: 0, transform: 'scale(0.8)' },
+        to: { opacity: 1, transform: 'scale(1)' },
+        config: { tension: 200, friction: 20 }, 
+        delay: 100
+    });
+
+
 
     const [{ isOver }, drop] = useDrop({
         accept: 'addedPin',
@@ -132,7 +141,7 @@ function ListScreen() {
 
     return (
         <>
-            <main className={styles.main}>
+            <animated.main style={fadeIn} className={styles.main}>
                 <div className={styles.header}>
                     <h1>Lists</h1>
                     <button className={styles.exitButton} onClick={() => {
@@ -190,7 +199,7 @@ function ListScreen() {
                         {child}
                     </div>
                 </div>
-            </main>
+            </animated.main>
         </>
     );
 }

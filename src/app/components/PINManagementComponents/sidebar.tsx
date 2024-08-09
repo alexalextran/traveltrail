@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styles from "../../Sass/sidebar.module.scss";
 import { useSelector, useDispatch } from 'react-redux';
-import { selectPins } from '../../store/pins/pinsSlice';
 import { Pin } from '../../types/pinData';
 import PinItem from './pinItem';
 import AddCategoryModal from './addCategoryModal';
@@ -50,6 +49,7 @@ function Sidebar({ pins }: { pins: Pin[] }) {
         enter: { opacity: 1, y: 0 },
         leave: { opacity: 0, y: -50 },
         update: { opacity: 1, y: 0 },
+        config: { tension: 200, friction: 20 }, 
         keys: (pin: Pin) => pin.id, 
     });
 

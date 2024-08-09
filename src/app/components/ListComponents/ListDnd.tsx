@@ -6,6 +6,7 @@ import { addPinToList } from '../../firebaseFunctions/Lists'; // Function to add
 import DnDPin from './DnDPin';
 import { Pin } from '../../types/pinData';
 import { useAuth } from '../../context/authContext'; // Import the useAuth hook
+import { animated, useTransition } from '@react-spring/web';
 
 
 const ListDnD = ({ listId }: { listId: string }) => {
@@ -17,7 +18,7 @@ const ListDnD = ({ listId }: { listId: string }) => {
   useEffect(() => {
     if (!listId) {
       setPinData([]);
-      return; // Exit early if listId is null or undefined
+      return; 
     }
 
     const listDocRef = doc(db, `users/${user.uid}/lists/${listId}`);
@@ -64,13 +65,30 @@ const ListDnD = ({ listId }: { listId: string }) => {
   drop(dropRef);
 
 
+  const transitions = useTransition( pinData, {
+    from: { opacity: 0, y: -50 },
+    enter: { opacity: 1, y: 0 },
+    leave: { opacity: 0, y: -50 },
+    update: { opacity: 1, y: 0 },
+    trail: 50,
+    config: { tension: 200, friction: 20 }, 
+    keys: (pin: Pin) => pin.id, 
+});
+
+
   return (
     <div ref={dropRef} style={{ border: isOver ? '2px solid green' : '2px solid gray', padding: '20px', margin: '10px' }}>
       <p>Drag and drop pins here to add and remove to the list</p>
       <div>
-        {pinData.map((pin) => (
-          <DnDPin key={pin.id} pin={pin} />
-        ))}
+
+      {transitions((style, pin, _) => (
+                        <animated.div style={style}>
+                             <DnDPin key={pin.id} pin={pin} />
+                        </animated.div>
+                    ))}
+
+
+        
       </div>
     </div>
   );
