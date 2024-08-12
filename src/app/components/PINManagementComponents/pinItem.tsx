@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Pin } from '../../types/pinData.ts'
 import styles from '../../Sass/pinItem.module.scss'
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,14 +7,30 @@ import { selectCategories } from '../../store/categories/categoriesSlice.ts'
 import { Category } from '../../types/categoryData.ts';
 import { setLocation } from '../../store/location/locationSlice.ts';
 import { AppDispatch } from '../../store/store.ts';
-
+import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
+import { app } from "../../firebase.js"; 
+import { useAuth } from '../../context/authContext.js'; // Import the useAuth hook
 
 function PinItem({ pin, index }: { pin: Pin, index: number }) {
   const dispatch: AppDispatch = useDispatch(); 
+  const [categories, setcategories] = useState<Category[]>([]);
 
-    const categories = useSelector(selectCategories);
+  const { user } = useAuth(); 
 
+    useEffect(() => { //fetch categories from firestore
+      const db = getFirestore(app);
+      const listCollectionRef = collection(db, `users/${user.uid}/categories`);
+      const unsubscribe = onSnapshot(listCollectionRef, (snapshot) => {
+        const fetchedCategories = snapshot.docs.map(doc => ({
+          CategoryID: doc.id,
+          categoryName: doc.data().categoryName,
+          categoryColor: doc.data().categoryColor 
+        }));
+        setcategories(fetchedCategories);
+      });
   
+      return () => unsubscribe(); 
+    }, []);
 
     const category:Category = categories.filter(category => category.categoryName === pin.category)[0]
   return (
