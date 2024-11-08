@@ -20,10 +20,11 @@ import { Pin } from '../../types/pinData.ts';
 import 'react-toastify/dist/ReactToastify.css';
 
 const MapComponent = ({pins}: {pins: Pin[]}) => {
+
   const dispatch = useDispatch<AppDispatch>();
   const { location, error } = useGeolocation();
   const locationRedux = useSelector(selectLocation);
-  const { user } = useAuth(); // Use the useAuth hook
+  const { user, logout } = useAuth(); // Use the useAuth hook
   const [categories, setcategories] = useState<Category[]>([]);
 
   useEffect(() => {
@@ -89,6 +90,8 @@ const MapComponent = ({pins}: {pins: Pin[]}) => {
         disableDefaultUI={true}
       >
          <button className={styles.centerButton} onClick={centerCamera}>Click To Center</button>
+         <button className={styles.MobileLogout} onClick={() => logout()}>Logout</button>
+
         {pins.map((pin) => {
           const categoryProp = categories.find(category => category.categoryName === pin.category);
           if (!categoryProp) {

@@ -61,6 +61,7 @@ function Sidebar({ pins }: { pins: Pin[] }) {
 
     return (
         <>
+       
             <main className={styles.main} style={{ left: extend ? '0vw' : '-32vw' }}>
                 <div className={styles.categories}>
                     <div className={styles.addCategoryBtn} onClick={() => setToggle(true)}>Add Category</div>

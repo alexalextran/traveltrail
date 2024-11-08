@@ -162,3 +162,12 @@
       }
   }
 
+
+  @media (max-width: 425px) {
+    .main{
+    display: none !important;
+    .header{
+        display: none;
+    }
+    }
+}

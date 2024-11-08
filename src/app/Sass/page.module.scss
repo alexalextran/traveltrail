@@ -17,3 +17,32 @@
     font-size: 1em;
     padding: 0.6em;
   }
+  
+  .MobileLogout{
+    position: absolute;
+    top: 1em;
+    left: 0%;
+    margin-left: 2em;
+    transform: translate(-50%, 0%);
+   
+    @include button;
+    background-color: $webBlue;
+    color: white;
+    font-size: 1em;
+    padding: 0.6em;
+    display: none;
+  }
+
+
+
+  @media (max-width: 425px) {
+   .centerButton{
+    @include absolutecenter;
+    bottom: 5em;
+   }
+
+   .MobileLogout{
+    display: block;
+   }
+  
+  }

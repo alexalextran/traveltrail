@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import Map from '../components/MapComponents/map.tsx';
 import Sidebar from '../components/PINManagementComponents/sidebar.tsx';
+import MobileSidebar from '../components/PINManagementComponents/MobileSidebar.tsx'; // Import your mobile sidebar
 import Modal from '../components/PINManagementComponents/modal.tsx';
 import { APIProvider } from '@vis.gl/react-google-maps';
 import EditPinModal from '../components/PINManagementComponents/EditPinModal.tsx';
@@ -21,6 +22,7 @@ import styles from '../Sass/Auth.module.scss';
 import { mkConfig, generateCsv, download } from "export-to-csv";
 import { FaFileCsv } from "react-icons/fa";
 import HelpComponent from '../components/HelpComponent.tsx';
+
 type CSVPin = {
   id: string;
   address: string;
@@ -38,13 +40,28 @@ type CSVPin = {
 
 const Page = () => {
   const toggleEdit = useSelector(selectEditModal);
-  const [helpScreen, sethelpScreen] = useState(false)
+  const [helpScreen, sethelpScreen] = useState(false);
   const userRequire = useRequireAuth();
   const { loading } = useRequireAuth();
   const [showContent, setShowContent] = useState(false);
   const [pins, setPins] = useState<Pin[]>([]);
   const [CSVData, setCSVData] = useState<CSVPin[]>([]);
   const { user } = useAuth();
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect window size and update state
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 425); // Set your mobile breakpoint here
+    };
+
+    handleResize(); // Check on initial load
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -124,10 +141,10 @@ const Page = () => {
             <Modal />
             <ListComponent />
             {toggleEdit && <EditPinModal />}
-            <Sidebar pins={pins} />
+            {isMobile ? <MobileSidebar pins={pins} /> : <Sidebar pins={pins} />} {/* Render mobile sidebar if on mobile */}
             <Map pins={pins} />
             <ProfileComponent />
-            {helpScreen && <HelpComponent sethelpScreen={sethelpScreen}/>}
+            {helpScreen && <HelpComponent sethelpScreen={sethelpScreen} />}
             <button className={styles.helpButton} onClick={() => sethelpScreen(true)}>?</button>
             <button className={styles.csvButton} onClick={downloadCSV}>
               <FaFileCsv />
