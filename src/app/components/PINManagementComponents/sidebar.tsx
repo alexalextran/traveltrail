@@ -103,7 +103,7 @@ function Sidebar({ pins }: { pins: Pin[] }) {
                     </div>
                     <input
                         type="text"
-                        placeholder="Search pins..."
+                        placeholder="Search By Title"
                         value={searchTerm}
                         onChange={handleSearchChange}
                         className={styles.searchBar}
