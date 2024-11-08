@@ -21,6 +21,7 @@ function Sidebar({ pins }: { pins: Pin[] }) {
     const [extend, setExtend] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<null | string>(null);
     const [toggleUnvisited, setToggleUnvisited] = useState<null | boolean>(null);
+    const [searchTerm, setSearchTerm] = useState('');
     const dispatch: AppDispatch = useDispatch();
     const fullScreen = useSelector(selectFullScreen);
     const { user } = useAuth();
@@ -28,6 +29,7 @@ function Sidebar({ pins }: { pins: Pin[] }) {
 
     let filteredPins = selectedCategory ? pins.filter(pin => pin.category === selectedCategory) : pins;
     filteredPins = toggleUnvisited != null ? filteredPins.filter(pin => pin.visited === toggleUnvisited) : filteredPins;
+    filteredPins = filteredPins.filter(pin => pin.title.toLowerCase().includes(searchTerm.toLowerCase()));
 
     useEffect(() => {
         const db = getFirestore(app);
@@ -44,12 +46,16 @@ function Sidebar({ pins }: { pins: Pin[] }) {
         return () => unsubscribe(); 
     }, []);
 
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(e.target.value);
+    };
+
     const transitions = useTransition(extend ? filteredPins : [], {
         from: { opacity: 0, y: -50 },
         enter: { opacity: 1, y: 0 },
         leave: { opacity: 0, y: -50 },
         update: { opacity: 1, y: 0 },
-        config: { tension: 200, friction: 20 }, 
+        config: { tension: 200, friction: 20 },
         keys: (pin: Pin) => pin.id, 
     });
 
@@ -95,6 +101,13 @@ function Sidebar({ pins }: { pins: Pin[] }) {
                             Unvisited
                         </button>
                     </div>
+                    <input
+                        type="text"
+                        placeholder="Search pins..."
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                        className={styles.searchBar}
+                    />
                     {transitions((style, pin, _, index) => (
                         <animated.div style={style}>
                             <PinItem key={index} index={index} pin={pin} />
