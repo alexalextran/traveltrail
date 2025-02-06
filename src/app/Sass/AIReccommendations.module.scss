@@ -1,0 +1,62 @@
+@import "variables&functions";
+
+
+.main{
+    @include absolutefill;
+    z-index: 99999999999;
+    background-color: rgb(219, 219, 219);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .exit{
+        @include closeButtonCorner();
+        border-radius: 0;
+        font-size: 2em;
+    }
+
+    .content{
+        border: 1px solid $webBlue;
+        width:85vw;
+        height: 85vh;
+        margin: auto;
+    }
+    h1{
+        text-align: center;
+        font-size: 2em;
+        height: 10%;
+        background-color: black;
+        color: white;
+        @include flexCenter(row);
+    }
+
+    .mainContent{
+        height: 90%;
+        @include flexCenter(row);
+        .helpCategories{
+            height: 100%;
+            width: 20%;
+            @include flexCenter(column);
+            button{
+                width: 100%;
+                font-size: 1.5em;
+            }
+        }
+        .helpDescription{
+            @include flexCustom( space-around ,center, column);
+            height: 100%;
+            width: 80%;
+
+            p{
+                width: 70%;
+                font-size: 1.5em;
+            }
+
+            img{
+                aspect-ratio: 16/8;
+                height: 25em;
+            }
+        }
+    }
+
+
+}
