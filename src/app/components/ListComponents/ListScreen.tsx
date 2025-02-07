@@ -52,6 +52,7 @@ function ListScreen() {
         const unsubscribe = onSnapshot(listCollectionRef, (snapshot) => {
             const fetchedPins: Pin[] = snapshot.docs.map(doc => ({
                 id: doc.id,
+                placeId: doc.data().pinId,
                 address: doc.data().address,
                 lat: doc.data().lat,
                 lng: doc.data().lng,
