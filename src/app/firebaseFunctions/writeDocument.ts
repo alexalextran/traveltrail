@@ -1,4 +1,4 @@
-import { deleteObject, getStorage, ref } from "firebase/storage";
+import { deleteObject, getDownloadURL, getStorage, ref } from "firebase/storage";
 import { app } from "../firebase";
 import { getFirestore, collection, doc, addDoc, deleteDoc, updateDoc, arrayUnion, arrayRemove, getDoc, getDocs, where, query } from "firebase/firestore";
 
@@ -30,8 +30,22 @@ export const deleteFromFirestore = async (collectionName: string, docId: string)
       const data = docSnap.data();
       const imageUrls = data.imageUrls || [];
 
-      // Delete images from storage
-      await deleteImagesFromStorage(imageUrls);
+      for (const imageUrl of imageUrls) {
+        try {
+          // Create a reference to the file in Firebase Storage
+          const storageRef = ref(getStorage(), imageUrl);
+
+          // Try getting the download URL of the image to check if it exists
+          await getDownloadURL(storageRef);
+
+          // If the download URL is valid, delete the image from Firebase Storage
+          await deleteImagesFromStorage(imageUrls);
+          console.log(`Image deleted from storage: ${imageUrl}`);
+        } catch (error) {
+          // If the image does not exist in Firebase Storage, log a message
+          console.warn(`Image not found in storage, skipping deletion: ${imageUrl}`);
+        }
+      }
 
       // Find and update all lists containing this pin
       const userListsRef = collection(db, `users/${data.userID}/lists`);
@@ -71,6 +85,8 @@ export const updateToFirestore = async (collectionName: string, data: any): Prom
       visited: data.visited,
       lat: data.lat,
       lng: data.lng,
+      imageUrls: data.imageUrls,
+      website: data.website,
     });
     console.log("Document updated with ID: ", data.id);
   } catch (error) {
@@ -93,31 +109,48 @@ export const addImageReferenceToFirestore = async (collectionName: string, docId
 
 export const removeImageReferenceFromFirestore = async (collectionName: string, docId: string, imageUrl: string): Promise<void> => {
   try {
-    const decodedUrl = decodeURIComponent(imageUrl);
-    const url = new URL(decodedUrl);
-    const pathname = url.pathname;
-    const segments = pathname.split('/');
-    const fileName = segments[6].replace(/%20/g, ' ');
-
-
-    
-    const storagePath = `${segments[5]}/${fileName}`;
-    const imageRef = ref(getStorage(app), storagePath);
-    await deleteObject(imageRef);
-
     const docRef = doc(db, collectionName, docId);
+    const docSnap = await getDoc(docRef);
 
-    await updateDoc(docRef, {
-      imageUrls: arrayRemove(imageUrl)
-    });
+    if (!docSnap.exists()) {
+      console.error("Document not found in Firestore.");
+      return;
+    }
 
+    const data = docSnap.data();
+    const existingImageUrls = data?.imageUrls || [];
 
-    console.log("Image URL removed from document:", imageUrl);
+    // If imageUrl exists in Firestore, proceed with removing it
+    if (existingImageUrls.includes(imageUrl)) {
+      // Remove the image reference from Firestore
+      await updateDoc(docRef, {
+        imageUrls: arrayRemove(imageUrl),
+      });
+      console.log("Image URL removed from Firestore document:", imageUrl);
+
+      // Try to delete the image from Firebase Storage if it exists
+      try {
+        const storageRef = ref(getStorage(), imageUrl);
+
+        // Try getting the download URL to check if the image exists
+        await getDownloadURL(storageRef);
+
+        // If the image exists in Storage, delete it
+        await deleteObject(storageRef);
+        console.log("Image deleted from Firebase Storage:", imageUrl);
+      } catch (error) {
+        // If the image does not exist in Firebase Storage, just log a warning
+        console.warn(`Image not found in Firebase Storage, skipping deletion: ${imageUrl}`);
+      }
+    } else {
+      console.log("Image URL not found in Firestore, skipping deletion.");
+    }
   } catch (error) {
-    console.error("Error removing image reference from document:", error);
+    console.error("Error removing image reference from Firestore:", error);
     throw new Error("Failed to remove image reference");
   }
 };
+
 
 
 

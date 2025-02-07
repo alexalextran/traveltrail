@@ -2,6 +2,7 @@ import { Rating } from 'react-simple-star-rating';
 // src/types/Pin.ts
 export interface Pin {
     id: string;
+    placeId: string;
     address: string;
     lat: number;
     lng: number;

@@ -30,6 +30,9 @@ const Modal = () => {
   const [openingHours, setOpeningHours] = useState<string>('');
   const [rating, setRating] = useState<number>(0);
   const [website, setWebsite] = useState<string>('');
+  const [place, setplace] = useState<any>()
+  const [photos, setPhotos] = useState<string[]>([]); // State for storing photo URLs
+
 
   const dispatch = useDispatch();
   const { user } = useAuth(); 
@@ -42,7 +45,19 @@ const Modal = () => {
       autocomplete.addListener('place_changed', () => {
         const place = autocomplete.getPlace();
         if (place.formatted_address) {
+          setplace(place);
+          console.log(place.place_id)
           setAddress(place.formatted_address);
+          
+          if (place.photos && place.photos.length > 0) {
+            // Fetch photo URLs
+            const photoUrls = place.photos.map((photo: any) => {
+              return photo.getUrl({ maxWidth: 600, maxHeight: 600 });
+            });
+            setPhotos(photoUrls);
+            // Store the photo URLs in the state
+          }
+
         }
       });
     }
@@ -101,13 +116,14 @@ const Modal = () => {
     // Create a new pin
     const newPin: Omit<Pin, 'id'> = {
       title: title,
+      placeId: place.place_id,
       address: address,
       description: description,
       lat: coords.lat,
       lng: coords.lng,
       category: category,
       visited: visited,
-      imageUrls: [],
+      imageUrls: photos,
       openingHours: openingHours,
       rating: rating,
       website: website
@@ -126,6 +142,10 @@ const Modal = () => {
           progress: undefined,
           theme: "light",
         });
+
+
+
+        
       })
       .catch((error) =>
         toast.success(error, {
@@ -274,6 +294,7 @@ const Modal = () => {
                 ))}
               </select>
               <hr></hr>
+            
               <i>Optional Fields</i>
               <label>
                 <input

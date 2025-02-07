@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/authContext';
-import { removeImageReferenceFromFirestore } from '../../firebaseFunctions/writeDocument';
+import { removeImageReferenceFromFirestore, updateToFirestore } from '../../firebaseFunctions/writeDocument';
 import styles from '../../Sass/modal.module.scss';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
@@ -8,12 +8,17 @@ import { app } from "../../firebase"; // Ensure this path is correct
 import { useSelector } from 'react-redux';
 import { selectSelectedPin } from '../../store/pins/pinsSlice';
 import { getFirestore, collection, onSnapshot, doc } from 'firebase/firestore';
+import axios from 'axios';
+import { useMapsLibrary } from '@vis.gl/react-google-maps';
 
 export default function ImageModal() {
+  const placesLib = useMapsLibrary('places');  //from google maps api
+  
   const [images, setImages] = useState<string[]>([]);
   const [imageFullscreen, setimageFullscreen] = useState(false);
   const { user } = useAuth();
   const selectedPin = useSelector(selectSelectedPin);
+  const [pin, setpin] = useState<any>()
 
   const responsiveConfig = {
     superLargeDesktop: {
@@ -36,19 +41,54 @@ export default function ImageModal() {
 
   useEffect(() => {
     const db = getFirestore(app);
-
+  
     if (selectedPin) {
       const docRef = doc(db, `users/${user.uid}/pins/${selectedPin.id}`);
       const unsubscribe = onSnapshot(docRef, (snapshot) => {
-        const pinData = snapshot.data();
-          if (pinData) {
-            setImages(pinData.imageUrls || []);
-          }
+        if (!snapshot.exists()) {
+          // If the document is deleted, clear the images
+          setImages([]);
+          return;
         }
-      );
-        return () => unsubscribe()
+        
+        const pinData = snapshot.data();
+        if (pinData) {
+          setpin({ ...pinData, id: snapshot.id });
+
+          setImages(pinData.imageUrls || []);
+        }
+      });
+  
+      return () => unsubscribe(); // Cleanup listener on unmount
     }
   }, [selectedPin, user.uid]);
+  
+
+  const fetchGooglePlaceImages = async () => {
+    if (!pin?.placeId) {
+      console.error("No placeId found for the selected place.");
+      return;
+    }
+    const placesService = new google.maps.places.PlacesService(document.createElement('div'));
+    var photos: string[] = [];
+    placesService.getDetails({ placeId: pin.placeId }, async (place, status) => {
+      if (status === google.maps.places.PlacesServiceStatus.OK && place) {
+        console.log(place)
+        photos = place.photos ? place.photos.map((photo) => photo.getUrl({ maxWidth: 600, maxHeight: 600 })) : []
+        const updatedPin = { ...pin, imageUrls: photos };
+        console.log(updatedPin);
+        await updateToFirestore(`users/${user.uid}/pins`, updatedPin);
+        console.log("Firestore updated with images.");
+
+      } else {
+        console.error('Failed to fetch place details:', status);
+      }
+    });
+  
+  
+  };
+  
+  
 
 
   const handleDeleteImage = async (imageUrl: string) => {
@@ -91,7 +131,12 @@ export default function ImageModal() {
         ))}
       </div>
 
-      {images.length === 0 && <p>No images to display</p>}
+      {images.length === 0 && 
+      <>
+      <p>No images to display</p>
+      <button onClick={() => fetchGooglePlaceImages()}>Retrieve Images</button>
+      </>
+      }
 
       {imageFullscreen && (
         <div className={styles.imageModalFullScreen}>
