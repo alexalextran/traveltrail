@@ -88,6 +88,7 @@ const Page = () => {
         openingHours: doc.data().openingHours || '',
         rating: doc.data().rating || 0,
         website: doc.data().website || '',
+        placeId: doc.data().placeId || '',
       }));
 
       const fetchedPinsCSV: CSVPin[] = snapshot.docs.map((doc) => ({
