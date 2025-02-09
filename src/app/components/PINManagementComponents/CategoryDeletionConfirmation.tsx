@@ -9,7 +9,7 @@ import { ToastContainer, toast } from 'react-toastify';
 
 export default function CategoryDeletionConfirmation({setcategoryDeleteModal, category}: {setcategoryDeleteModal: any, category: Category}) {
     const pins = useSelector(selectPins);
-    var filteredPins = pins.filter(pin => pin.category === category.categoryName);
+    var filteredPins = pins.filter((pin: { category: string }) => pin.category === category.categoryName);
     const { user } = useAuth(); // Use the useAuth hook
 
 
