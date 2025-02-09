@@ -38,7 +38,8 @@ function Sidebar({ pins }: { pins: Pin[] }) {
             const fetchedCategories = snapshot.docs.map(doc => ({
                 CategoryID: doc.id,
                 categoryName: doc.data().categoryName,
-                categoryColor: doc.data().categoryColor 
+                categoryColor: doc.data().categoryColor,
+                categoryEmoji: doc.data().categoryEmoji
             }));
             setcategories(fetchedCategories);
         });
@@ -46,7 +47,7 @@ function Sidebar({ pins }: { pins: Pin[] }) {
         return () => unsubscribe(); 
     }, []);
 
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void = (e) => {
         setSearchTerm(e.target.value);
     };
 
