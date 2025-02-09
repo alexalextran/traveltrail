@@ -24,7 +24,8 @@ function PinItem({ pin, index }: { pin: Pin, index: number }) {
         const fetchedCategories = snapshot.docs.map(doc => ({
           CategoryID: doc.id,
           categoryName: doc.data().categoryName,
-          categoryColor: doc.data().categoryColor 
+          categoryColor: doc.data().categoryColor,
+          categoryEmoji: doc.data().categoryEmoji 
         }));
         setcategories(fetchedCategories);
       });
