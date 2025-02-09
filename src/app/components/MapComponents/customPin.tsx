@@ -12,7 +12,6 @@ interface CustomPinProps {
 const CustomPin: FunctionComponent<CustomPinProps> = ({ category }) => {
   const [hovered, setHovered] = useState(false);
   const [clicked, setClicked] = useState(false);
-    console.log(category)
   return (
   
       <div className={styles.customPinIcon} style={{ backgroundColor: category?.categoryColor }} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onClick={() => setClicked(!clicked)}>

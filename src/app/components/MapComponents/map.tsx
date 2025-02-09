@@ -103,10 +103,9 @@ const MapComponent = ({pins}: {pins: Pin[]}) => {
             <PinComponent key={pin.id} category={categoryProp} pinID={pin.id} lat={pin.lat} lng={pin.lng} userLocation={INITIAL_CAMERA.center} pin={pin} />
           );
         })}
-        {/* <AdvancedMarker position={{ lat: location.lat, lng: location.lng }}>
+         <AdvancedMarker position={{ lat: location.lat, lng: location.lng }}>
           <MdPersonPinCircle className={styles.svg}/>
-        </AdvancedMarker> */}
-        <CustomPin position={{ lat: location.lat, lng: location.lng }} />
+        </AdvancedMarker> 
 
       </Map>
     </APIProvider>
