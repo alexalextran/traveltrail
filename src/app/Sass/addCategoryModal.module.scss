@@ -29,9 +29,24 @@
 
   input[type="text"] {
     width: 100%;
-    padding: 1em;
+    padding: 0.7em;
     border: 2px solid #ccc;
     border-radius: 0.4em;
+  }
+
+  .inputContainer {
+    width: 100%;
+    @include flexCustom( space-around, center, row);
+    input {
+        width: 80%;
+        border: 2px solid var(--category-color, #ccc); // Use the dynamic color
+        color: var(--category-color, #ccc);;
+        &:focus {
+          border-color: var(--category-color, #007bff) !important;
+          outline: none;
+        }
+      }
+    
   }
 
   .buttonContainer {
@@ -140,6 +155,50 @@
     &:focus {
       border-color: #007bff;
       outline: none;
+    }
+  }
+
+  .inputContainer {
+    width: 100%;
+    @include flexCustom( space-around, center, row);
+    input {
+        width: 80%;
+        border: 2px solid var(--category-color, #ccc); // Use the dynamic color
+        color: var(--category-color, #ccc);;
+        &:focus {
+          border-color: var(--category-color, #007bff) !important;
+          outline: none;
+        }
+      }
+    
+  }
+
+  .buttonContainer {
+    width: 100%;
+   @include flexCustom( space-around, center, row);
+   button{
+    width: 45%;
+   }
+  }
+
+  .emojiPicker {
+    height: 50%;
+    button {
+        width: fit-content;
+      background-color: transparent !important;
+    }
+
+    & > div > div:nth-child(1) { //search bar of emoji picker
+      @include flexCenter(row);
+     
+    }
+    & > div > div > div > input { //search bar icon
+        padding-left: 2em !important;
+       
+      }
+   
+    & > div > div:nth-child(2) { //the categories of emoji picker
+      display: none;
     }
   }
 

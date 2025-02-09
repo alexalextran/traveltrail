@@ -5,12 +5,14 @@ import { writeCategory } from '../../firebaseFunctions/Categories.ts';
 import { useAuth } from '../../context/authContext.js';
 import { toast } from 'react-toastify';
 import EmojiPicker from 'emoji-picker-react';
+import { Emoji, EmojiStyle } from 'emoji-picker-react';
 
 export default function AddCategoryModal({ setToggle }: any) {
   const [categoryToAdd, setcategoryToAdd] = useState('');
   const [color, setColor] = useColor("rgb(0,0,0)");
   const { user } = useAuth();
   const [emojiPicker, setEmojiPicker] = useState(true)
+  const [selectedEmoji, setselectedEmoji] = useState<string >("")
 
   const addCategory = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -54,7 +56,11 @@ export default function AddCategoryModal({ setToggle }: any) {
     <main className={setToggle ? styles.main : styles.fullScreen}>
       <h1>Add Category</h1>
       <form className={styles.form} onSubmit={(e) => addCategory(e)}>
-        <input required type='text' placeholder="Enter category name" value={categoryToAdd} onChange={(e) => setcategoryToAdd(e.target.value)} />
+
+      <div className={styles.inputContainer} style={{ "--category-color": color.hex } as React.CSSProperties}>
+  <input required type="text" placeholder="Enter category name" value={categoryToAdd} onChange={(e) => setcategoryToAdd(e.target.value)} />
+  <Emoji unified={selectedEmoji} />
+</div>
 
         <div className={styles.buttonContainer}>
         <button type='button' onClick={() => setEmojiPicker(false)}>Color Picker</button>
@@ -64,6 +70,7 @@ export default function AddCategoryModal({ setToggle }: any) {
          ?
          <div className={setToggle ? styles.emojiPicker : ''}>
          <EmojiPicker 
+         onEmojiClick={( emojiData) => setselectedEmoji(emojiData.unified)}
          categories={[]}
          skinTonesDisabled={true}
          previewConfig={{showPreview:false}}
