@@ -1,153 +1,174 @@
 @import "variables&functions";
 
 .main {
-    width: 30em;
-    height: auto;
-    padding: 2em;
-    @include absolutecenter;
-    z-index: 99999;
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    backdrop-filter: blur(4px);
-    border-radius: 1em;
-    animation: fadeIn 0.3s ease-in-out;
-    
-    h1{
-        text-align: center;
-        margin-bottom: 0.3em;
-        background-color: $webBlue;
-        color: white;
-        padding: 0.3em 0;
-    }
-    .form{
-        width: 100%;
-        @include flexCenter(column);
-        gap: 1em;
-        border: 2px solid $webBlue;
-        padding: 2rem;
-    
-    }
+  width: 30em;
+  height: auto;
+  padding: 2em;
+  @include absolutecenter;
+  z-index: 99999;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(4px);
+  border-radius: 1em;
+  animation: fadeIn 0.3s ease-in-out;
 
-    input[type="text"] {
-        width: 100%;
-        padding: 1em;
-        border: 2px solid #ccc;
-        border-radius: 0.4em;
-        
-    }
+  h1 {
+    text-align: center;
+    margin-bottom: 0.3em;
+    background-color: $webBlue;
+    color: white;
+    padding: 0.3em 0;
+  }
+  .form {
+    width: 100%;
+    @include flexCenter(column);
+    gap: 1em;
+    border: 2px solid $webBlue;
+    padding: 2rem;
+  }
 
+  input[type="text"] {
+    width: 100%;
+    padding: 1em;
+    border: 2px solid #ccc;
+    border-radius: 0.4em;
+  }
+
+  .buttonContainer {
+    width: 100%;
+   @include flexCustom( space-around, center, row);
+   button{
+    width: 45%;
+   }
+  }
+
+  .emojiPicker {
+    height: 50%;
     button {
-        padding: 0.5rem 1rem;
-        background-color: $webBlue;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 1rem;
-        width: 100%;
-        transition: background-color 0.2s;
-        &:hover {
-            background-color: #0056b3;
-        }
+        width: fit-content;
+      background-color: transparent !important;
+    }
+
+    & > div > div:nth-child(1) { //search bar of emoji picker
+      @include flexCenter(row);
+     
+    }
+    & > div > div > div > input { //search bar icon
+        padding-left: 2em !important;
        
-    }
-
-    .exit{
-        @include closeButtonCorner
-    }
-
-    
-
-    .modalContent{
-        width: 100%;
-    }
-
-    button:hover {
-        background-color: #f0f0f0;
-    }
-}
-
-@keyframes fadeIn {
-    0% {
-      opacity: 0;
-      scale: 0.9;
-    }
-    100% {
-      scale: 1;
-      opacity: 1;
+      }
+   
+    & > div > div:nth-child(2) { //the categories of emoji picker
+      display: none;
     }
   }
 
-.fullScreen{
-    margin: 1em;
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    border-radius: 0.4em;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border: 2px solid rgb(0,123,255);
-    h1 {
-        text-align: center;
-        margin-bottom: 0.3em;
-        background-color: $webBlue;
-        color: white;
-        padding: 0.3em 0;
+  button {
+    padding: 0.5rem 1rem;
+    background-color: $webBlue;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    width: 100%;
+    transition: background-color 0.2s;
+    &:hover {
+      background-color: #0056b3 !important;
     }
+  }
 
-    .form{
-        width: 100%;
-        @include flexCenter(column);
-        gap: 1em;
-        padding: 2rem;
+  .exit {
+    @include closeButtonCorner;
+  }
+
+  .modalContent {
+    width: 100%;
+  }
+
+  button:hover {
+    background-color: #f0f0f0;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    scale: 0.9;
+  }
+  100% {
+    scale: 1;
+    opacity: 1;
+  }
+}
+
+.fullScreen {
+  margin: 1em;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 0.4em;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgb(0, 123, 255);
+  h1 {
+    text-align: center;
+    margin-bottom: 0.3em;
+    background-color: $webBlue;
+    color: white;
+    padding: 0.3em 0;
+  }
+
+  .form {
+    width: 100%;
+    @include flexCenter(column);
+    gap: 1em;
+    padding: 2rem;
     & > * {
-        width: 100%;
+      width: 100%;
     }
+  }
+
+  input[type="text"],
+  select,
+  textarea {
+    background-color: #f5f5f5;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+
+    &:focus {
+      border-color: #007bff;
+      outline: none;
     }
+  }
 
-    input[type="text"],
-    select,
-    textarea {
-        background-color: #f5f5f5;
-        padding: 0.5rem;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 1rem;
+  textarea {
+    resize: vertical;
+  }
 
-        &:focus {
-            border-color: #007bff;
-            outline: none;
-        }
+  label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    input[type="checkbox"] {
+      accent-color: #007bff;
     }
+  }
 
-    textarea {
-        resize: vertical;
+  button {
+    padding: 0.5rem 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #0056b3;
     }
-
-    label {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-
-        input[type="checkbox"] {
-            accent-color: #007bff;
-        }
-    }
-
-    
-
-    button{
-        padding: 0.5rem 1rem;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 1rem;
-        transition: background-color 0.2s;
-
-        &:hover {
-            background-color: #0056b3;
-        }
-    }
-   
+  }
 }

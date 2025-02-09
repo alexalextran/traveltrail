@@ -18,7 +18,7 @@ import { app } from "../../firebase.js"; // Ensure this path is correct
 import { Category } from '../../types/categoryData.ts';
 import { Pin } from '../../types/pinData.ts';
 import 'react-toastify/dist/ReactToastify.css';
-
+import CustomPin from './customPin.tsx';
 const MapComponent = ({pins}: {pins: Pin[]}) => {
 
   const dispatch = useDispatch<AppDispatch>();
@@ -102,9 +102,11 @@ const MapComponent = ({pins}: {pins: Pin[]}) => {
             <PinComponent key={pin.id} category={categoryProp} pinID={pin.id} lat={pin.lat} lng={pin.lng} userLocation={INITIAL_CAMERA.center} pin={pin} />
           );
         })}
-        <AdvancedMarker position={{ lat: location.lat, lng: location.lng }}>
+        {/* <AdvancedMarker position={{ lat: location.lat, lng: location.lng }}>
           <MdPersonPinCircle className={styles.svg}/>
-        </AdvancedMarker>
+        </AdvancedMarker> */}
+        <CustomPin position={{ lat: location.lat, lng: location.lng }} />
+
       </Map>
     </APIProvider>
   );
