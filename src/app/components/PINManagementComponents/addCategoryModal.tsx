@@ -71,7 +71,10 @@ export default function AddCategoryModal({ setToggle }: any) {
          ?
          <div className={setToggle ? styles.emojiPicker : ''}>
          <EmojiPicker 
-         onEmojiClick={( emojiData) => setselectedEmoji(emojiData.unified)}
+         onEmojiClick={( emojiData) => {
+          setselectedEmoji(emojiData.unified)
+        console.log(emojiData.unified)
+        }}
          categories={[]}
          skinTonesDisabled={true}
          previewConfig={{showPreview:false}}

@@ -1,6 +1,7 @@
 @import "variables&functions";
 
 .customPin {
+  position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -11,7 +12,7 @@
   &::after {
     content: "";
     position: absolute;
-    bottom: 1px; // Adjust this for the pointer triangle
+    bottom: -1px; // Adjust this for the pointer triangle
     left: 50%;
     transform: translateX(-50%);
     width: 0;
@@ -36,11 +37,24 @@
   align-items: center;
   width: 30px;
   height: 30px;
-  background-color: #b38b4d; // Brownish-gold like your reference
   border-radius: 50%;
   position: relative;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  border: 3px solid #1e2d24; // Dark green border like the reference
+  border: 2px solid #1e2d24; // Dark green border like the reference
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -1em; // Adjust this for the pointer triangle
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 11px solid #1e2d24; // Dark green like your reference
+  }
+
 }
 
 .emoji {

@@ -9,7 +9,7 @@ import { selectSelectedList } from "../../store/List/listSlice";
 import { doc, getFirestore, onSnapshot } from "firebase/firestore";
 import { app } from "../../firebase";
 import { useAuth } from '../../context/authContext'; // Import the useAuth hook
-
+import CustomPin from "./customPin";
 const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {category: Category, pin: any, lat: number, lng: number, pinID: string, userLocation: { lat: number; lng: number; } }) => {
   const [markerRef, marker] = useAdvancedMarkerRef();
   const [toggleIWM, settoggleIWM] = useState(false);
@@ -57,7 +57,7 @@ const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {cate
         ref={markerRef} 
         onClick={handleClick}
       >
-        <Pin background={backgroundColor} glyphColor={'#000'} borderColor={'#000'} />
+        <CustomPin  category={category}/>
         {showInfoWindow && (
           <InfoWindow anchor={marker} className={styles.infoWindow}>
             <InfoWindowComponent

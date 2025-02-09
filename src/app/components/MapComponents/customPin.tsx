@@ -1,31 +1,25 @@
 import React, { FunctionComponent, useState } from 'react';
-import { AdvancedMarker } from '@vis.gl/react-google-maps';
 import styles from '../../Sass/customPin.module.scss';
+import { Category } from '@/app/types/categoryData';
+import { Emoji, EmojiStyle } from 'emoji-picker-react';
 
-interface Props {
-    position: {
-      lat: number;
-      lng: number;
-    };
+
+
+interface CustomPinProps {
+  category: Category;
 }
 
-const CustomPin: FunctionComponent<Props> = ({ position }) => {
+const CustomPin: FunctionComponent<CustomPinProps> = ({ category }) => {
   const [hovered, setHovered] = useState(false);
   const [clicked, setClicked] = useState(false);
-
+    console.log(category)
   return (
-    <AdvancedMarker
-      position={position}
-      title={'Custom Pin with Pizza Emoji'}
-    //   onMouseEnter={() => setHovered(true)}
-    //   onMouseLeave={() => setHovered(false)}
-      className={styles.customPin}
-      onClick={() => setClicked(!clicked)}
-    >
-      <div className={styles.customPinIcon}>
-        <span className={styles.emoji}>🍕</span>
+  
+      <div className={styles.customPinIcon} style={{ backgroundColor: category?.categoryColor }} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onClick={() => setClicked(!clicked)}>
+              <Emoji unified={category?.categoryEmoji} size={18}/>
+            
       </div>
-    </AdvancedMarker>
+   
   );
 };
 
