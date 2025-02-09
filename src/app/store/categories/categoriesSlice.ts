@@ -17,16 +17,19 @@ const initialState: CategoryState = {
       categoryName: 'Category 1',
       categoryColor: '#FF0000',
       CategoryID: '1',
+      categoryEmoji: ''
     },
     {
       categoryName: 'Category 2',
       categoryColor: '#00FF00',
       CategoryID: '2',
+      categoryEmoji: ''
     },
     {
       categoryName: 'Category 3',
       categoryColor: '#0000FF',
       CategoryID: '3',
+      categoryEmoji: ''
     },
   ],
 };
