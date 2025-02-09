@@ -50,7 +50,8 @@ const MapComponent = ({pins}: {pins: Pin[]}) => {
         const fetchedCategories = snapshot.docs.map(doc => ({
             CategoryID: doc.id,
             categoryName: doc.data().categoryName,
-            categoryColor: doc.data().categoryColor // Fix the typo in the property name
+            categoryColor: doc.data().categoryColor, // Fix the typo in the property name
+            categoryEmoji: doc.data().categoryEmoji
         }));
         setcategories(fetchedCategories);
     });

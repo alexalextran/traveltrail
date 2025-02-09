@@ -10,6 +10,7 @@ const db = getFirestore(app);
 export const writeCategory = async (collectionName:string, data: {
   categoryName: string;
   categoryColor: string;
+  categoryEmoji: string;
 }): Promise<Category> => {
   try {
     const docRef = await addDoc(collection(db, collectionName), data);
@@ -18,6 +19,7 @@ export const writeCategory = async (collectionName:string, data: {
       CategoryID: docRef.id,
       categoryName: data.categoryName,
       categoryColor: data.categoryColor,
+      categoryEmoji: data.categoryEmoji
     };
   } catch (error) {
     console.error("Error adding document: ", error);
