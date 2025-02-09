@@ -17,8 +17,8 @@ const CustomPin: FunctionComponent<Props> = ({ position }) => {
     <AdvancedMarker
       position={position}
       title={'Custom Pin with Pizza Emoji'}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+    //   onMouseEnter={() => setHovered(true)}
+    //   onMouseLeave={() => setHovered(false)}
       className={styles.customPin}
       onClick={() => setClicked(!clicked)}
     >
