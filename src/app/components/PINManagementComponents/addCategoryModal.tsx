@@ -22,7 +22,8 @@ export default function AddCategoryModal({ setToggle }: any) {
         `users/${user.uid}/categories`,
         {
           categoryName: categoryToAdd,
-          categoryColor: color.hex
+          categoryColor: color.hex,
+          categoryEmoji: selectedEmoji
         }
       );
 
