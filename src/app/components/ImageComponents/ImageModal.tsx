@@ -44,7 +44,7 @@ export default function ImageModal() {
   
     if (selectedPin) {
       const docRef = doc(db, `users/${user.uid}/pins/${selectedPin.id}`);
-      const unsubscribe = onSnapshot(docRef, (snapshot) => {
+      const unsubscribe = onSnapshot(docRef, async (snapshot) => {
         if (!snapshot.exists()) {
           // If the document is deleted, clear the images
           setImages([]);
@@ -73,13 +73,8 @@ export default function ImageModal() {
     var photos: string[] = [];
     placesService.getDetails({ placeId: pin.placeId }, async (place, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK && place) {
-        console.log(place)
         photos = place.photos ? place.photos.map((photo) => photo.getUrl({ maxWidth: 600, maxHeight: 600 })) : []
-        const updatedPin = { ...pin, imageUrls: photos };
-        console.log(updatedPin);
-        await updateToFirestore(`users/${user.uid}/pins`, updatedPin);
-        console.log("Firestore updated with images.");
-
+        setImages(photos);
       } else {
         console.error('Failed to fetch place details:', status);
       }

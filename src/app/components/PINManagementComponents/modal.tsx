@@ -46,17 +46,15 @@ const Modal = () => {
         const place = autocomplete.getPlace();
         if (place.formatted_address) {
           setplace(place);
-          console.log(place.place_id)
           setAddress(place.formatted_address);
-          
-          if (place.photos && place.photos.length > 0) {
-            // Fetch photo URLs
-            const photoUrls = place.photos.map((photo: any) => {
-              return photo.getUrl({ maxWidth: 600, maxHeight: 600 });
-            });
-            setPhotos(photoUrls);
-            // Store the photo URLs in the state
-          }
+          // if (place.photos && place.photos.length > 0) {
+          //   // Fetch photo URLs
+          //   const photoUrls = place.photos.map((photo: any) => {
+          //     return photo.getUrl({ maxWidth: 600, maxHeight: 600 });
+          //   });
+          //   setPhotos(photoUrls);
+          //   // Store the photo URLs in the state
+          // }
 
         }
       });
