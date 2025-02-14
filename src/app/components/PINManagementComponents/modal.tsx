@@ -47,6 +47,8 @@ const Modal = () => {
         if (place.formatted_address) {
           setplace(place);
           setAddress(place.formatted_address);
+
+          //for caching photos, cannot be used due to google maps api restrictions
           // if (place.photos && place.photos.length > 0) {
           //   // Fetch photo URLs
           //   const photoUrls = place.photos.map((photo: any) => {

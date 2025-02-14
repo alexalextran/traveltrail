@@ -10,7 +10,7 @@ import { selectSelectedPin } from '../../store/pins/pinsSlice';
 import { getFirestore, collection, onSnapshot, doc } from 'firebase/firestore';
 import axios from 'axios';
 import { useMapsLibrary } from '@vis.gl/react-google-maps';
-
+import NoImagesDisplay from './NoImagesDisplay';
 export default function ImageModal() {
   const placesLib = useMapsLibrary('places');  //from google maps api
   
@@ -62,28 +62,6 @@ export default function ImageModal() {
       return () => unsubscribe(); // Cleanup listener on unmount
     }
   }, [selectedPin, user.uid]);
-  
-
-  const fetchGooglePlaceImages = async () => {
-    if (!pin?.placeId) {
-      console.error("No placeId found for the selected place.");
-      return;
-    }
-    const placesService = new google.maps.places.PlacesService(document.createElement('div'));
-    var photos: string[] = [];
-    placesService.getDetails({ placeId: pin.placeId }, async (place, status) => {
-      if (status === google.maps.places.PlacesServiceStatus.OK && place) {
-        photos = place.photos ? place.photos.map((photo) => photo.getUrl({ maxWidth: 600, maxHeight: 600 })) : []
-        setImages(photos);
-      } else {
-        console.error('Failed to fetch place details:', status);
-      }
-    });
-  
-  
-  };
-  
-  
 
 
   const handleDeleteImage = async (imageUrl: string) => {
@@ -128,8 +106,7 @@ export default function ImageModal() {
 
       {images.length === 0 && 
       <>
-      <p>No images to display</p>
-      <button onClick={() => fetchGooglePlaceImages()}>Retrieve Images</button>
+      <NoImagesDisplay pin={pin} setImages={setImages} />
       </>
       }
 

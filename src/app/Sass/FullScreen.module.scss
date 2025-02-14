@@ -120,11 +120,12 @@
         
         .carousel {
             width: 35%;
-            
+            max-height: 100%;
+    
             aspect-ratio: 16 / 9;
            img{
             width: 100%;// Adjusted from 100% to 95%
-            height: auto; // Maintains the image's aspect ratio
+            max-height: 100%;
             object-fit: cover; // Ensures the image covers the area without distorting its aspect ratio
             aspect-ratio: 16 / 9; // Keeps the standard aspect ratio of 16:9
            }
