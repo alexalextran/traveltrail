@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Pin } from '../../types/pinData.ts'
 import { Category } from '../../types/categoryData.ts'
 import styles from '../../Sass/expandedInfoModal.module.scss'
@@ -9,6 +9,7 @@ import IconBar from '../ImageComponents/IconBar.tsx';
 import { Rating } from 'react-simple-star-rating';
 import { useSpring, animated } from '@react-spring/web';
 import { transform } from 'next/dist/build/swc/index';
+import NoImagesDisplay from '../ImageComponents/NoImagesDisplay.tsx';
 
 export default function ExpandedInfoModal({pin, settoggleIWM, userLocation, filteredCategory}: {filteredCategory: Category, pin: Pin, settoggleIWM: any, userLocation: { lat: number, lng: number }}) {
   const responsiveConfig = {
@@ -31,6 +32,9 @@ export default function ExpandedInfoModal({pin, settoggleIWM, userLocation, filt
     
   }
   }
+
+  const [images, setimages] = useState(pin.imageUrls || []);
+console.log(images)
 
 
   const fadeIn = useSpring({
@@ -85,10 +89,13 @@ export default function ExpandedInfoModal({pin, settoggleIWM, userLocation, filt
       </div>
      
       <div className={styles.footer}>
-      {pin.imageUrls && 
+      {images.length > 0 ? 
       <Carousel responsive={responsiveConfig} className={styles.carouselcontainer}>
-        { pin.imageUrls.map((src, index) => <img key={index} src={src} alt=""/>)}
-      </Carousel>}
+        { images.map((src, index) => <img key={index} src={src} alt=""/>)}
+      </Carousel>: 
+      <NoImagesDisplay pin={pin} setImages={setimages} /> 
+      }
+
         <IconBar enableImage={false} pin={pin} setchild={null} color={filteredCategory.categoryColor}/>
       </div>
       
