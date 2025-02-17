@@ -1,46 +1,18 @@
 @import "variables&functions";
 
-.customPin {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 50px;
-  height: 50px;
-  background-color: transparent;
-  
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: -1px; // Adjust this for the pointer triangle
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 0;
-    border-left: 7px solid transparent;
-    border-right: 7px solid transparent;
-    border-top: 11px solid #1e2d24; // Dark green like your reference
-  }
 
-  &.hovered {
-    transform: scale(1.1);
-  }
-
-  &.clicked {
-    transform: scale(1.2);
-  }
-}
 
 .customPinIcon {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 30px;
-  height: 30px;
+  width: 2.5em;
+  height: 2.5em;
   border-radius: 50%;
   position: relative;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  border: 2px solid #1e2d24; // Dark green border like the reference
+  border: 2px solid #000000; // Dark green border like the reference
+  transition: opacity 0.3s ease;
 
   &::after {
     content: "";
@@ -50,15 +22,16 @@
     transform: translateX(-50%);
     width: 0;
     height: 0;
-    border-left: 7px solid transparent;
-    border-right: 7px solid transparent;
-    border-top: 11px solid #1e2d24; // Dark green like your reference
+    border-left: 0.6em solid transparent;
+    border-right: 0.6em solid transparent;
+    border-top: 1em solid #000000; 
   }
 
 }
 
 .emoji {
-  font-size: 15px;
+  transition: opactiy 0.3s ease;
+  font-size: 0.4em;
   position: absolute;
   top: 50%;
   left: 50%;

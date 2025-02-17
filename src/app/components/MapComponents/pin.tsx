@@ -47,7 +47,10 @@ const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {cate
   }, [selectedList]);
 
   const pinInList = allListPins.includes(pinID);
-  const backgroundColor = allListPins.length === 0 ? category?.categoryColor : category?.categoryColor + (pinInList ? 'FF' : '50'); // 'FF' for full opacity, '50' for semi-transparent
+  var backgroundColor =  allListPins.length == 0 || pinInList  ? '100%' : '10%';
+
+
+
 
 
   return (
@@ -57,7 +60,7 @@ const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {cate
         ref={markerRef} 
         onClick={handleClick}
       >
-        <CustomPin  category={category}/>
+        <CustomPin  category={category} backgroundColor={backgroundColor}/>
         {showInfoWindow && (
           <InfoWindow anchor={marker} className={styles.infoWindow}>
             <InfoWindowComponent
