@@ -1,6 +1,7 @@
 import { deleteObject, getDownloadURL, getStorage, ref } from "firebase/storage";
 import { app } from "../firebase";
 import { getFirestore, collection, doc, addDoc, deleteDoc, updateDoc, arrayUnion, arrayRemove, getDoc, getDocs, where, query } from "firebase/firestore";
+import { Rating } from "react-simple-star-rating";
 
 // firebaseOperations.ts
 
@@ -72,11 +73,9 @@ export const deleteFromFirestore = async (collectionName: string, docId: string)
 };
 
 
-export const updateToFirestore = async (collectionName: string, data: any): Promise<void> => {
+export const updateToFirestore = async (collectionName: string, data: any) => {
   try {
-    // Create a reference to the document to update
-    const docRef = doc(db, collectionName, data.id);
-    // Update the document
+    const docRef = doc(db, collectionName, data.id); 
     await updateDoc(docRef, {
       title: data.title,
       address: data.address,
@@ -87,12 +86,16 @@ export const updateToFirestore = async (collectionName: string, data: any): Prom
       lng: data.lng,
       imageUrls: data.imageUrls,
       website: data.website,
+      placeId: data.placeId,
+      rating: data.rating,
+      openingHours: data.openingHours,
     });
     console.log("Document updated with ID: ", data.id);
   } catch (error) {
     console.error("Error updating document: ", error);
   }
 };
+
 
 export const addImageReferenceToFirestore = async (collectionName: string, docId: string, imageURL: string) => {
   try {

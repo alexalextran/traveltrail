@@ -23,6 +23,7 @@ function EditPinForm() {
   const FullScreen = useSelector(selectFullScreen);
   const { user } = useAuth();
 
+
   const [title, setTitle] = useState<string>(selectedPin?.title || '');
   const [address, setAddress] = useState<string>(selectedPin?.address || '') ;
   const [description, setDescription] = useState<string>(selectedPin?.description || '');
@@ -31,6 +32,7 @@ function EditPinForm() {
   const [rating, setRating] = useState<number>(selectedPin?.rating || 0);
   const [website, setWebsite] = useState<string>(selectedPin?.website || '');
   const [openingHours, setOpeningHours] = useState<string>(selectedPin?.openingHours || '');
+  const [placeId, setplaceId] = useState<string>(selectedPin?.placeId || '');
 
   const addressInputRef = useRef<HTMLInputElement | null>(null);
   const dispatch = useDispatch();
@@ -69,6 +71,7 @@ function EditPinForm() {
       setOpeningHours(selectedPin.openingHours || '');
       setWebsite(selectedPin.website || '');
       handleRating(rating)
+      setplaceId(selectedPin.placeId || '');
     }
   }, [selectedPin, rating ]);
 
@@ -103,7 +106,9 @@ function EditPinForm() {
       openingHours: openingHours,
       rating: rating,
       website: website,
+      placeId: placeId,
     };
+
 
     try {
       await updateToFirestore(`users/${user.uid}/pins`, updatedPin);

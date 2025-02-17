@@ -47,7 +47,9 @@ const Modal = () => {
         if (place.formatted_address) {
           setplace(place);
           setAddress(place.formatted_address);
-
+          place.website ? setWebsite(place.website) : setWebsite('');
+          place.opening_hours && place.opening_hours.weekday_text ? setOpeningHours(place.opening_hours.weekday_text.join(' \n')) : setOpeningHours('');
+          console.log(place.opening_hours?.weekday_text)
           //for caching photos, cannot be used due to google maps api restrictions
           // if (place.photos && place.photos.length > 0) {
           //   // Fetch photo URLs
@@ -227,7 +229,7 @@ const Modal = () => {
             type="text"
             value={openingHours}
             onChange={(e) => setOpeningHours(e.target.value)}
-            placeholder="Opening Hours e.g 11am - 8pm"
+            placeholder="Opening Hours e.g Saturday: 11am - 8pm"
           />
           <Rating
             allowFraction={true}
@@ -309,7 +311,7 @@ const Modal = () => {
                 type="text"
                 value={openingHours}
                 onChange={(e) => setOpeningHours(e.target.value)}
-                placeholder="Opening Hours e.g 11am - 8pm"
+                placeholder="Opening Hours e.g Saturday: 11am - 8pm"
               />
               <Rating
                 onClick={handleRating} 

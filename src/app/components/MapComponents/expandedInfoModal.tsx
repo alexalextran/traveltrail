@@ -34,7 +34,6 @@ export default function ExpandedInfoModal({pin, settoggleIWM, userLocation, filt
   }
 
   const [images, setimages] = useState(pin.imageUrls || []);
-console.log(images)
 
 
   const fadeIn = useSpring({
@@ -57,6 +56,43 @@ console.log(images)
 
   };
 
+
+
+  const parseOpeningHours = (text: any): string[] => {
+    if (typeof text !== "string") {
+        console.error("parseOpeningHours: Expected a string but received:", text);
+        return [];
+    }
+
+    // Regular expression to match days followed by their hours
+    const regex = /(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday):\s*/g;
+
+    // Split text while keeping day names
+    const parts = text.split(regex).filter(part => part.trim() !== "");
+
+    const openingHoursArray: string[] = [];
+
+    for (let i = 0; i < parts.length; i += 2) {
+        const day = parts[i].trim();
+        const hours = parts[i + 1] ? parts[i + 1].trim().replace(/,\s?/g, " ") : "Closed";
+
+        // Clean up weird formatting like en-dashes
+        const formattedHours = hours.replace(/–/g, "-");
+
+        openingHoursArray.push(`${day} ${formattedHours}`);
+    }
+
+    return openingHoursArray;
+};
+
+// Example Input:
+
+const result = parseOpeningHours(pin.openingHours);
+
+
+
+
+
   const distanceToUser = calculateDistance(pin.lat, pin.lng, userLocation.lat, userLocation.lng);
   return (
     
@@ -68,15 +104,21 @@ console.log(images)
 
       <div className={styles.content}>
         <div className={styles.info}>
-          <div>
+
+          <div className={styles.addressInfo}>
           <p className={styles.address}>{pin.address}</p>
           <p><span>{distanceToUser.toFixed(2)}</span>KM Away</p>
           {pin.website && <a href={pin.website} target='_blank'>Check Link</a>}
           </div>
 
-          <div>
+          <div className={styles.rating}>
            { pin.rating != 0 && pin.rating && <Rating initialValue={pin.rating} readonly></Rating>}
-          <p>{pin?.openingHours}</p>
+           <p className={styles.opening_hours}>
+  {Array.isArray(result) ? result.map((item, index) => (
+    <span key={index}>{item}<br /></span>
+  )) : "No opening hours available"}
+</p>
+
           </div>
         
         </div>
