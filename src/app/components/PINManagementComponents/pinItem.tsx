@@ -35,7 +35,8 @@ function PinItem({ pin, index }: { pin: Pin, index: number }) {
 
     const category:Category = categories.filter(category => category.categoryName === pin.category)[0]
   return (
-    <main className={styles.main} onClick={() => dispatch(setLocation({lat: pin.lat, lng: pin.lng}))}>
+    <main className={styles.main} onClick={() =>{
+      dispatch(setLocation({lat: pin.lat, lng: pin.lng}))}}>
         <h3 style={{color: `${category?.categoryColor}`}}>{pin.title}</h3>
        <p>Click me to center pin!</p>
         <div>{pin.address}</div>

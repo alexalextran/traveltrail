@@ -28,11 +28,12 @@ const MapComponent = ({pins}: {pins: Pin[]}) => {
   const [categories, setcategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    setCameraProps(prevCameraProps => ({
-      ...prevCameraProps,
-      center: { lat: locationRedux.lat, lng: locationRedux.lng }
-    }));
-  }, [locationRedux.lat, locationRedux.lng]);
+    setCameraProps({
+      center: { lat: locationRedux.lat, lng: locationRedux.lng },
+      zoom: 18, 
+    });
+  }, [locationRedux]);
+  
 
   useEffect(() => {
     dispatch(fetchPins(user.uid));
@@ -69,6 +70,10 @@ const MapComponent = ({pins}: {pins: Pin[]}) => {
   const handleCameraChange = useCallback((ev: MapCameraChangedEvent) => {
     setCameraProps(ev.detail);
   }, []);
+
+
+
+  
 
   const centerCamera = () => {
     setCameraProps({
