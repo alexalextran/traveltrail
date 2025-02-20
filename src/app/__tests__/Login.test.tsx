@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Login from '../components/AccountManagement/LogIn';
 import { toast } from 'react-toastify';
+import '@testing-library/jest-dom';
 
 // Mock the useAuth hook
 const mockLogin = jest.fn();
