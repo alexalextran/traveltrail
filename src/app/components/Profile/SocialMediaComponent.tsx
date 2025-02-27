@@ -17,7 +17,8 @@ import {
 } from 'firebase/firestore';
 import { app } from "../../firebase"; // Ensure this path is correct
 import { toast } from 'react-toastify';
-
+import ManageFriendsComponent from './ManageFriendsComponent';
+import FriendRequestsComponent from './FriendRequestsComponent';
 export default function SocialMediaComponent() {
     const { user } = useAuth();
     const [friendCode, setFriendCode] = useState('');
@@ -259,52 +260,18 @@ export default function SocialMediaComponent() {
     return (
         <main className={styles.socialMediaMain}>
         
-        <div className={styles.socialMediaContainer}>
-            <h2>Social Media</h2>
-            <div className={styles.addFriendSection}>
-                <input
-                    type="text"
-                    placeholder="Enter Friend Code"
-                    value={friendCode}
-                    onChange={(e) => setFriendCode(e.target.value)}
-                />
-                <button onClick={handleAddFriend}>Add Friend</button>
-            </div>
-            <div className={styles.friendRequestsSection}>
-                <h3>Friend Requests</h3>
-                <ul>
-                    {friendRequests.map((request, index) => {
-                        if (request.status === 'pending') {
-                            return (
-                            
-                                <li key={request.id}>
-                                    <span>{request.displayName}</span>
-                                    <button onClick={() => handleAcceptRequest(request.id, request.from)}>Accept</button>
-                                    <button onClick={() => handleDeclineRequest(request.id)}>Decline</button>
-                                </li>
-                            );
-                        } else {
-                            return null;
-                        }
-                    })}
-                </ul>
-            </div>
-            </div>
-            <div className={styles.friendsSection}>
-                <h2>Friends</h2>
-                <input
-                    type="text"
-                    placeholder="Search Friends"
-                    value={searchFriends}
-                    onChange={(e) => setsearchFriends(e.target.value)}
-                />
-                <ul>
+        <FriendRequestsComponent 
+                friendRequests={friendRequests} 
+                user={user} 
+                friends={friends} 
+            />
+           <ManageFriendsComponent friends={filteredFriends} searchFriends={searchFriends} setSearchFriends={setsearchFriends} />
+        </main>
+    );
+}
 
-                <h3>Manage Friends</h3>
-                    {filteredFriends.map((friend) => (
-                        <li key={friend.friendID}>
-                            <p>{friend.displayName}</p>
-                            <form className={styles.friendsListForm} onSubmit={(e) => {
+
+ {/* <form className={styles.friendsListForm} onSubmit={(e) => {
                                 e.preventDefault();
                                 handleAddToProfile(friend.friendID, listToBeAdded);
                             }}>
@@ -318,11 +285,4 @@ export default function SocialMediaComponent() {
                                         ))}
                                 </select>
                                 <button type="submit">Add to Profile</button>
-                            </form>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        </main>
-    );
-}
+                            </form> */}

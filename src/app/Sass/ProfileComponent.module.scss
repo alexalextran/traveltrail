@@ -311,55 +311,50 @@
         margin-top: 2.8em;
   
         li {
-          display: flex;
-          flex-direction: column;
-          padding: 0.75rem;
-          border-bottom: 1px solid #e0e0e0;
-          transition: background 0.3s ease;
-          &:nth-child(even) {
-            background-color: #f1f1f1;
-          }
-          &:hover {
-            background-color: #e6f7ff;
-          }
-  
-          p {
-            margin: 0;
-            font-size: 1rem;
-            color: $webBlue;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-          }
-  
-          .friendsListForm {
-            @include flexCenter(row);
-            width: 100%;
-            margin-top: 0.5rem;
-  
-            select {
-              flex: 1;
-              padding: 0.4rem;
-              font-size: 0.9rem;
-              border: 1px solid #ccc;
-              border-radius: 5px;
-              margin-right: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem;
+            border-bottom: 1px solid #e0e0e0;
+            transition: background 0.3s ease;
+            &:nth-child(even) {
+              background-color: #f1f1f1;
             }
-  
+            &:hover {
+              background-color: #e6f7ff;
+            }
+    
+            span {
+              flex-grow: 1;
+              font-weight: 500;
+              color: $webBlue;
+              text-align: left;
+            }
+    
             button {
               padding: 0.4rem 0.8rem;
-              font-size: 0.9rem;
+              font-size: 0.85rem;
               border: none;
               border-radius: 5px;
-              background-color: #007bff;
-              color: #fff;
               cursor: pointer;
               transition: background-color 0.3s ease;
-              &:hover {
-                background-color: #0056b3;
+              &:first-of-type {
+                background-color: $webBlue;
+                color: white;
+                &:hover {
+                  filter:brightness(90%);
+                }
+              }
+              &:last-of-type {
+                background-color: #dc3545;
+                color: white;
+                margin-left: 0.5rem;
+                &:hover {
+                  background-color: #c82333;
+                }
               }
             }
           }
-        }
       }
     }
   }
