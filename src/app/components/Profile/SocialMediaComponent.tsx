@@ -23,8 +23,10 @@ export default function SocialMediaComponent() {
     const [friendCode, setFriendCode] = useState('');
     const [friendRequests, setFriendRequests] = useState<{ id: string; from: string; displayName: string; status: string }[]>([]);
     const [friends, setFriends] = useState<{ friendID: string; displayName: string }[]>([]);
+    const [filteredFriends, setFilteredFriends] = useState<{ friendID: string; displayName: string }[]>([]);
     const [publicLists, setPublicLists] = useState<{ friendId: string; listId: string; listName: string }[]>([]);
     const [listToBeAdded, setListToBeAdded] = useState('');
+    const [searchFriends, setsearchFriends] = useState('');
 
     useEffect(() => {
         const db = getFirestore(app);
@@ -46,6 +48,7 @@ export default function SocialMediaComponent() {
                 displayName: doc.data().displayName
             }));
             setFriends(fetchedFriends);
+            setFilteredFriends(fetchedFriends); // Initialize filtered friends
         });
 
         return () => {
@@ -80,6 +83,13 @@ export default function SocialMediaComponent() {
             fetchPublicLists();
         }
     }, [friends]);
+
+    useEffect(() => {
+        const filtered = friends.filter(friend =>
+            friend.displayName.toLowerCase().includes(searchFriends.toLowerCase())
+        );
+        setFilteredFriends(filtered);
+    }, [searchFriends, friends]);
 
     const handleAddFriend = async () => {
         const db = getFirestore(app);
@@ -248,6 +258,8 @@ export default function SocialMediaComponent() {
 
     return (
         <main className={styles.socialMediaMain}>
+        
+        <div className={styles.socialMediaContainer}>
             <h2>Social Media</h2>
             <div className={styles.addFriendSection}>
                 <input
@@ -277,10 +289,19 @@ export default function SocialMediaComponent() {
                     })}
                 </ul>
             </div>
+            </div>
             <div className={styles.friendsSection}>
-                <h3>Friends</h3>
+                <h2>Friends</h2>
+                <input
+                    type="text"
+                    placeholder="Search Friends"
+                    value={searchFriends}
+                    onChange={(e) => setsearchFriends(e.target.value)}
+                />
                 <ul>
-                    {friends.map((friend) => (
+
+                <h3>Manage Friends</h3>
+                    {filteredFriends.map((friend) => (
                         <li key={friend.friendID}>
                             <p>{friend.displayName}</p>
                             <form className={styles.friendsListForm} onSubmit={(e) => {
