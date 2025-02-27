@@ -1,41 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../../Sass/ProfileComponent.module.scss';
-import { useAuth } from '../../context/authContext'; 
 import {
     collection,
     getFirestore,
     onSnapshot,
-    addDoc,
-    updateDoc,
-    doc,
-    getDoc,
-    getDocs,
-    query,
-    where
 } from 'firebase/firestore';
 import { app } from "../../firebase";
-import { toast } from 'react-toastify';
 
 interface FriendRequestsComponentProps {
     friendRequests: { id: string; from: string; displayName: string; status: string }[];
     user: any;
     friends: { friendID: string; displayName: string }[];
+    handleAcceptRequest: (requestId: string, from: string) => void;
+    handleDeclineRequest: (requestId: string) => void;
+    handleAddFriend: () => void; // Updated type - no parameter needed
+    setFriendCode: React.Dispatch<React.SetStateAction<string>>; // More specific type
+    friendCode: string;
 }
 
-
-
-const FriendRequestsComponent: React.FC<FriendRequestsComponentProps> = ({ friendRequests: initialFriendRequests, user, friends }) => {
-    const { user: authUser } = useAuth();
-    const [friendCode, setFriendCode] = useState('');
+const FriendRequestsComponent: React.FC<FriendRequestsComponentProps> = ({
+    friendRequests: initialFriendRequests,
+    user,
+    friends,
+    handleAcceptRequest,
+    handleDeclineRequest,
+    handleAddFriend,
+    setFriendCode,
+    friendCode
+}) => {
+   
     interface FriendRequest {
         id: string;
         from: string;
         displayName: string;
         status: string;
     }
-    
+   
     const [friendRequests, setFriendRequests] = useState<FriendRequest[]>(initialFriendRequests);
-    
+   
     useEffect(() => {
         const db = getFirestore(app);
         const friendRequestsRef = collection(db, `users/${user.uid}/friendRequests`);
@@ -48,35 +50,11 @@ const FriendRequestsComponent: React.FC<FriendRequestsComponentProps> = ({ frien
             }));
             setFriendRequests(fetchedRequests);
         });
-        
+       
         return () => unsubscribeFriendRequests();
     }, [user.uid]);
-
-    const handleAddFriend = async () => {
-        const db = getFirestore(app);
-        if (friendCode.trim() === '') return;
-    
-        const friendDocRef = doc(db, `users/${friendCode}`);
-        const friendDocSnapshot = await getDoc(friendDocRef);
-        if (!friendDocSnapshot.exists() || friendCode === user.uid) {
-            toast.error("Invalid friend code. Please try again.");
-            setFriendCode('');
-            return;
-        }
-    
-        const friendRequestsRef = collection(db, `users/${friendCode}/friendRequests`);
-        const userDocRef = doc(db, `users/${user.uid}`);
-        const userDocSnapshot = await getDoc(userDocRef);
-    
-        await addDoc(friendRequestsRef, {
-            from: user.uid,
-            displayName: userDocSnapshot.data()?.displayName,
-            status: 'pending'
-        });
-        toast.success(`Friend request sent!`);
-        setFriendCode('');
-    };
-
+   
+   
     return (
         <div className={styles.socialMediaContainer}>
             <h2>Social Media</h2>
@@ -87,23 +65,28 @@ const FriendRequestsComponent: React.FC<FriendRequestsComponentProps> = ({ frien
                     value={friendCode}
                     onChange={(e) => setFriendCode(e.target.value)}
                 />
-                <button onClick={handleAddFriend}>Add Friend</button>
+                <button onClick={handleAddFriend}>Add Friend</button> {/* Fixed: removed the () => */}
             </div>
             <div className={styles.friendRequestsSection}>
                 <h3>Friend Requests</h3>
-                <ul>
-                    {friendRequests.map((request: FriendRequest) => (
-                        request.status === 'pending' && (
-                            <li key={request.id}>
-                                <span>{request.displayName}</span>
-                                <button>Accept</button>
-                                <button>Decline</button>
-                            </li>
-                        )
-                    ))}
-                </ul>
+                {friendRequests.filter(request => request.status === 'pending').length > 0 ? (
+                    <ul>
+                        {friendRequests.map((request: FriendRequest) => (
+                            request.status === 'pending' && (
+                                <li key={request.id}>
+                                    <span>{request.displayName}</span>
+                                    <button onClick={() => handleAcceptRequest(request.id, request.from)}>Accept</button>
+                                    <button onClick={() => handleDeclineRequest(request.id)}>Decline</button>
+                                </li>
+                            )
+                        ))}
+                    </ul>
+                ) : (
+                    <p className={styles.noFriendRequests}>No pending friend requests</p>
+                )}
             </div>
         </div>
     );
 }
+
 export default FriendRequestsComponent;

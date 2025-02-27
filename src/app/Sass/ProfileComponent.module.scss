@@ -213,6 +213,11 @@
         border: 1px solid #ccc;
         border-radius: 8px;
         background: #f9f9f9;
+
+        .noFriendRequests{
+            text-align: center;
+            margin: 1em;
+          }
   
       h3 {
         font-size: 1.2rem;
@@ -240,6 +245,8 @@
           &:hover {
             background-color: #e6f7ff;
           }
+
+         
   
           span {
             flex-grow: 1;

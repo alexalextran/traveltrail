@@ -13,21 +13,22 @@ import {
     where,
     getDocs,
     setDoc,
-    writeBatch // Import writeBatch for Firestore batch operations
+    writeBatch
 } from 'firebase/firestore';
-import { app } from "../../firebase"; // Ensure this path is correct
+import { app } from "../../firebase";
 import { toast } from 'react-toastify';
 import ManageFriendsComponent from './ManageFriendsComponent';
 import FriendRequestsComponent from './FriendRequestsComponent';
+
 export default function SocialMediaComponent() {
     const { user } = useAuth();
-    const [friendCode, setFriendCode] = useState('');
     const [friendRequests, setFriendRequests] = useState<{ id: string; from: string; displayName: string; status: string }[]>([]);
     const [friends, setFriends] = useState<{ friendID: string; displayName: string }[]>([]);
     const [filteredFriends, setFilteredFriends] = useState<{ friendID: string; displayName: string }[]>([]);
     const [publicLists, setPublicLists] = useState<{ friendId: string; listId: string; listName: string }[]>([]);
     const [listToBeAdded, setListToBeAdded] = useState('');
     const [searchFriends, setsearchFriends] = useState('');
+    const [friendCode, setFriendCode] = useState('');
 
     useEffect(() => {
         const db = getFirestore(app);
@@ -91,71 +92,6 @@ export default function SocialMediaComponent() {
         );
         setFilteredFriends(filtered);
     }, [searchFriends, friends]);
-
-    const handleAddFriend = async () => {
-        const db = getFirestore(app);
-        if (friendCode.trim() === '') return;
-    
-        // Check if the friendCode exists
-        const friendDocRef = doc(db, `users/${friendCode}`);
-        const friendDocSnapshot = await getDoc(friendDocRef);
-        if (!friendDocSnapshot.exists() || friendCode === user.uid) {
-            toast.error("Invalid friend code. Please try again.", {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
-            setFriendCode('');
-            return;
-        }
-    
-        // Check if the user is already a friend
-        const friendsRef = collection(db, `users/${user.uid}/friends`);
-        const friendsSnapshot = await getDocs(friendsRef);
-        const isFriend = friendsSnapshot.docs.some(doc => doc.data().friendID === friendCode);
-        const friendsName = friendsSnapshot.docs.find(doc => doc.data().friendID === friendCode);
-    
-        if (isFriend) {
-            toast.error(`${friendsName?.data().displayName} has already been added as a friend`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
-            return;
-        }
-    
-        // Get current user's display name
-        const friendRequestsRef = collection(db, `users/${friendCode}/friendRequests`);
-        const userDocRef = doc(db, `users/${user.uid}`);
-        const userDocSnapshot = await getDoc(userDocRef);
-    
-        await addDoc(friendRequestsRef, {
-            from: user.uid,
-            displayName: userDocSnapshot.data()?.displayName,
-            status: 'pending'
-        });
-        toast.success(`friendrequest was sent`, {
-            position: "top-right",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-        });
-        setFriendCode('');
-    };
 
     const handleAcceptRequest = async (requestId: string, from: string) => {
         const db = getFirestore(app);
@@ -255,34 +191,90 @@ export default function SocialMediaComponent() {
     
         console.log(`List added to profile with ID: ${newUserListRef.id}`);
     };
-    
 
+       const handleAddFriend = async () => {
+        const db = getFirestore(app);
+        if (friendCode.trim() === '') return;
+    
+        // Check if the friendCode exists
+        const friendDocRef = doc(db, `users/${friendCode}`);
+        const friendDocSnapshot = await getDoc(friendDocRef);
+        if (!friendDocSnapshot.exists() || friendCode === user.uid) {
+            toast.error("Invalid friend code. Please try again.", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            setFriendCode('');
+            return;
+        }
+    
+        // Check if the user is already a friend
+        const friendsRef = collection(db, `users/${user.uid}/friends`);
+        const friendsSnapshot = await getDocs(friendsRef);
+        const isFriend = friendsSnapshot.docs.some(doc => doc.data().friendID === friendCode);
+        const friendsName = friendsSnapshot.docs.find(doc => doc.data().friendID === friendCode);
+    
+        if (isFriend) {
+            toast.error(`${friendsName?.data().displayName} has already been added as a friend`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            return;
+        }
+    
+        // Get current user's display name
+        const friendRequestsRef = collection(db, `users/${friendCode}/friendRequests`);
+        const userDocRef = doc(db, `users/${user.uid}`);
+        const userDocSnapshot = await getDoc(userDocRef);
+    
+        await addDoc(friendRequestsRef, {
+            from: user.uid,
+            displayName: userDocSnapshot.data()?.displayName,
+            status: 'pending'
+        });
+        toast.success(`Friend Request was sent`, {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+        setFriendCode('');
+    };
+    
     return (
         <main className={styles.socialMediaMain}>
-        
-        <FriendRequestsComponent 
+            <FriendRequestsComponent 
                 friendRequests={friendRequests} 
                 user={user} 
                 friends={friends} 
+                handleAcceptRequest={handleAcceptRequest}
+                handleDeclineRequest={handleDeclineRequest}
+                handleAddFriend={handleAddFriend}
+                friendCode={friendCode}
+                setFriendCode={setFriendCode}
+                // Note: We're no longer passing handleAddFriend since the component handles it internally
             />
-           <ManageFriendsComponent friends={filteredFriends} searchFriends={searchFriends} setSearchFriends={setsearchFriends} />
+            <ManageFriendsComponent 
+                friends={filteredFriends} 
+                searchFriends={searchFriends} 
+                setSearchFriends={setsearchFriends} 
+            />
         </main>
     );
 }
-
-
- {/* <form className={styles.friendsListForm} onSubmit={(e) => {
-                                e.preventDefault();
-                                handleAddToProfile(friend.friendID, listToBeAdded);
-                            }}>
-                                <select onChange={(e) => setListToBeAdded(e.target.value)}>
-                                <option >Pick an option</option>
-
-                                    {publicLists
-                                        .filter(list => list.friendId === friend.friendID)
-                                        .map((list) => (
-                                            <option key={list.listId} value={list.listId}>{list.listName}</option>
-                                        ))}
-                                </select>
-                                <button type="submit">Add to Profile</button>
-                            </form> */}
