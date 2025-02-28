@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../../Sass/ProfileComponent.module.scss';
+import { removeFriend } from '@/app/firebaseFunctions/friends';
+import { useAuth } from '../../context/authContext'; 
 
 interface Friend {
     friendID: string;
@@ -13,6 +15,8 @@ interface ManageFriendsProps {
 }
 
 const ManageFriendsComponent: React.FC<ManageFriendsProps> = ({ friends, searchFriends, setSearchFriends }) => {
+        const { user } = useAuth();
+    
     const [filteredFriends, setFilteredFriends] = useState<Friend[]>(friends);
 
     useEffect(() => {
@@ -37,7 +41,7 @@ const ManageFriendsComponent: React.FC<ManageFriendsProps> = ({ friends, searchF
                     <li key={friend.friendID}>
                         <span>{friend.displayName}</span>
                         <button>View Profile</button>
-                        <button>Remove</button>
+                        <button onClick={() => removeFriend(friend.friendID, user.uid)}>Remove</button>
                     </li>
                 ))}
             </ul>
