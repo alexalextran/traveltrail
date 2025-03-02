@@ -19,6 +19,7 @@ import { app } from "../../firebase";
 import { toast } from 'react-toastify';
 import ManageFriendsComponent from './ManageFriendsComponent';
 import FriendRequestsComponent from './FriendRequestsComponent';
+import ViewProfileComponent from './ViewProfileComponent';
 
 export default function SocialMediaComponent() {
     const { user } = useAuth();
@@ -29,6 +30,8 @@ export default function SocialMediaComponent() {
     const [listToBeAdded, setListToBeAdded] = useState('');
     const [searchFriends, setsearchFriends] = useState('');
     const [friendCode, setFriendCode] = useState('');
+    const [viewProfile, setviewProfile] = useState(false)
+    const [profileData, setprofileData] = useState<{ friendID: string; displayName: string }>({ friendID: '', displayName: '' });
 
     useEffect(() => {
         const db = getFirestore(app);
@@ -259,6 +262,13 @@ export default function SocialMediaComponent() {
     
     return (
         <main className={styles.socialMediaMain}>
+
+            {viewProfile 
+            ? 
+            <ViewProfileComponent 
+            profileData={profileData}/> 
+            :
+            <>
             <FriendRequestsComponent 
                 friendRequests={friendRequests} 
                 user={user} 
@@ -268,13 +278,19 @@ export default function SocialMediaComponent() {
                 handleAddFriend={handleAddFriend}
                 friendCode={friendCode}
                 setFriendCode={setFriendCode}
-                // Note: We're no longer passing handleAddFriend since the component handles it internally
             />
-            <ManageFriendsComponent 
+            <ManageFriendsComponent
+                setprofileData={setprofileData}
+                setViewProfile={setviewProfile} 
                 friends={filteredFriends} 
                 searchFriends={searchFriends} 
                 setSearchFriends={setsearchFriends} 
             />
+            </>
+            
+            }
+
+            
         </main>
     );
 }

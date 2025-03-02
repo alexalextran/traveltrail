@@ -12,9 +12,11 @@ interface ManageFriendsProps {
     friends: Friend[];
     searchFriends: string;
     setSearchFriends: (value: string) => void;
+    setViewProfile: (value: boolean) => void;
+    setprofileData: React.Dispatch<React.SetStateAction<{ friendID: string; displayName: string }>>;
 }
 
-const ManageFriendsComponent: React.FC<ManageFriendsProps> = ({ friends, searchFriends, setSearchFriends }) => {
+const ManageFriendsComponent: React.FC<ManageFriendsProps> = ({ friends, searchFriends, setSearchFriends, setViewProfile, setprofileData }) => {
         const { user } = useAuth();
     
     const [filteredFriends, setFilteredFriends] = useState<Friend[]>(friends);
@@ -40,7 +42,9 @@ const ManageFriendsComponent: React.FC<ManageFriendsProps> = ({ friends, searchF
                 {filteredFriends.map((friend) => (
                     <li key={friend.friendID}>
                         <span>{friend.displayName}</span>
-                        <button>View Profile</button>
+                        <button onClick={() => {
+                            setprofileData(friend)
+                            setViewProfile(true)}}>View Profile</button>
                         <button onClick={() => removeFriend(friend.friendID, user.uid)}>Remove</button>
                     </li>
                 ))}
