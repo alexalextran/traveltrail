@@ -1,4 +1,4 @@
-import { collection, addDoc, getFirestore, doc, deleteDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+import { collection, addDoc, getFirestore, doc, deleteDoc, updateDoc, arrayUnion, arrayRemove, getDocs } from "firebase/firestore";
 import { app } from "../firebase";
 
 const db = getFirestore(app);
@@ -7,13 +7,12 @@ export const writeList = async (collectionName:string, data: {
     listName: string;
 }): Promise<any> => {
     try {
-        const docRef = await addDoc(collection(db, collectionName), data);
-        console.log("Document written with ID: ", docRef.id);
-        return {
-            listID: docRef.id,
+        const docRef = await addDoc(collection(db, collectionName), {
             listName: data.listName,
-            visible: false,
-        };
+            visible: false, 
+            });
+        await updateDoc(docRef, { listID: docRef.id });
+       
     } catch (error) {
         console.error("Error adding document: ", error);
         throw new Error("Failed to write document");
@@ -70,3 +69,22 @@ export const updateListVisibility = async (collectionName: string, listID: strin
         throw new Error("Failed to update list visibility");
     }
 };
+
+
+export const getLists = async (friendID: string): Promise<any> => {
+
+    try {
+        const querySnapshot = await getDocs(collection(db, `users/${friendID}/lists`));
+        const lists = querySnapshot.docs.map((doc) => {
+            return {
+                listID: doc.id,
+                ...doc.data()
+            };
+        });
+        return lists;
+    }catch{
+        console.error("Error getting lists");
+        throw new Error("Failed to get lists");
+    }
+
+}

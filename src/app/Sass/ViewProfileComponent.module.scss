@@ -18,10 +18,14 @@
   padding: 1.5rem;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 90%;
-  max-width: 400px;
+  width: 60em;
+  height: 70%;
   position: relative;
   text-align: center;
+
+  .noPublic{
+    margin: 1em 1em;
+  }
 }
 
 .closeButton {
@@ -48,9 +52,11 @@
 }
 
 .modalActions {
-  display: flex;
-  justify-content: space-between;
+  width: 40%;
+  @include flexCustom(space-between, center, row);
+  margin: auto;
   .actionButton {
+    width: 45%;
     background-color: #007bff;
     color: #fff;
     border: none;
@@ -68,4 +74,6 @@
       background-color: #c82333;
     }
   }
+
+  
 }

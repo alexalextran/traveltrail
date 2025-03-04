@@ -266,7 +266,8 @@ export default function SocialMediaComponent() {
             {viewProfile 
             ? 
             <ViewProfileComponent 
-            profileData={profileData}/> 
+            profileData={profileData}
+            setViewProfile={setviewProfile}/> 
             :
             <>
             <FriendRequestsComponent 
