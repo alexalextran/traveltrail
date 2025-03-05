@@ -7,6 +7,7 @@ export interface Pin {
     lat: number;
     lng: number;
     title: string;
+    categoryId: string; 
     description?: string;
     category: string;
     visited: boolean;
@@ -16,3 +17,4 @@ export interface Pin {
     website?: string;
   }
   
+ 

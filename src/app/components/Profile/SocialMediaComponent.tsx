@@ -130,70 +130,7 @@ export default function SocialMediaComponent() {
         await updateDoc(requestDocRef, { status: 'declined' });
     };
 
-    const handleAddToProfile = async (friendId: string, listId: string) => {
-        const db = getFirestore(app);
-        const friendListRef = doc(db, `users/${friendId}/lists/${listId}`);
-        const friendListSnapshot = await getDoc(friendListRef);
-    
-        if (!friendListSnapshot.exists()) {
-            console.error("Friend list does not exist");
-            return;
-        }
-    
-        const friendListData = friendListSnapshot.data();
-        const pinIDs = friendListData?.pins || [];
-    
-        const uniqueCategories = new Set<string>();
-        const pins = [];
-    
-        for (const pinID of pinIDs) {
-            const pinRef = doc(db, `users/${friendId}/pins/${pinID}`);
-            const pinSnapshot = await getDoc(pinRef);
-            if (pinSnapshot.exists()) {
-                const pinData = pinSnapshot.data();
-                pins.push(pinID);
-    
-                // Collect unique categories from each pin
-                if (pinData?.category) {
-                    uniqueCategories.add(pinData.category);
-                }
-            }
-        }
-    
-        // Convert Set to Array for iteration
-        const uniqueCategoriesArray = Array.from(uniqueCategories);
-    
-        // Check if each category already exists before adding
-        const userCategoriesRef = collection(db, `users/${user.uid}/categories`);
-        const batch = writeBatch(db);
-    
-        for (const category of uniqueCategoriesArray) {
-            const categoryQuery = query(userCategoriesRef, where("categoryName", "==", category));
-            const categorySnapshot = await getDocs(categoryQuery);
-            if (categorySnapshot.empty) {
-                const categoryRef = doc(userCategoriesRef);
-                batch.set(categoryRef, {
-                    categoryName: category,
-                    categoryColor: '#FFFFFF' // Default color in #FFFFFF format
-                });
-            } else {
-                console.log(`Category '${category}' already exists.`);
-            }
-        }
-    
-        await batch.commit();
-    
-        // Add the list to the user's profile
-        const userListRef = collection(db, `users/${user.uid}/lists`);
-        const newUserListRef = await addDoc(userListRef, {
-            listName: friendListData.listName,
-            visible: false,
-            pins,
-            categories: uniqueCategoriesArray // Use the converted array
-        });
-    
-        console.log(`List added to profile with ID: ${newUserListRef.id}`);
-    };
+
 
        const handleAddFriend = async () => {
         const db = getFirestore(app);

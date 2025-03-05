@@ -8,9 +8,10 @@ import "react-multi-carousel/lib/styles.css";
 
 const PinCard = ({ pin, responsiveConfig, categoryColor }: { pin: Pin, responsiveConfig: any, categoryColor: string }) => {
   const divRef = useRef<HTMLDivElement>(null); // Create a ref for the div
+  console.log(pin);
   const [{ opacity }, dragRef] = useDrag({
     type: 'pin',
-    item: { id: pin.id },
+    item: { id: pin.id, categoryId: pin.categoryId },
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0.5 : 1,
     }),

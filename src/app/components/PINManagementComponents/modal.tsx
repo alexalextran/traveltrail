@@ -124,7 +124,8 @@ const Modal = () => {
       description: description,
       lat: coords.lat,
       lng: coords.lng,
-      category: category,
+      categoryId: category,
+      category: categories.find((cat) => cat.CategoryID === category)?.categoryName || '',
       visited: visited,
       imageUrls: photos,
       openingHours: openingHours,
@@ -209,11 +210,15 @@ const Modal = () => {
           <select
             required
             value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            onChange={(e) => 
+              
+              {setCategory(e.target.value)
+                
+              }}
           >
             <option value="">Select a category</option>
             {categories.map((category: Category, index: number) => (
-              <option key={index} value={category.categoryName}>{category.categoryName}</option>
+              <option key={index} value={category.CategoryID}>{category.categoryName}</option>
             ))}
           </select>
           <label>
@@ -289,11 +294,15 @@ const Modal = () => {
               <select
                 required
                 value={category}
-                onChange={(e) => setCategory(e.target.value)}
+                onChange={(e) => 
+                  
+                  {setCategory(e.target.value)
+                    console.log(e.target.value)
+                  }}
               >
                 <option value="">Select a category</option>
                 {categories.map((category: Category, index: number) => (
-                  <option key={index} value={category.categoryName}>{category.categoryName}</option>
+                  <option key={index} value={category.CategoryID}>{category.categoryName}</option>
                 ))}
               </select>
               <hr></hr>

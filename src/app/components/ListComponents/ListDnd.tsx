@@ -48,12 +48,13 @@ const ListDnD = ({ listId }: { listId: string }) => {
 
     return () => unsubscribe(); // Clean up listener
   }, [db, listId, user]);
-
+  
   const [{ isOver }, drop] = useDrop({
     accept: 'pin',
-    drop: (item: { id: string }) => {
+    drop: (pin: { id: string; categoryId: string }) => {
+      console.log('Dropped Item:', pin); // <-- Debugging log
       if (listId) {
-        addPinToList(`users/${user.uid}/lists`, listId, item.id);
+        addPinToList(`users/${user.uid}/lists`, listId, pin.id, pin.categoryId);
       }
     },
     collect: (monitor) => ({
