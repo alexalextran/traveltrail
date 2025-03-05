@@ -19,7 +19,7 @@
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 65em;
-  height: 80%;
+  height: 85%;
   position: relative;
   text-align: center;
 
@@ -153,5 +153,26 @@
   option {
     background-color: #fff;
     color: #333;
+  }
+}
+
+
+.modalStatistics {
+  display: flex;
+  justify-content: space-around;
+  background-color: #f4f4f4;
+  padding: 0.5rem;
+  border-radius: 5px;
+
+  .statItem {
+    @include flexCustom(center, center, row);
+    text-align: center;
+    flex-grow: 1;
+    padding: 0 1rem;
+    
+    strong {
+      color: $webBlue;
+      margin-right: 0.6em;
+    }
   }
 }

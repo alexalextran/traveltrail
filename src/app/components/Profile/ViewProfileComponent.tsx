@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../../Sass/ViewProfileComponent.module.scss';
-import { getLists, getPinsFromList } from '../../firebaseFunctions/Lists';
+import { getLists, getPinsFromList, getUserStatistics } from '../../firebaseFunctions/Lists';
 
 interface ProfileData {
   friendID: string;
@@ -34,22 +34,36 @@ interface Pin {
   website: string;
 }
 
+interface UserStatistics {
+  totalLists: number;
+  totalPins: number;
+  totalCategories: number;
+}
+
 export default function ProfileModal({ profileData, setViewProfile }: ModalProps) {
   const [lists, setLists] = useState<List[]>([]);
   const [selectedList, setSelectedList] = useState<string>('');
   const [pins, setPins] = useState<Pin[]>([]);
+  const [statistics, setStatistics] = useState<UserStatistics>({
+    totalLists: 0,
+    totalPins: 0,
+    totalCategories: 0
+  });
 
   useEffect(() => {
-    async function fetchLists() {
+    async function fetchProfileData() {
       try {
         const fetchedLists = await getLists(profileData.friendID);
         setLists(fetchedLists);
+
+        const userStats = await getUserStatistics(profileData.friendID);
+        setStatistics(userStats);
       } catch (error) {
         console.error(error);
       }
     }
   
-    fetchLists();
+    fetchProfileData();
   }, [profileData.friendID]);
 
   const handleListSelect = async (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -73,9 +87,16 @@ export default function ProfileModal({ profileData, setViewProfile }: ModalProps
           <h2>{profileData.displayName}</h2>
           <p><strong>Friend ID:</strong> {profileData.friendID}</p>
         </div>
-        <div className={styles.modalActions}>
-          <button className={styles.actionButton}>View Lists</button>
-          <button className={`${styles.actionButton} ${styles.danger}`}>Remove Friend</button>
+        <div className={styles.modalStatistics}>
+          <div className={styles.statItem}>
+            <strong>Total Lists:</strong> {statistics.totalLists}
+          </div>
+          <div className={styles.statItem}>
+            <strong>Total Pins:</strong> {statistics.totalPins}
+          </div>
+          <div className={styles.statItem}>
+            <strong>Unique Categories:</strong> {statistics.totalCategories}
+          </div>
         </div>
 
         {lists.filter((list) => list.visible === true).length > 0 ? (

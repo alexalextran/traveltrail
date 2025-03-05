@@ -116,3 +116,32 @@ export const getPinsFromList = async (friendID: string, listID: string): Promise
         throw new Error("Failed to get pins from list");
     }
 }
+
+
+export const getUserStatistics = async (friendID: string): Promise<{
+    totalLists: number;
+    totalPins: number;
+    totalCategories: number;
+  }> => {
+      try {
+          // Count total lists
+          const listsSnapshot = await getDocs(collection(db, `users/${friendID}/lists`));
+          const totalLists = listsSnapshot.docs.length;
+  
+          // Count total pins
+          const pinsSnapshot = await getDocs(collection(db, `users/${friendID}/pins`));
+          const totalPins = pinsSnapshot.docs.length;
+  
+          const categoriesSnapshot = await getDocs(collection(db, `users/${friendID}/categories`));
+          const totalCategories = categoriesSnapshot.docs.length;
+  
+          return {
+              totalLists,
+              totalPins,
+              totalCategories
+          };
+      } catch (error) {
+          console.error("Error getting user statistics", error);
+          throw new Error("Failed to get user statistics");
+      }
+  }
