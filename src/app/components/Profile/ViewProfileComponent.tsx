@@ -145,8 +145,11 @@ export default function ProfileModal({ profileData, setViewProfile }: ModalProps
         ) : (
           <p className={styles.noPublic}>No Publicly Available Lists</p>
         )}
-        <button onClick={() => {handleAddToProfile(profileData.friendID, selectedList, user.uid)}}>Add To Profile</button>
-      </div>
+        {
+          selectedList &&
+          <button className={styles.addToProfileButton} onClick={() => {handleAddToProfile(profileData.friendID, selectedList, user.uid)}}>Add To Profile</button>
+    }
+          </div>
     </div>
   );
 }
