@@ -77,6 +77,7 @@ const Page = () => {
     const unsubscribe = onSnapshot(listCollectionRef, (snapshot) => {
       const fetchedPins: Pin[] = snapshot.docs.map((doc) => ({
         id: doc.id,
+        categoryId: doc.data().categoryId || '',
         address: doc.data().address || '',
         lat: doc.data().lat || 0,
         lng: doc.data().lng || 0,
