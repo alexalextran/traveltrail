@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../../Sass/ViewProfileComponent.module.scss';
 import { getLists, getPinsFromList, getUserStatistics } from '../../firebaseFunctions/Lists';
-
+import { handleAddToProfile } from '../../firebaseFunctions/Lists';
+import { useAuth } from '@/app/context/authContext';
 interface ProfileData {
   friendID: string;
   displayName: string;
@@ -49,6 +50,9 @@ export default function ProfileModal({ profileData, setViewProfile }: ModalProps
     totalPins: 0,
     totalCategories: 0
   });
+      const { user } = useAuth();
+  
+
 
   useEffect(() => {
     async function fetchProfileData() {
@@ -141,7 +145,7 @@ export default function ProfileModal({ profileData, setViewProfile }: ModalProps
         ) : (
           <p className={styles.noPublic}>No Publicly Available Lists</p>
         )}
-        <button>Add To Profile</button>
+        <button onClick={() => {handleAddToProfile(profileData.friendID, selectedList, user.uid)}}>Add To Profile</button>
       </div>
     </div>
   );

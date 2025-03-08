@@ -148,67 +148,76 @@ export const getUserStatistics = async (friendID: string): Promise<{
   }
 
 
-    //   const handleAddToProfile = async (friendId: string, listId: string) => {
-    //       const db = getFirestore(app);
-    //       const friendListRef = doc(db, `users/${friendId}/lists/${listId}`);
-    //       const friendListSnapshot = await getDoc(friendListRef);
-      
-    //       if (!friendListSnapshot.exists()) {
-    //           console.error("Friend list does not exist");
-    //           return;
-    //       }
-      
-    //       const friendListData = friendListSnapshot.data();
-    //       const pinIDs = friendListData?.pins || [];
-      
-    //       const uniqueCategories = new Set<string>();
-    //       const pins = [];
-      
-    //       for (const pinID of pinIDs) {
-    //           const pinRef = doc(db, `users/${friendId}/pins/${pinID}`);
-    //           const pinSnapshot = await getDoc(pinRef);
-    //           if (pinSnapshot.exists()) {
-    //               const pinData = pinSnapshot.data();
-    //               pins.push(pinID);
-      
-    //               // Collect unique categories from each pin
-    //               if (pinData?.category) {
-    //                   uniqueCategories.add(pinData.category);
-    //               }
-    //           }
-    //       }
-      
-    //       // Convert Set to Array for iteration
-    //       const uniqueCategoriesArray = Array.from(uniqueCategories);
-      
-    //       // Check if each category already exists before adding
-    //       const userCategoriesRef = collection(db, `users/${user.uid}/categories`);
-    //       const batch = writeBatch(db);
-      
-    //       for (const category of uniqueCategoriesArray) {
-    //           const categoryQuery = query(userCategoriesRef, where("categoryName", "==", category));
-    //           const categorySnapshot = await getDocs(categoryQuery);
-    //           if (categorySnapshot.empty) {
-    //               const categoryRef = doc(userCategoriesRef);
-    //               batch.set(categoryRef, {
-    //                   categoryName: category,
-    //                   categoryColor: '#FFFFFF' // Default color in #FFFFFF format
-    //               });
-    //           } else {
-    //               console.log(`Category '${category}' already exists.`);
-    //           }
-    //       }
-      
-    //       await batch.commit();
-      
-    //       // Add the list to the user's profile
-    //       const userListRef = collection(db, `users/${user.uid}/lists`);
-    //       const newUserListRef = await addDoc(userListRef, {
-    //           listName: friendListData.listName,
-    //           visible: false,
-    //           pins,
-    //           categories: uniqueCategoriesArray // Use the converted array
-    //       });
-      
-    //       console.log(`List added to profile with ID: ${newUserListRef.id}`);
-    //   };
+  export const handleAddToProfile = async (friendId: string, listId: string, userId: string) => {
+    try {
+        const db = getFirestore(app);
+
+        // Get friend's list
+        const friendListRef = doc(db, `users/${friendId}/lists/${listId}`);
+        const friendListSnapshot = await getDoc(friendListRef);
+        if (!friendListSnapshot.exists()) {
+            throw new Error("Friend list does not exist.");
+        }
+
+        const friendListData = friendListSnapshot.data();
+        const pinIDs: string[] = friendListData?.pins || [];
+
+        // Fetch all pins in parallel
+        const pinSnapshots = await Promise.all(
+            pinIDs.map((pinID) => getDoc(doc(db, `users/${friendId}/pins/${pinID}`)))
+        );
+
+        const batch = writeBatch(db);
+        const userPinsRef = collection(db, `users/${userId}/pins`);
+        const userCategoriesRef = collection(db, `users/${userId}/categories`);
+
+        const newPinIDs: string[] = [];
+        const categoryIds = new Set<string>();
+
+        pinSnapshots.forEach((pinSnapshot) => {
+            if (pinSnapshot.exists()) {
+                const pinData = pinSnapshot.data();
+                const newPinRef = doc(userPinsRef);
+                newPinIDs.push(newPinRef.id);
+
+                batch.set(newPinRef, {
+                    ...pinData, // Copy all pin data
+                });
+
+                if (pinData?.categoryId) {
+                    categoryIds.add(pinData.categoryId);
+                }
+            }
+        });
+
+        // Fetch category details in parallel
+        const categorySnapshots = await Promise.all(
+            Array.from(categoryIds).map((categoryId) => getDoc(doc(db, `users/${friendId}/categories/${categoryId}`)))
+        );
+
+        // Add categories to Firestore
+        categorySnapshots.forEach((categorySnapshot) => {
+            if (categorySnapshot.exists()) {
+                const categoryData = categorySnapshot.data();
+                const categoryRef = doc(userCategoriesRef, categorySnapshot.id);
+                batch.set(categoryRef, categoryData);
+            }
+        });
+
+        // Add the list to the user's profile
+        const userListRef = collection(db, `users/${userId}/lists`);
+        const newUserListRef = await addDoc(userListRef, {
+            listName: friendListData.listName,
+            visible: false,
+            pins: newPinIDs, // Store new pin IDs
+            categories: Array.from(categoryIds), // Store category IDs
+        });
+
+        await batch.commit();
+
+        console.log(`List added to profile with ID: ${newUserListRef.id}`);
+    } catch (error) {
+        console.error("Error adding list to profile:", (error as any).message);
+    }
+};
+
