@@ -1,7 +1,7 @@
 # Welcome to Travel Trail!
 
 
-Welcome to Travel Trail Version **0.8**
+Welcome to Travel Trail Version **0.9**
 
 A **free** advanced travel planner developed by me, Alex Tran as a way to plan my own Japan trip. However feel free to use it as much as you like. Disclaimer: Travel Trail is still in early beta, so you may come across some unexpected bugs, please let me know if you find any!
 
