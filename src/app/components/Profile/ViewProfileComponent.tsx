@@ -3,6 +3,8 @@ import styles from '../../Sass/ViewProfileComponent.module.scss';
 import { getLists, getPinsFromList, getUserStatistics } from '../../firebaseFunctions/Lists';
 import { handleAddToProfile } from '../../firebaseFunctions/Lists';
 import { useAuth } from '@/app/context/authContext';
+import { sendCollaborativeListRequest } from '@/app/firebaseFunctions/Collaborative';
+import { retrieveDisplayName } from '@/app/firebaseFunctions/friends';
 interface ProfileData {
   friendID: string;
   displayName: string;
@@ -51,7 +53,6 @@ export default function ProfileModal({ profileData, setViewProfile }: ModalProps
     totalCategories: 0
   });
       const { user } = useAuth();
-  
 
 
   useEffect(() => {
@@ -149,7 +150,7 @@ export default function ProfileModal({ profileData, setViewProfile }: ModalProps
           selectedList &&
           <div className={styles.buttonGroup}>
           <button className={styles.addToProfileButton} onClick={() => { handleAddToProfile(profileData.friendID, selectedList, user.uid); } }>Add To Profile</button>
-          <button className={styles.addToProfileButton} onClick={() => { handleAddToProfile(profileData.friendID, selectedList, user.uid); } }>Request Collaboration</button>
+          <button className={styles.addToProfileButton} onClick={async () => { sendCollaborativeListRequest(profileData.friendID, profileData.displayName, selectedList, user.uid, await retrieveDisplayName(user.uid)); } }>Request Collaboration</button>
           </div>
 
     }

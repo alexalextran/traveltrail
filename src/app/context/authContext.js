@@ -1,7 +1,12 @@
-import { createContext, useContext, useEffect, useState } from 'react';
-import { onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { auth, app } from '../firebase';  // Adjust the path as needed based on your folder structure
-
+import { createContext, useContext, useEffect, useState } from "react";
+import {
+  onAuthStateChanged,
+  signOut,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth, app } from "../firebase"; // Adjust the path as needed based on your folder structure
+import { retrieveDisplayName } from "../firebaseFunctions/friends";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -18,33 +23,44 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (email, password) => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       // Successfully signed up
-      console.log('Signed up:', userCredential.user);
+      console.log("Signed up:", userCredential.user);
       return userCredential.user.uid; // Return the user ID
     } catch (error) {
-      console.error('Error signing up:', error);
+      console.error("Error signing up:", error);
       throw error; // Rethrow the error to propagate it to the caller
     }
   };
 
   const login = async (email, password) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       // Successfully signed in
-      console.log('Signed in:', userCredential.user);
+      let retrievedDisplayName = await retrieveDisplayName(
+        userCredential.user.uid
+      );
+      setUser({ ...userCredential.user, displayName: retrievedDisplayName });
     } catch (error) {
-      console.error('Error logging in:', error);
+      console.error("Error logging in:", error);
       throw error; // Rethrow the error to propagate it to the caller
     }
   };
-  
+
   const logout = async () => {
     await signOut(auth);
   };
 
   return (
-    <AuthContext.Provider value={{login, user, signup, loading, logout }}>
+    <AuthContext.Provider value={{ login, user, signup, loading, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -221,3 +221,13 @@ export const getUserStatistics = async (friendID: string): Promise<{
     }
 };
 
+export const retrieveListName = async (userID: string, listID: string): Promise<string> => {
+    try {
+        const listDoc = doc(db, `users/${userID}/lists/${listID}`);
+        const listSnapshot = await getDoc(listDoc);
+        return listSnapshot.data()?.listName;
+    } catch (error) {
+        console.error("Error retrieving list name: ", error);
+        throw new Error("Failed to retrieve list name");
+    }
+}

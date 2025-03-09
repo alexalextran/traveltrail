@@ -27,7 +27,6 @@ export default function SocialMediaComponent() {
     const [friends, setFriends] = useState<{ friendID: string; displayName: string }[]>([]);
     const [filteredFriends, setFilteredFriends] = useState<{ friendID: string; displayName: string }[]>([]);
     const [publicLists, setPublicLists] = useState<{ friendId: string; listId: string; listName: string }[]>([]);
-    const [listToBeAdded, setListToBeAdded] = useState('');
     const [searchFriends, setsearchFriends] = useState('');
     const [friendCode, setFriendCode] = useState('');
     const [viewProfile, setviewProfile] = useState(false)
