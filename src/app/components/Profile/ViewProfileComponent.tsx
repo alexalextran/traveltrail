@@ -147,7 +147,11 @@ export default function ProfileModal({ profileData, setViewProfile }: ModalProps
         )}
         {
           selectedList &&
-          <button className={styles.addToProfileButton} onClick={() => {handleAddToProfile(profileData.friendID, selectedList, user.uid)}}>Add To Profile</button>
+          <div className={styles.buttonGroup}>
+          <button className={styles.addToProfileButton} onClick={() => { handleAddToProfile(profileData.friendID, selectedList, user.uid); } }>Add To Profile</button>
+          <button className={styles.addToProfileButton} onClick={() => { handleAddToProfile(profileData.friendID, selectedList, user.uid); } }>Request Collaboration</button>
+          </div>
+
     }
           </div>
     </div>

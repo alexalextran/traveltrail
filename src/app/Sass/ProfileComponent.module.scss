@@ -205,7 +205,7 @@
 .socialMediaMain {
     height: 70%;
     margin: auto;
-    width: 80%;
+    width: 90%;
     @include flexCustom(space-between, center, row);
 
     h2 {
@@ -253,7 +253,7 @@
   
     .socialMediaContainer {
       height: 100%;
-      width: 45%;
+      width: 30%;
       margin-bottom: 1rem;
       background: #fff;
       border-radius: 8px;
@@ -343,7 +343,7 @@
   
     .friendsSection {
         height: 100%;
-      width: 45%;
+      width: 30%;
       margin-bottom: 1rem;
       background: #fff;
       border-radius: 8px;

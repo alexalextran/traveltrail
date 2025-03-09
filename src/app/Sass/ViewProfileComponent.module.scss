@@ -177,33 +177,42 @@
   }
 }
 
-.addToProfileButton {
-  background-color: $webBlue;
-  color: #fff;
-  font-size: 1rem;
-  font-weight: bold;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  display: block;
-  margin: 1.5rem auto 0;
-  width: fit-content;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+.buttonGroup{
+  @include flexCustom(center, center, row);
+  width: 70%;
+  margin: auto;
 
-  &:hover {
-    background-color: darken($webBlue, 10%);
-    transform: scale(1.05);
+  button {
+    background-color: $webBlue;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: block;
+    margin: 1.5rem auto 0;
+    width: fit-content;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    width: 45%;
+  
+    &:hover {
+      background-color: darken($webBlue, 10%);
+      transform: scale(1.05);
+    }
+  
+    &:active {
+      transform: scale(1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+  
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
   }
-
-  &:active {
-    transform: scale(1);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  }
-
-  &:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
+  
 }
+
