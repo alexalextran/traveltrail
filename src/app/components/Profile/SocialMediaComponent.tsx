@@ -20,7 +20,7 @@ import { toast } from 'react-toastify';
 import ManageFriendsComponent from './ManageFriendsComponent';
 import FriendRequestsComponent from './FriendRequestsComponent';
 import ViewProfileComponent from './ViewProfileComponent';
-import CollaborativeLists from './CollaborativeLists';
+import CollaborativeComponent from './CollborativeComponent';
 export default function SocialMediaComponent() {
     const { user } = useAuth();
     const [friendRequests, setFriendRequests] = useState<{ id: string; from: string; displayName: string; status: string }[]>([]);
@@ -223,7 +223,7 @@ export default function SocialMediaComponent() {
                 searchFriends={searchFriends} 
                 setSearchFriends={setsearchFriends} 
             />
-            <CollaborativeLists />
+            <CollaborativeComponent />
             </>
             
             }

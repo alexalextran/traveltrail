@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styles from "../../Sass/CollaborativeLists.module.scss";
-import { declineCollaborativeRequest, retrieveCollaborativeRequests } from "@/app/firebaseFunctions/Collaborative";
-import { useAuth } from "@/app/context/authContext";
-import { retrieveListName } from "@/app/firebaseFunctions/Lists";
+import { declineCollaborativeRequest, retrieveCollaborativeRequests } from "../../firebaseFunctions/Collaborative";
+import { useAuth } from "../../context/authContext";
+import { retrieveListName } from "../../firebaseFunctions/Lists";
 
-export default function CollaborativeLists() {
+export default function CollaborativeComponent() {
   const { user } = useAuth();
   const [incomingRequests, setIncomingRequests] = useState<any[]>([]);
   const [outgoingRequests, setOutgoingRequests] = useState<any[]>([]);
