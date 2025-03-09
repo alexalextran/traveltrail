@@ -1,5 +1,6 @@
 import { collection, addDoc, getFirestore, doc, deleteDoc, updateDoc, arrayUnion, arrayRemove, getDocs, getDoc, writeBatch, query, where, setDoc } from "firebase/firestore";
 import { app } from "../firebase";
+import { list } from "firebase/storage";
 
 const db = getFirestore(app);
 
@@ -180,5 +181,28 @@ export const acceptCollaborativeRequest = async (userID: string, requestID: stri
     } catch (error) {
         console.error("Error accepting collaborative request: ", error);
         throw new Error("Failed to accept collaborative request");
+    }
+}
+
+//TODO CREATE A NEW DOCUMENT IN A SHARED COLLECTION
+//CHANGE STATUS OF THE LIST OF THE LISTS OWNER TO COLLABORATIVE
+//ADD THE LIST TO THE FRIENDS LIST
+//WRITE FUNCTION TO ADD PINS TO THE COLLABORATIVE LIST AND BOTH LISTS
+//WRITE FUNCTION TO ADD PINS TO BOTH USERS COLLECTION
+export const addCollaborativeList = async (userID: string, friendID: string, listID: string): Promise<void> => {
+    try {
+        const collaborativeListRef = doc(db, `collaborativeLists/${listID}`);
+
+        await setDoc(collaborativeListRef, {
+            owners: [userID, friendID],
+            listID: listID,
+        });
+
+     
+
+        console.log(`Collaborative list added to user: ${userID}`);
+    } catch (error) {
+        console.error("Error adding collaborative list: ", error);
+        throw new Error("Failed to add collaborative list");
     }
 }
