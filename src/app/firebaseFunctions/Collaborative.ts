@@ -5,6 +5,10 @@ const db = getFirestore(app);
 
 export const sendCollaborativeListRequest = async (friendID: string, friendName: string, listID: string, userId: string, userName: string): Promise<void> => {
     try {
+        if(await checkIfRequestExists(userId, friendID, listID)){
+            throw new Error("Request already exists");
+        }
+        
         const friendRef = doc(db, `users/${friendID}/collaborativeRequests`, listID);
         const userRef = doc(db, `users/${userId}/collaborativeRequests`, listID);
 
@@ -28,6 +32,24 @@ export const sendCollaborativeListRequest = async (friendID: string, friendName:
     } catch (error) {
         console.error("Error sending collaborative list request: ", error);
         throw new Error("Failed to send collaborative list request");
+    }
+}
+
+
+export const checkIfRequestExists = async (userID: string, friendID: string, listID: string): Promise<boolean> => {
+    try {
+        const requestRef = doc(db, `users/${userID}/collaborativeRequests`, listID);
+        const requestSnapshot = await getDoc(requestRef);
+
+        if (requestSnapshot.exists()) {
+            const requestData = requestSnapshot.data();
+            return requestData.to === friendID;
+        }
+
+        return false;
+    } catch (error) {
+        console.error("Error checking if request exists: ", error);
+        throw new Error("Failed to check if request exists");
     }
 }
 

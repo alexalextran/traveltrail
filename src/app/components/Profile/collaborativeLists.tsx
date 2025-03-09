@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styles from "../../Sass/collaborativeLists.module.scss";
+import styles from "../../Sass/CollaborativeLists.module.scss";
 import { declineCollaborativeRequest, retrieveCollaborativeRequests } from "@/app/firebaseFunctions/Collaborative";
 import { useAuth } from "@/app/context/authContext";
 import { retrieveListName } from "@/app/firebaseFunctions/Lists";
