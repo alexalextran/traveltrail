@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "../../Sass/CollaborativeComponent.module.scss";
-import { declineCollaborativeRequest, retrieveCollaborativeRequests } from "../../firebaseFunctions/Collaborative";
+import { acceptCollaborativeRequest, declineCollaborativeRequest, retrieveCollaborativeRequests } from "../../firebaseFunctions/Collaborative";
 import { useAuth } from "../../context/authContext";
 import { retrieveListName } from "../../firebaseFunctions/Lists";
 
@@ -48,7 +48,7 @@ export default function CollaborativeComponent() {
           {incomingRequests.map((request) => (
             <li key={request.id}>
               <p>{request.fromName} has requested to collaborate on list: <span>{request.listName}</span></p>
-              <button>Accept</button>
+              <button onClick={() => acceptCollaborativeRequest(user.uid, request.id, request.from)}>Accept</button>
               <button onClick={() => declineCollaborativeRequest(user.uid, request.id)}>Decline</button>
             </li>
           ))}

@@ -59,7 +59,7 @@ export const retrieveCollaborativeRequests = async (userID: string): Promise<any
         const collaborativeRequestsRef = collection(db, `users/${userID}/collaborativeRequests`);
         const querySnapshot = await getDocs(collaborativeRequestsRef);
 
-        return querySnapshot.docs.map((doc) => {
+        return querySnapshot.docs.filter((doc) => doc.data().status === 'pending').map((doc) => {
             const data = doc.data();
             
             // Return all fields from the document
@@ -132,3 +132,53 @@ export const declineCollaborativeRequest = async (userID: string, requestID: str
         throw new Error("Failed to decline collaborative request");
     }
 };
+
+
+export const acceptCollaborativeRequest = async (userID: string, requestID: string, friendID: string): Promise<void> => {
+    try {
+        // 1. Get the request data first to find the other user
+        const requestRef = doc(db, `users/${userID}/collaborativeRequests`, requestID);
+        const requestSnapshot = await getDoc(requestRef);
+        
+        if (!requestSnapshot.exists()) {
+            throw new Error("Request not found");
+        }
+        
+        const requestData = requestSnapshot.data();
+        
+        // 2. Determine the other user's ID (could be in 'from' or 'to' field)
+        
+        if (!friendID) {
+            throw new Error("Invalid request data: missing user reference");
+        }
+        
+        // 3. Find the corresponding request in the other user's collection
+        const otherUserRequestsRef = collection(db, `users/${friendID}/collaborativeRequests`);
+        const otherUserQuerySnapshot = await getDocs(
+            query(otherUserRequestsRef, 
+                where("listID", "==", requestData.listID)
+            )
+        );
+        
+        // 4. Update the status of both requests in a batch
+        const batch = writeBatch(db);
+        
+        // Update the current user's request
+        batch.update(requestRef, { status: 'accepted' });
+        
+        // Update the other user's corresponding request if found
+        if (!otherUserQuerySnapshot.empty) {
+            otherUserQuerySnapshot.forEach(doc => {
+                batch.update(doc.ref, { status: 'accepted' });
+            });
+        }
+        
+        // Commit the batch
+        await batch.commit();
+        
+        console.log("Successfully accepted collaborative requests");
+    } catch (error) {
+        console.error("Error accepting collaborative request: ", error);
+        throw new Error("Failed to accept collaborative request");
+    }
+}
