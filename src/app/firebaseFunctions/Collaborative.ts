@@ -176,6 +176,22 @@ export const acceptCollaborativeRequest = async (userID: string, requestID: stri
         
         // Commit the batch
         await batch.commit();
+
+        const sharedCollectionRef = doc(db, `sharedCollection/${requestData.listID}`);
+        await setDoc(sharedCollectionRef, {
+            owner: friendID,
+            listID: requestData.listID,
+            collaborators: [userID, friendID]
+        });
+
+        const listOwnerRef = doc(db, `users/${requestData.listOwner}/lists`, requestData.listID);
+        await updateDoc(listOwnerRef, {
+            collaborative: true,
+            collaborators: arrayUnion(friendID, requestData.listOwner),
+            owner: requestData.listOwner
+        });
+
+
         
         console.log("Successfully accepted collaborative requests");
     } catch (error) {
