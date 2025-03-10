@@ -191,6 +191,13 @@ export const acceptCollaborativeRequest = async (userID: string, requestID: stri
             owner: requestData.listOwner
         });
 
+        const friendListRef = doc(db, `users/${friendID}/lists`, requestData.listID);
+        const listOwnerSnapshot = await getDoc(listOwnerRef);
+
+        if (listOwnerSnapshot.exists()) {
+            await setDoc(friendListRef, listOwnerSnapshot.data());
+        }
+
 
         
         console.log("Successfully accepted collaborative requests");
