@@ -14,6 +14,7 @@ const ListDnD = ({ listId }: { listId: string }) => {
   const dropRef = useRef<HTMLDivElement>(null);
   const db = getFirestore(app);
   const { user } = useAuth(); 
+  const [list, setlist] = useState<any>()
 
   useEffect(() => {
     if (!listId) {
@@ -25,6 +26,7 @@ const ListDnD = ({ listId }: { listId: string }) => {
     const unsubscribe = onSnapshot(listDocRef, async (docSnapshot) => {
       if (docSnapshot.exists()) {
         const listData = docSnapshot.data();
+        setlist(listData)
         if (listData && listData.pins) {
           const promises = listData.pins.map(async (pinId: string) => {
             const pinDocRef = doc(db, `users/${user.uid}/pins/${pinId}`);
@@ -52,9 +54,9 @@ const ListDnD = ({ listId }: { listId: string }) => {
   const [{ isOver }, drop] = useDrop({
     accept: 'pin',
     drop: (pin: { id: string; categoryId: string }) => {
-      console.log('Dropped Item:', pin); // <-- Debugging log
       if (listId) {
-        addPinToList(`users/${user.uid}/lists`, listId, pin.id, pin.categoryId);
+        console.log(list)
+        addPinToList(`users/${user.uid}/lists`, listId, pin.id, pin.categoryId, list.collaborative, user.uid);
       }
     },
     collect: (monitor) => ({

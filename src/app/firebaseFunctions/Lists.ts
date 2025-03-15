@@ -30,19 +30,66 @@ export const deleteList = async (collectionName:string, listID: string): Promise
     }
 };
 
-export const addPinToList = async (collectionName:string, listID: string, pinID: string, categoryID: string): Promise<void> => {
+export const addPinToList = async (collectionName:string, listID: string, pinID: string, categoryID: string, collaborative:boolean, userID:string): Promise<void> => {
     try {
         const listRef = doc(db, collectionName, listID);
         await updateDoc(listRef, {
             pins: arrayUnion(pinID),
             categories: arrayUnion(categoryID)
         });
+       
+        if(collaborative){
+      
+            addPinToCollaborativeList(listID, pinID, categoryID, userID);
+        }
         console.log(`Pin added to list with ID: ${listID}`);
     } catch (error) {
         console.error("Error adding pin to list: ", error);
         throw new Error("Failed to add pin to list");
     }
 };
+
+
+
+ const addPinToCollaborativeList = async (listID: string, pinID: string, categoryID: string, userID: string): Promise<void> => {
+    const pinData = await retrievePinDocument(userID, pinID);
+    const categoryData = await retrieveCategoryDocument(userID, categoryID);
+    console.log(pinData, categoryData);
+    try {
+        const listRef = doc(db, `collaborativeLists`, listID);
+        await updateDoc(listRef, {
+            pins: arrayUnion(pinData),
+            categories: arrayUnion(categoryData)
+        });
+        console.log(`Pin added to collaborative list with ID: ${listID}`);
+    } catch (error) {
+        console.error("Error adding pin to collaborative list: ", error);
+        throw new Error("Failed to add pin to collaborative list");
+    }
+}
+
+const retrievePinDocument = async (userID: string, pinID: string): Promise<any> => {
+    try {
+        const pinRef = doc(db, `users/${userID}/pins`, pinID);
+        const pinSnapshot = await getDoc(pinRef);
+        return pinSnapshot.data();
+    } catch (error) {
+        console.error("Error retrieving pin document: ", error);
+        throw new Error("Failed to retrieve pin document");
+    }
+}
+
+const retrieveCategoryDocument = async (userID: string, categoryID: string): Promise<any> => {
+    try { 
+        const categoryRef = doc(db, `users/${userID}/categories`, categoryID);
+        const categorySnapshot = await getDoc(categoryRef);
+        return categorySnapshot.data();
+    }
+    catch (error) {
+        console.error("Error retrieving category document: ", error);
+        throw new Error("Failed to retrieve category document");
+    }
+}
 
 export const removePinFromList = async (collectionName:string, listID: string, pinID: string): Promise<void> => {
     console.log(listID, pinID)
@@ -231,3 +278,5 @@ export const retrieveListName = async (userID: string, listID: string): Promise<
         throw new Error("Failed to retrieve list name");
     }
 }
+
+
