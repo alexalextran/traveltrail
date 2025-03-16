@@ -26,7 +26,7 @@ function ListScreen() {
 
     const dispatch: AppDispatch = useDispatch(); 
     const [pins, setPins] = useState<Pin[]>([]);
-    const [lists, setLists] = useState<{ id: string; listName: string; }[]>([]);
+    const [lists, setLists] = useState<{ id: string; listName: string; collaborative: boolean; }[]>([]);
     const [child, setchild] = useState(<ManageLists/>);
     const [selectedList, setSelectedList] = useState<string>(''); 
     const [categories, setcategories] = useState<Category[]>([]);
@@ -178,14 +178,13 @@ function ListScreen() {
                             <button onClick={() => setSearchQuery('')}>Clear</button>
                         </div>
                         {filteredPins.map((pin: Pin, index: number) => {
-                            const pinCategory = categories.find(category => category.categoryName === pin.category);
-                            const categoryColor = pinCategory ? pinCategory.categoryColor : 'black';
+                           const filteredCategory = categories.filter(category => category.CategoryID === pin.categoryId);
                             return (
                                 <PinCard
                                     key={index}
                                     pin={pin}
                                     responsiveConfig={responsiveConfig}
-                                    categoryColor={categoryColor}
+                                    category={filteredCategory}
                                 />
                             );
                         })}
@@ -199,7 +198,9 @@ function ListScreen() {
                             >
                                 <option value="">Choose a list</option>
                                 {lists.map(list => (
-                                    <option key={list.id} value={list.id}>{list.listName}</option>
+                                    <option key={list.id} value={list.id}>
+                                        {list.listName} 
+                                    </option>
                                 ))}
                             </select>
                             <button onClick={() => setchild(<ManageLists />)}>Manage Lists</button>

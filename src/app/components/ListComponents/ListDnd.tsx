@@ -7,6 +7,7 @@ import DnDPin from './DnDPin';
 import { Pin } from '../../types/pinData';
 import { useAuth } from '../../context/authContext'; // Import the useAuth hook
 import { animated, useTransition } from '@react-spring/web';
+import { BsFillPeopleFill } from "react-icons/bs";
 
 
 const ListDnD = ({ listId }: { listId: string }) => {
@@ -41,9 +42,9 @@ const ListDnD = ({ listId }: { listId: string }) => {
   
   const [{ isOver }, drop] = useDrop({
     accept: 'pin',
-    drop: (pin: { pinObject: any; categoryId: string }) => {
+    drop: (pin: { pinObject: any; categoryObject: any }) => {
       if (listId) {
-        addPinToList(`users/${user.uid}/lists`, listId, pin.pinObject, pin.categoryId, list.collaborative, user.uid);
+        addPinToList(`users/${user.uid}/lists`, listId, pin.pinObject, pin.categoryObject, list.collaborative, user.uid);
       }
     },
     collect: (monitor) => ({
@@ -69,8 +70,13 @@ console.log(pinData)
 
   return (
     <div ref={dropRef} style={{ border: isOver ? '2px solid green' : '2px solid gray', padding: '20px', margin: '10px' }}>
-      <p>Drag and drop pins here to add and remove to the list</p>
+      <p>Drag and drop pins here to add and remove to the list  {list?.collaborative && <BsFillPeopleFill size="1em" color="black" />}</p>
+     
+                                        
       <div>
+        {
+          list?.collaborative && <div><p>Sync To Current Map?</p><input type='checkbox' /></div>
+        }
 
       {transitions((style, pin, _) => (
                         <animated.div style={style}>

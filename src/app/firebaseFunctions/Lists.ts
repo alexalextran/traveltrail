@@ -31,17 +31,18 @@ export const deleteList = async (collectionName:string, listID: string): Promise
     }
 };
 
-export const addPinToList = async (collectionName:string, listID: string, pin: any, categoryID: string, collaborative:boolean, userID:string): Promise<void> => {
+export const addPinToList = async (collectionName:string, listID: string, pin: any, categoryObject: any, collaborative:boolean, userID:string): Promise<void> => {
     try {
+        console.log(categoryObject[0])
         const listRef = doc(db, collectionName, listID);
         await updateDoc(listRef, {
              pins: arrayUnion(pin),
-            categories: arrayUnion(categoryID)
+            categories: arrayUnion(categoryObject[0])
         });
        
         if(collaborative){
       
-            addPinToCollaborativeList(listID, pin, categoryID, userID);
+            addPinToCollaborativeList(listID, pin, categoryObject[0], userID);
         }
         console.log(`Pin added to list with ID: ${listID}`);
     } catch (error) {
@@ -55,12 +56,11 @@ export const addPinToList = async (collectionName:string, listID: string, pin: a
 const addPinToCollaborativeList = async (
     listID: string,
     pin: any,
-    categoryID: string,
+    categoryObject: any,
     userID: string
 ): Promise<void> => {
     try {
         
-        const categoryData = await retrieveCategoryDocument(userID, categoryID);
 
         const listRef = doc(db, `collaborativeLists`, listID);
         const listSnapshot = await getDoc(listRef);
@@ -75,7 +75,7 @@ const addPinToCollaborativeList = async (
         // Update collaborative list with the new pin and category
         await updateDoc(listRef, {
             pins: arrayUnion(pin),
-            categories: arrayUnion(categoryData),
+            categories: arrayUnion(categoryObject),
         });
 
         console.log(`Pin added to collaborative list with ID: ${listID}`);
@@ -101,7 +101,7 @@ for (const collaboratorID of collaborators) {
     if (collaboratorID !== userID) {
         batch.update(userListRef, {
             pins: arrayUnion(pin),
-            categories: arrayUnion(categoryData),
+            categories: arrayUnion(categoryObject),
         });
     }
 }
@@ -372,4 +372,10 @@ export const retrieveListName = async (userID: string, listID: string): Promise<
     }
 }
 
+export const synchronizeCollaborativePin = async (listID: string, userID: string) => {
+    try{
+        const listRef = doc(db, `users/${userID}/lists`, listID);
+    } catch{
 
+    }
+}
