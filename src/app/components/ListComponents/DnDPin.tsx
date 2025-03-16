@@ -9,7 +9,7 @@ const DnDPin = ({ pin }: { pin: Pin }) => {
   // useDrag hook to enable drag-and-drop functionality
   const [{ opacity }, dragRef] = useDrag({
     type: 'addedPin', // Specify the type of item being dragged
-    item: { id: pin.id }, // Pass the pin id as the item being dragged
+    item: { pinObject: pin }, // Pass the pin id as the item being dragged
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0.5 : 1, // Adjust opacity when dragging
     }),

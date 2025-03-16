@@ -124,10 +124,10 @@ function ListScreen() {
 
     const [{ isOver }, drop] = useDrop({
         accept: 'addedPin',
-        drop: (item: { id: string }) => {
+        drop: (item: { pinObject: Pin }) => {
           if (selectedList) {
 
-            removePinFromList(`users/${user.uid}/lists`, selectedList, item.id);
+            removePinFromList(`users/${user.uid}/lists`, selectedList, item.pinObject);
           }
         },
         collect: (monitor) => ({

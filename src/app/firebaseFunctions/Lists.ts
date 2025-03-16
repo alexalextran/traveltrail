@@ -1,3 +1,4 @@
+// import { removePinFromList } from './Lists';
 import { collection, addDoc, getFirestore, doc, deleteDoc, updateDoc, arrayUnion, arrayRemove, getDocs, getDoc, writeBatch, query, where } from "firebase/firestore";
 import { app } from "../firebase";
 
@@ -32,7 +33,6 @@ export const deleteList = async (collectionName:string, listID: string): Promise
 
 export const addPinToList = async (collectionName:string, listID: string, pin: any, categoryID: string, collaborative:boolean, userID:string): Promise<void> => {
     try {
-        console.log(pin)
         const listRef = doc(db, collectionName, listID);
         await updateDoc(listRef, {
              pins: arrayUnion(pin),
@@ -140,18 +140,63 @@ const retrieveCategoryDocument = async (userID: string, categoryID: string): Pro
     }
 }
 
-export const removePinFromList = async (collectionName:string, listID: string, pinID: string): Promise<void> => {
+export const removePinFromList = async (collectionName:string, listID: string, pinObject: any): Promise<void> => {
     try {
         const listRef = doc(db, collectionName, listID);
         await updateDoc(listRef, {
-            pins: arrayRemove(pinID)
+            pins: arrayRemove(pinObject)
         });
         console.log(`Pin removed from list with ID: ${listID}`);
+        const listSnapshot = await getDoc(listRef);
+        const listData = listSnapshot.data();
+        if(listData?.collaborative){
+            removePinFromCollaborativeList(listID, pinObject);
+        }
     } catch (error) {
         console.error("Error removing pin from list: ", error);
         throw new Error("Failed to remove pin from list");
     }
 };
+
+const removePinFromCollaborativeList = async (listID: string, pin: any): Promise<void> => {
+    try {
+        const listRef = doc(db, `collaborativeLists`, listID);
+        const listSnapshot = await getDoc(listRef);
+        if (!listSnapshot.exists()) {
+            throw new Error("Collaborative list does not exist.");
+        }
+
+        const listData = listSnapshot.data();
+        const collaborators: string[] = listData.collaborators || [];
+
+        // Update collaborative list with the new pin and category
+        await updateDoc(listRef, {
+            pins: arrayRemove(pin),
+        });
+
+        console.log(`Pin removed from collaborative list with ID: ${listID}`);
+
+        // Batch update for collaborators
+        const batch = writeBatch(db);
+
+        for (const collaboratorID of collaborators) {
+            const userListRef = doc(db, `users/${collaboratorID}/lists/${listID}`);
+
+            // Only update if the collaborator is NOT the original user who added the pin
+            batch.update(userListRef, {
+                pins: arrayRemove(pin),
+            });
+        }
+
+        await batch.commit();
+        console.log(`Pin removed from all collaborators' lists.`);
+    }
+    catch (error) {
+        console.error("Error removing pin from collaborative list: ", error);
+        throw new Error("Failed to remove pin from collaborative list");
+    }
+}
+
 
 export const updateListVisibility = async (collectionName: string, listID: string, visible: boolean): Promise<void> => {
     try {
