@@ -10,7 +10,7 @@ const PinCard = ({ pin, responsiveConfig, categoryColor }: { pin: Pin, responsiv
   const divRef = useRef<HTMLDivElement>(null); // Create a ref for the div
   const [{ opacity }, dragRef] = useDrag({
     type: 'pin',
-    item: { id: pin.id, categoryId: pin.categoryId },
+    item: { pinObject: pin, categoryId: pin.categoryId },
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0.5 : 1,
     }),

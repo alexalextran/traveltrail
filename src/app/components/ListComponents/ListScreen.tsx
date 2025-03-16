@@ -39,6 +39,11 @@ function ListScreen() {
             const fetchedLists = snapshot.docs.map(doc => ({
                 id: doc.id,
                 listName: doc.data().listName,
+                pins: doc.data().pins,
+                collaborative: doc.data().collaborative,
+                collaborators: doc.data().collaborators,
+                categories: doc.data().categories,
+                
             }));
             setLists(fetchedLists);
         });
@@ -53,7 +58,7 @@ function ListScreen() {
             const fetchedPins: Pin[] = snapshot.docs.map(doc => ({
                 id: doc.id,
                 categoryId: doc.data().categoryId,
-                placeId: doc.data().pinId,
+                placeId: doc.data().placeId,
                 address: doc.data().address,
                 lat: doc.data().lat,
                 lng: doc.data().lng,

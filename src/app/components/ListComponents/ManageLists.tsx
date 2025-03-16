@@ -18,8 +18,12 @@ function ManageLists() {
         const listCollectionRef = collection(db, `users/${user.uid}/lists`);
         const unsubscribe = onSnapshot(listCollectionRef, (snapshot) => {
             const fetchedLists = snapshot.docs.map(doc => ({
-                id: doc.id,
-                listName: doc.data().listName, 
+            id: doc.id,
+            listName: doc.data().listName,
+            pins: doc.data().pins,
+            collaborative: doc.data().collaborative,
+            collaborators: doc.data().collaborators,
+            categories: doc.data().categories,
             }));
             setLists(fetchedLists);
         });

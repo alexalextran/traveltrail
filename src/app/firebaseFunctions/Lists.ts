@@ -30,17 +30,18 @@ export const deleteList = async (collectionName:string, listID: string): Promise
     }
 };
 
-export const addPinToList = async (collectionName:string, listID: string, pinID: string, categoryID: string, collaborative:boolean, userID:string): Promise<void> => {
+export const addPinToList = async (collectionName:string, listID: string, pin: any, categoryID: string, collaborative:boolean, userID:string): Promise<void> => {
     try {
+        console.log(pin)
         const listRef = doc(db, collectionName, listID);
         await updateDoc(listRef, {
-            pins: arrayUnion(pinID),
+             pins: arrayUnion(pin),
             categories: arrayUnion(categoryID)
         });
        
         if(collaborative){
       
-            addPinToCollaborativeList(listID, pinID, categoryID, userID);
+            addPinToCollaborativeList(listID, pin, categoryID, userID);
         }
         console.log(`Pin added to list with ID: ${listID}`);
     } catch (error) {
@@ -51,22 +52,70 @@ export const addPinToList = async (collectionName:string, listID: string, pinID:
 
 
 
- const addPinToCollaborativeList = async (listID: string, pinID: string, categoryID: string, userID: string): Promise<void> => {
-    const pinData = await retrievePinDocument(userID, pinID);
-    const categoryData = await retrieveCategoryDocument(userID, categoryID);
-    console.log(pinData, categoryData);
+const addPinToCollaborativeList = async (
+    listID: string,
+    pin: any,
+    categoryID: string,
+    userID: string
+): Promise<void> => {
     try {
+        
+        const categoryData = await retrieveCategoryDocument(userID, categoryID);
+
         const listRef = doc(db, `collaborativeLists`, listID);
+        const listSnapshot = await getDoc(listRef);
+
+        if (!listSnapshot.exists()) {
+            throw new Error("Collaborative list does not exist.");
+        }
+
+        const listData = listSnapshot.data();
+        const collaborators: string[] = listData.collaborators || [];
+
+        // Update collaborative list with the new pin and category
         await updateDoc(listRef, {
-            pins: arrayUnion(pinData),
-            categories: arrayUnion(categoryData)
+            pins: arrayUnion(pin),
+            categories: arrayUnion(categoryData),
         });
+
         console.log(`Pin added to collaborative list with ID: ${listID}`);
+
+      // Batch update for collaborators
+const batch = writeBatch(db);
+
+for (const collaboratorID of collaborators) {
+    const userListRef = doc(db, `users/${collaboratorID}/lists/${listID}`);
+
+    // Ensure the list exists for each collaborator
+    const userListSnapshot = await getDoc(userListRef);
+    if (!userListSnapshot.exists()) {
+        batch.set(userListRef, {
+            listName: listData.listName,
+            visible: false,
+            pins: [],
+            categories: [],
+        });
+    }
+
+    // Only update if the collaborator is NOT the original user who added the pin
+    if (collaboratorID !== userID) {
+        batch.update(userListRef, {
+            pins: arrayUnion(pin),
+            categories: arrayUnion(categoryData),
+        });
+    }
+}
+
+
+        await batch.commit();
+        console.log(`Pin synchronized to all collaborators' lists.`);
+
     } catch (error) {
         console.error("Error adding pin to collaborative list: ", error);
         throw new Error("Failed to add pin to collaborative list");
     }
-}
+};
+
 
 const retrievePinDocument = async (userID: string, pinID: string): Promise<any> => {
     try {
@@ -92,7 +141,6 @@ const retrieveCategoryDocument = async (userID: string, categoryID: string): Pro
 }
 
 export const removePinFromList = async (collectionName:string, listID: string, pinID: string): Promise<void> => {
-    console.log(listID, pinID)
     try {
         const listRef = doc(db, collectionName, listID);
         await updateDoc(listRef, {
