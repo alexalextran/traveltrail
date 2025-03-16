@@ -375,6 +375,7 @@ export const retrieveListName = async (userID: string, listID: string): Promise<
 
 export const synchronizeCollaborativePin = async (listID: string, userID: string) => {
     try{
+        //ONLY SYNC OVER THE PINS AND CATEGORIES THAT DONT EXIST IN THE USER'S PROFILE YET OR ELSE DUPLICATES WILL OCCUR
         const listRef = doc(db, `users/${userID}/lists`, listID);
         const listSnapshot = await getDoc(listRef);
         const pins = listSnapshot.data()?.pins || [];
