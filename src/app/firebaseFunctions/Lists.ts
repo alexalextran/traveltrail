@@ -1,5 +1,6 @@
+import { Category } from './../types/categoryData';
 // import { removePinFromList } from './Lists';
-import { collection, addDoc, getFirestore, doc, deleteDoc, updateDoc, arrayUnion, arrayRemove, getDocs, getDoc, writeBatch, query, where } from "firebase/firestore";
+import { collection, addDoc, getFirestore, doc, deleteDoc, updateDoc, arrayUnion, arrayRemove, getDocs, getDoc, writeBatch, query, where, setDoc } from "firebase/firestore";
 import { app } from "../firebase";
 
 const db = getFirestore(app);
@@ -375,6 +376,24 @@ export const retrieveListName = async (userID: string, listID: string): Promise<
 export const synchronizeCollaborativePin = async (listID: string, userID: string) => {
     try{
         const listRef = doc(db, `users/${userID}/lists`, listID);
+        const listSnapshot = await getDoc(listRef);
+        const pins = listSnapshot.data()?.pins || [];
+        const categories = listSnapshot.data()?.categories || [];
+
+        for(const category of categories){
+            const categoryRef = doc(db, `users/${userID}/categories`, category.CategoryID);
+            await setDoc(categoryRef, {
+                ...category,
+            });
+        }
+
+        for(const pin of pins){
+           const pinRef = doc(db, `users/${userID}/pins`, pin.id);
+         await setDoc(pinRef, {
+                ...pin,
+                });
+
+        }
     } catch{
 
     }
