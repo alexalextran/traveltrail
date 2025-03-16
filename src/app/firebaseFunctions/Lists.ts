@@ -34,7 +34,7 @@ export const deleteList = async (collectionName:string, listID: string): Promise
 
 export const addPinToList = async (collectionName:string, listID: string, pin: any, categoryObject: any, collaborative:boolean, userID:string): Promise<void> => {
     try {
-        console.log(categoryObject[0])
+        //check if pin doenst already exist in the collaborative list
         const listRef = doc(db, collectionName, listID);
         await updateDoc(listRef, {
              pins: arrayUnion(pin),
