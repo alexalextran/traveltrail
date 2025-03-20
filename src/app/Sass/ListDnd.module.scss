@@ -1,0 +1,110 @@
+@import "variables&functions";
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  @include flexCenter(row);
+}
+
+.container {
+  box-sizing: border-box;
+  position: relative;
+  width: 90%;
+  max-width: 500px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 0.5em;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.5em;
+  z-index: 1001;
+  animation: modalSlideIn 0.3s ease;
+}
+
+.header {
+  @include flexCenter(column);
+  margin-bottom: 1.5em;
+
+  h2 {
+    font-size: 1.5em;
+    color: $webBlue;
+    margin: 0 0 0.5em 0;
+    font-weight: 600;
+  }
+}
+
+.content {
+  margin-bottom: 1.5em;
+  text-align: center;
+  
+  .placeName {
+    font-style: italic;
+    font-weight: 500;
+    color: $webBlue;
+  }
+}
+
+.footer {
+  @include flexCenter(row);
+  justify-content: space-between;
+  gap: 1em;
+}
+
+.cancelButton {
+  padding: 0.75em 1.5em;
+  border: none;
+  border-radius: 0.25em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #f1f1f1;
+  color: #333;
+
+  &:hover {
+    background-color: darken(#f1f1f1, 10%);
+  }
+}
+
+.confirmButton {
+  padding: 0.75em 1.5em;
+  border: none;
+  border-radius: 0.25em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: $webBlue;
+  color: white;
+
+  &:hover {
+    background-color: darken($webBlue, 10%);
+  }
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 425px) {
+  .container {
+    width: 95%;
+    padding: 1em;
+  }
+
+  .footer {
+    flex-direction: column;
+    
+    button {
+      width: 100%;
+    }
+  }
+}
