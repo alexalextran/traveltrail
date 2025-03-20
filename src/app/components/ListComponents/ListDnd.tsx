@@ -60,13 +60,12 @@ const ListDnD = ({ listId }: { listId: string }) => {
   const [{ isOver }, drop] = useDrop({
     accept: 'pin',
     drop: (pin: { pinObject: any; categoryObject: any }) => {
-      const placeIdAlreadyInList = list.pins.map((p: any) => p.placeId).includes(pin.pinObject.placeId);
+      const placeIdAlreadyInList = list.pins?.map((p: any) => p.placeId).includes(pin.pinObject.placeId);
 
       if (placeIdAlreadyInList) {
         
         // Store the pin info and show confirmation modal
         setPendingPin(pin.pinObject);
-        console.log(pendingPin)
         setPendingCategory(pin.categoryObject);
         setModalOpen(true);
       } else { 
