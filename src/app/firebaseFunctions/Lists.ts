@@ -7,11 +7,14 @@ const db = getFirestore(app);
 
 export const writeList = async (collectionName:string, data: {
     listName: string;
+    owner: string;
 }): Promise<any> => {
     try {
         const docRef = await addDoc(collection(db, collectionName), {
             listName: data.listName,
             visible: false, 
+            owner: data.owner,
+            collaborative: false,
             });
         await updateDoc(docRef, { listID: docRef.id });
        

@@ -12,12 +12,13 @@ import { app } from "../../firebase";
 import { updateListVisibility } from "../../firebaseFunctions/Lists";
 import { toast } from "react-toastify";
 import CollaboratorsModal from "./ManageCollaborators";
+import { list } from "firebase/storage";
 
 export default function ProfileComponent() {
   const { logout, user } = useAuth();
   const [displayName, setDisplayName] = useState(user?.displayName || "");
   const [lists, setLists] = useState<
-    { id: string; visible: boolean; listName: string; collaborative: boolean; collaborators?: any[] }[]
+    { id: string; visible: boolean; listName: string; collaborative: boolean; collaborators?: any[]; listOwner?: string }[]
   >([]);
   const [showCollaboratorsModal, setShowCollaboratorsModal] = useState(false);
   const [selectedList, setSelectedList] = useState<{ id: string; listName: string; collaborators?: any[] } | null>(null);
@@ -27,12 +28,13 @@ export default function ProfileComponent() {
 
     const listCollectionRef = collection(db, `users/${user.uid}/lists`);
     const unsubscribe = onSnapshot(listCollectionRef, (snapshot) => {
-      const fetchedLists = snapshot.docs.map((doc) => ({
+      const fetchedLists = snapshot.docs.filter((doc) => doc.data().owner === user.uid).map((doc) => ({
         id: doc.id,
         visible: doc.data().visible,
         listName: doc.data().listName,
         collaborative: doc.data().collaborative,
         collaborators: doc.data().collaborators,
+        listOwner: doc.data().listOwner,
       }));
       setLists(fetchedLists);
     });
@@ -154,7 +156,7 @@ export default function ProfileComponent() {
                           onClick={() => handleManageCollaborators(list.id, list.listName, list.collaborators || [])}
                           className={styles.manageButton}
                         >
-                          Manage Collaborators
+                          {list.listOwner === user.uid ? <p>Manage Collaborators</p> : <span></span>}
                         </button>
                       )}
                     </li>

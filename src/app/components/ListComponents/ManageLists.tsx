@@ -41,7 +41,7 @@ function ManageLists() {
         if (!listName.trim()) return; // Prevent adding empty lists
 
         try {
-            await writeList(`users/${user.uid}/lists`,{ listName });
+            await writeList(`users/${user.uid}/lists`, { listName, owner: user.uid });
             setListName(''); 
             toast.success('List was addeded sucessfully', {
                 position: "top-right",
