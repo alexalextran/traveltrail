@@ -126,7 +126,7 @@ export default function CollaboratorsModal({ listId, listName, onBack, listColla
           className={styles.backButton}
           aria-label="Go back"
         >
-          <FaArrowLeft /> <span>Back</span>
+          <FaArrowLeft /> Back
         </button>
         <div className={styles.titleContainer}>
           <h2 className={styles.modalTitle}>Manage Collaborators</h2>
@@ -181,7 +181,7 @@ export default function CollaboratorsModal({ listId, listName, onBack, listColla
                     </button>
                   )}
                   <button 
-                    onClick={() => removeCollaborator(collaborator.id, collaborator.displayName || collaborator.email)}
+                    onClick={() => removeCollaborator(collaborator.id, collaborator.displayName)}
                     className={styles.removeButton}
                     aria-label="Remove collaborator"
                   >
