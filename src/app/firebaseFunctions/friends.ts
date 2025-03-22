@@ -41,3 +41,18 @@ export const retrieveDisplayName = async (userID: string): Promise<string> => {
         throw new Error("Failed to retrieve display name");
     }
 }
+
+export const returnUsers = async (userIDs: string[]): Promise<any> => {
+    try {
+        const users = [];
+        for (const userID of userIDs) {
+            const userDoc = doc(db, `users/${userID}`);
+            const userSnapshot = await getDoc(userDoc);
+            users.push(userSnapshot.data());
+        }
+        return users;
+    } catch (error) {
+        console.error("Error retrieving users: ", error);
+        throw new Error("Failed to retrieve users");
+    }
+}

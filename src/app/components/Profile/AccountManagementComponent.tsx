@@ -11,13 +11,16 @@ import {
 import { app } from "../../firebase";
 import { updateListVisibility } from "../../firebaseFunctions/Lists";
 import { toast } from "react-toastify";
+import CollaboratorsModal from "./ManageCollaborators";
 
 export default function ProfileComponent() {
   const { logout, user } = useAuth();
   const [displayName, setDisplayName] = useState(user?.displayName || "");
   const [lists, setLists] = useState<
-    { id: string; listName: string; visible: boolean }[]
+    { id: string; visible: boolean; listName: string; collaborative: boolean; collaborators?: any[] }[]
   >([]);
+  const [showCollaboratorsModal, setShowCollaboratorsModal] = useState(false);
+  const [selectedList, setSelectedList] = useState<{ id: string; listName: string; collaborators?: any[] } | null>(null);
 
   useEffect(() => {
     const db = getFirestore(app);
@@ -26,8 +29,10 @@ export default function ProfileComponent() {
     const unsubscribe = onSnapshot(listCollectionRef, (snapshot) => {
       const fetchedLists = snapshot.docs.map((doc) => ({
         id: doc.id,
-        listName: doc.data().listName,
         visible: doc.data().visible,
+        listName: doc.data().listName,
+        collaborative: doc.data().collaborative,
+        collaborators: doc.data().collaborators,
       }));
       setLists(fetchedLists);
     });
@@ -78,63 +83,90 @@ export default function ProfileComponent() {
     }
   };
 
+  const handleManageCollaborators = (listId: string, listName: string, collaborators: string[]) => {
+    setSelectedList({ id: listId, listName, collaborators });
+    setShowCollaboratorsModal(true);
+  };
+
+  const handleBackToProfile = () => {
+    setShowCollaboratorsModal(false);
+    setSelectedList(null);
+  };
+
   return (
     <div className={styles.profileContainer}>
-      <main className={styles.main}>
-        <h2>Profile</h2>
+      {showCollaboratorsModal && selectedList ? (
+        <CollaboratorsModal 
+          listId={selectedList.id} 
+          listName={selectedList.listName} 
+          onBack={handleBackToProfile} 
+          listCollaborators={selectedList.collaborators || []}
+        />
+      ) : (
+        <main className={styles.main}>
+          <h2>Profile</h2>
 
-        <div className={styles.profileInfo}>
-          <label>Email</label>
-          <p>{user?.email}</p>
-        </div>
-
-        <div className={styles.profileInfo}>
-          <label>My Friend Code</label>
-          <p>{user?.uid}</p>
-        </div>
-
-        <div className={styles.profileInfo}>
-          <label>Display Name</label>
-          <input
-            type="text"
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
-            placeholder="Enter your display name"
-          />
-        </div>
-
-        <div className={styles.buttonGroup}>
-          <button onClick={updateDisplayName} className={styles.resetButton}>
-            Update Display Name
-          </button>
-          <button onClick={() => logout()} className={styles.logoutButton}>
-            Logout
-          </button>
-        </div>
-
-        <div className={styles.publicListsSection}>
-          <h2>My Public Lists</h2>
-          <div className={styles.listContainer}>
-            <ul>
-              {lists.length > 0 ? (
-                lists.map((list) => (
-                  <li key={list.id}>
-                    <input
-                      checked={list.visible}
-                      type="checkbox"
-                      onChange={(e) => updateList(list.id, e.target.checked)}
-                      id={`list-${list.id}`}
-                    />
-                    <label htmlFor={`list-${list.id}`}>{list.listName}</label>
-                  </li>
-                ))
-              ) : (
-                <li className={styles.emptyState}>No lists available</li>
-              )}
-            </ul>
+          <div className={styles.profileInfo}>
+            <label>Email</label>
+            <p>{user?.email}</p>
           </div>
-        </div>
-      </main>
+
+          <div className={styles.profileInfo}>
+            <label>My Friend Code</label>
+            <p>{user?.uid}</p>
+          </div>
+
+          <div className={styles.profileInfo}>
+            <label>Display Name</label>
+            <input
+              type="text"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              placeholder="Enter your display name"
+            />
+          </div>
+
+          <div className={styles.buttonGroup}>
+            <button onClick={updateDisplayName} className={styles.resetButton}>
+              Update Display Name
+            </button>
+            <button onClick={() => logout()} className={styles.logoutButton}>
+              Logout
+            </button>
+          </div>
+
+          <div className={styles.publicListsSection}>
+            <h2>My Public Lists</h2>
+            <div className={styles.listContainer}>
+              <ul>
+                {lists.length > 0 ? (
+                  lists.map((list) => (
+                    <li key={list.id}>
+                      <input
+                        checked={list.visible}
+                        type="checkbox"
+                        onChange={(e) => updateList(list.id, e.target.checked)}
+                        id={`list-${list.id}`}
+                      />
+                      <label htmlFor={`list-${list.id}`}>{list.listName}</label>
+                      {list.collaborative && (
+                        <button 
+                          onClick={() => handleManageCollaborators(list.id, list.listName, list.collaborators || [])}
+                          className={styles.manageButton}
+                        >
+                          Manage Collaborators
+                        </button>
+                      )}
+                    </li>
+                  ))
+                ) : (
+                  <li className={styles.emptyState}>No lists available</li>
+                )}
+              </ul>
+            </div>
+          </div>
+        </main>
+      )}
     </div>
   );
 }
