@@ -8,6 +8,9 @@ import {
   onSnapshot,
   updateDoc,
   arrayRemove,
+  DocumentData,
+  DocumentReference,
+  deleteDoc,
 } from "firebase/firestore";
 import { app } from "../../firebase";
 import { toast } from "react-toastify";
@@ -15,7 +18,7 @@ import { FaUserEdit, FaUserCog, FaArrowLeft, FaUserMinus } from "react-icons/fa"
 import {returnUsers} from '../../firebaseFunctions/friends';
 
 interface CollaboratorType {
-  id: string;
+  userID: string;
   displayName: string;
   accessLevel: "editor" | "viewer";
 }
@@ -50,7 +53,7 @@ export default function CollaboratorsModal({ listId, listName, onBack, listColla
       
       // Find the collaborator and update their access level
       const updatedCollaborators = collaborators.map(collab => 
-        collab.id === collaboratorId ? { ...collab, accessLevel: newAccessLevel } : collab
+        collab.userID === collaboratorId ? { ...collab, accessLevel: newAccessLevel } : collab
       );
       
       await updateDoc(listDocRef, { collaborators: updatedCollaborators });
@@ -83,15 +86,25 @@ export default function CollaboratorsModal({ listId, listName, onBack, listColla
     try {
       const db = getFirestore(app);
       const listDocRef = doc(db, `users/${user.uid}/lists/${listId}`);
+      const collaborativeList = doc(db, `collaborativeLists/${listId}`);
+      const removedUserList = doc(db, `users/${collaboratorId}/lists/${listId}`);
+      const collaboratorRequest = doc(db, `users/${collaboratorId}/collaborativeRequests/${listId}`);
+      const userRequests = doc(db, `users/${user.uid}/collaborativeRequests/${listId}`);
       
-      // Find the collaborator to remove
-      const collaboratorToRemove = collaborators.find(collab => collab.id === collaboratorId);
-      
-      if (collaboratorToRemove) {
-        // Remove the collaborator from the array
+        // Remove the collaborator from the managers list
+        //Remove the collaborator from the collaborative list
         await updateDoc(listDocRef, {
-          collaborators: arrayRemove(collaboratorToRemove)
+          collaborators: arrayRemove(collaboratorId)
         });
+
+        await updateDoc(collaborativeList, {
+          collaborators: arrayRemove(collaboratorId)
+        });
+
+        // Remove the list from the collaborator's list
+        await deleteDoc(removedUserList);
+        await deleteDoc(collaboratorRequest);
+        await deleteDoc(userRequests);
         
         toast.success(`${displayName} removed from collaborators`, {
           position: "top-right",
@@ -104,18 +117,20 @@ export default function CollaboratorsModal({ listId, listName, onBack, listColla
           theme: "light",
         });
       }
-    } catch (error) {
-      toast.error("Failed to remove collaborator", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    }
+      catch (error) {
+
+        toast.error(`Failed to remove collaborator, ${error}`, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
+
   };
 
   return (
@@ -143,7 +158,7 @@ export default function CollaboratorsModal({ listId, listName, onBack, listColla
         ) : collaborators.length > 0 ? (
           <ul className={styles.collaboratorsList}>
             {collaborators.map((collaborator) => (
-              <li key={collaborator.id} className={styles.collaboratorItem}>
+              <li key={collaborator.userID} className={styles.collaboratorItem}>
                 <div className={styles.avatar}>
                   {collaborator.displayName}
                 </div>
@@ -167,21 +182,21 @@ export default function CollaboratorsModal({ listId, listName, onBack, listColla
                 <div className={styles.collaboratorActions}>
                   {collaborator.accessLevel === "editor" ? (
                     <button 
-                      onClick={() => updateCollaboratorAccess(collaborator.id, "viewer")}
+                      onClick={() => updateCollaboratorAccess(collaborator.userID, "viewer")}
                       className={`${styles.accessButton} ${styles.viewerButton}`}
                     >
                       Make Viewer
                     </button>
                   ) : (
                     <button 
-                      onClick={() => updateCollaboratorAccess(collaborator.id, "editor")}
+                      onClick={() => updateCollaboratorAccess(collaborator.userID, "editor")}
                       className={`${styles.accessButton} ${styles.editorButton}`}
                     >
                       Make Editor
                     </button>
                   )}
                   <button 
-                    onClick={() => removeCollaborator(collaborator.id, collaborator.displayName)}
+                    onClick={() => removeCollaborator(collaborator.userID, collaborator.displayName)}
                     className={styles.removeButton}
                     aria-label="Remove collaborator"
                   >
@@ -202,3 +217,5 @@ export default function CollaboratorsModal({ listId, listName, onBack, listColla
     </div>
   );
 }
+
+

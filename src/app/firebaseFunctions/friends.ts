@@ -48,7 +48,10 @@ export const returnUsers = async (userIDs: string[]): Promise<any> => {
         for (const userID of userIDs) {
             const userDoc = doc(db, `users/${userID}`);
             const userSnapshot = await getDoc(userDoc);
-            users.push(userSnapshot.data());
+            const userData = userSnapshot.data();
+            if (userData) {
+                users.push({ ...userData, userID });
+            }
         }
         return users;
     } catch (error) {
