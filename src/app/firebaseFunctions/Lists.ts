@@ -24,10 +24,28 @@ export const writeList = async (collectionName:string, data: {
     }
 };
 
-export const deleteList = async (collectionName:string, listID: string): Promise<void> => {
+export const deleteList = async (collectionName: string, listID: string, collaborative: boolean, collaborators: string[]): Promise<void> => {
     try {
         const listRef = doc(db, collectionName, listID);
-        await deleteDoc(listRef);
+      
+
+
+        if (collaborative) {
+            const batch = writeBatch(db);
+            
+            for (const collaboratorID of collaborators) {
+                const collaboratorListRef = doc(db, `users/${collaboratorID}/lists/${listID}`);
+                batch.delete(collaboratorListRef);
+            }
+
+            batch.delete(listRef)
+            const collaborativeList = doc(db, `collaborativeLists`, listID);
+            await deleteDoc(collaborativeList)
+            await batch.commit();
+        } else {
+            await deleteDoc(listRef);
+        }
+
         console.log(`List deleted with ID: ${listID}`);
     } catch (error) {
         console.error("Error deleting list: ", error);

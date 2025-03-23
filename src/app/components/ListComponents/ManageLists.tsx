@@ -10,7 +10,7 @@ import { list } from 'firebase/storage';
 import { toast } from 'react-toastify';
 function ManageLists() {
     const [listName, setListName] = useState('');
-    const [lists, setLists] = useState<{ id: string; listName: string; }[]>([]);
+    const [lists, setLists] = useState<{ id: string; listName: string; owner: string; collaborative: boolean; collaborators: any[]; }[]>([]);
     const db = getFirestore(app);
     const { user } = useAuth();
 
@@ -24,6 +24,7 @@ function ManageLists() {
             collaborative: doc.data().collaborative,
             collaborators: doc.data().collaborators,
             categories: doc.data().categories,
+            owner: doc.data().owner,
             }));
             setLists(fetchedLists);
         });
@@ -69,9 +70,9 @@ function ManageLists() {
     };
 
 
-    const callDeleteList =  async (listId: string) => {
+    const callDeleteList =  async (listId: string, collaborative: boolean, collaborators: string[]) => {
         try {
-            await deleteList(`users/${user.uid}/lists`, listId);
+            await deleteList(`users/${user.uid}/lists`, listId, collaborative, collaborators);
             toast.success('List was deleted sucessfully', {
                 position: "top-right",
                 autoClose: 5000,
@@ -114,7 +115,7 @@ function ManageLists() {
                 <div className={styles.lists}>
                     {lists.map(list => (
                         <div key={list.id} className={styles.listItem}>
-                             <MdDeleteForever onClick={() => callDeleteList(list.id)}/>
+                            {list.owner === user.uid && <MdDeleteForever onClick={() => callDeleteList(list.id, list.collaborative, list.collaborators.map((collaborator) => collaborator.userID))}/>}
                             <p>{list.listName}</p>
                         </div>
                     ))}

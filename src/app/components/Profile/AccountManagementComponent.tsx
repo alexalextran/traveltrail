@@ -38,7 +38,6 @@ export default function ProfileComponent() {
         owner: doc.data().owner,
       }));
       setLists(fetchedLists);
-      console.log(fetchedLists);
     });
 
     const userDocRef = doc(db, `users/${user.uid}`);
