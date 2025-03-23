@@ -198,10 +198,12 @@
     height: fit-content;
     position: relative;
     padding: 1em;
-    margin-bottom: 1em;
     background-color: #fff;
+    margin: auto;
+    margin-bottom: 1em;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 0.2em;
+    width: 95%;
     display: flex;
     justify-content: space-between;
     align-items: flex-start; /* Align items to the top */

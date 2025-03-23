@@ -8,16 +8,16 @@ import { Pin } from '../../types/pinData';
 import { useAuth } from '../../context/authContext';
 import { animated, useTransition } from '@react-spring/web';
 import { BsFillPeopleFill } from "react-icons/bs";
-import ConfirmationModal from './ConfirmationModal'; // Import the new modal component
+import ConfirmationModal from './ConfirmationModal';
+import styles from "../../Sass/ListPin.module.scss";
 
 const ListDnD = ({ listId }: { listId: string }) => {
   const [pinData, setPinData] = useState<Pin[]>([]);
   const dropRef = useRef<HTMLDivElement>(null);
   const db = getFirestore(app);
   const { user } = useAuth(); 
-  const [list, setlist] = useState<any>();
+  const [list, setList] = useState<any>();
   
-  // State for the confirmation modal
   const [modalOpen, setModalOpen] = useState(false);
   const [pendingPin, setPendingPin] = useState<any>(null);
   const [pendingCategory, setPendingCategory] = useState<any>(null);
@@ -31,21 +31,18 @@ const ListDnD = ({ listId }: { listId: string }) => {
     const listDocRef = doc(db, `users/${user.uid}/lists/${listId}`);
     const unsubscribe = onSnapshot(listDocRef, async (docSnapshot) => {
       const listData = docSnapshot.data();
-      setlist(listData);
+      setList(listData);
       if (listData) {
         setPinData(listData.pins);
       }
     });
 
-    return () => unsubscribe(); // Clean up listener
+    return () => unsubscribe();
   }, [db, listId, user]);
 
-  // Check if the user has edit permissions
   const userHasEditPermissions = list?.collaborators?.some((collaborator: any) => 
     collaborator.userID === user.uid && collaborator.edit
   );
-
-  console.log(userHasEditPermissions)
 
   const handleAddPin = () => {
     if (listId && pendingPin && pendingCategory) {
@@ -57,7 +54,6 @@ const ListDnD = ({ listId }: { listId: string }) => {
         list.collaborative, 
         user.uid
       );
-      // Reset pending pin data
       setPendingPin(null);
       setPendingCategory(null);
     }
@@ -67,12 +63,11 @@ const ListDnD = ({ listId }: { listId: string }) => {
   const [{ isOver }, drop] = useDrop({
     accept: 'pin',
     drop: (pin: { pinObject: any; categoryObject: any }) => {
-      if (!userHasEditPermissions) return; // Disable drop if user doesn't have edit permissions
+      if (!userHasEditPermissions) return;
 
       const placeIdAlreadyInList = list.pins?.map((p: any) => p.placeId).includes(pin.pinObject.placeId);
 
       if (placeIdAlreadyInList) {
-        // Store the pin info and show confirmation modal
         setPendingPin(pin.pinObject);
         setPendingCategory(pin.categoryObject);
         setModalOpen(true);
@@ -94,7 +89,6 @@ const ListDnD = ({ listId }: { listId: string }) => {
     }),
   });
 
-  // Connect the drop ref to the drop target
   drop(dropRef);
 
   const transitions = useTransition(pinData, {
@@ -108,32 +102,30 @@ const ListDnD = ({ listId }: { listId: string }) => {
   });
 
   return (
-    <div ref={dropRef} style={{ border: isOver ? '2px solid green' : '2px solid gray', padding: '20px', margin: '10px' }}>
-      <p>Drag and drop pins here to add and remove to the list {list?.collaborative && <BsFillPeopleFill size="1em" color="black" />}</p>
-      
-      <div>
-        {list?.collaborative && (
-          <div>
-            <p>Sync To Current Map?</p>
-            <input 
-              type='checkbox' 
-              onChange={(e) => { 
-                if(e.target.checked) { 
-                  synchronizeCollaborativePin(listId, user.uid);
-                } 
-              }}
-            />
-          </div>
-        )}
+    <div ref={dropRef} className={`${styles.listContainer} ${isOver ? styles.dragOver : ''}`}>
+    
+      <p className={styles.listHeader}>
+        Drag and drop pins here to add and remove to the list 
+      </p>
 
-        {transitions((style, pin, _) => (
+      <p className={styles.permissionsText}>
+        This is a collaborative list. {userHasEditPermissions ? "You have edit permissions." : "You have view-only permissions."}
+      </p>
+      
+      {list?.collaborative && (
+        <button className={styles.syncButton} onClick={() => synchronizeCollaborativePin(listId, user.uid)}>
+          Download Collaborative Pins
+        </button>
+      )}
+
+      <div className={styles.pinsContainer}>
+        {transitions((style, pin) => (
           <animated.div style={style}>
             <DnDPin key={pin.id} pin={pin} userHasEditPermissions={userHasEditPermissions}/>
           </animated.div>
         ))}
       </div>
       
-      {/* Confirmation Modal */}
       <ConfirmationModal 
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}

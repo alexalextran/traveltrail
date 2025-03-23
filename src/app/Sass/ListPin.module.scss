@@ -1,0 +1,41 @@
+// ListDnD.module.scss
+
+.listContainer {
+text-align: center;
+  transition: border-color 0.3s ease-in-out;
+  width: 100%;
+}
+
+
+
+.permissionsText {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.listHeader {
+    width: 100%;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.4rem;
+  text-align: center;
+
+}
+
+.syncButton {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+}
+
