@@ -3,7 +3,7 @@ import { useDrag } from 'react-dnd';
 import { Pin } from '../../types/pinData';
 import styles from '../../Sass/ListScreen.module.scss';
 
-const DnDPin = ({ pin }: { pin: Pin }) => {
+const DnDPin = ({ pin, userHasEditPermissions }: { pin: Pin, userHasEditPermissions: boolean }) => {
   const divRef = useRef<HTMLDivElement>(null); // Create a ref for the div
 
   // useDrag hook to enable drag-and-drop functionality
@@ -13,12 +13,13 @@ const DnDPin = ({ pin }: { pin: Pin }) => {
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0.5 : 1, // Adjust opacity when dragging
     }),
+    canDrag: userHasEditPermissions, // Disable drag if userHasEditPermissions is false
   });
 
   // Connect the drag source ref with the div ref
-  dragRef(divRef);
-
-
+  if (userHasEditPermissions) {
+    dragRef(divRef);
+  }
 
   return (
     <div ref={divRef} className={styles.DnDContainer} style={{ opacity }}>

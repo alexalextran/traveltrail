@@ -39,7 +39,14 @@ const ListDnD = ({ listId }: { listId: string }) => {
 
     return () => unsubscribe(); // Clean up listener
   }, [db, listId, user]);
-  
+
+  // Check if the user has edit permissions
+  const userHasEditPermissions = list?.collaborators?.some((collaborator: any) => 
+    collaborator.userID === user.uid && collaborator.edit
+  );
+
+  console.log(userHasEditPermissions)
+
   const handleAddPin = () => {
     if (listId && pendingPin && pendingCategory) {
       addPinToList(
@@ -60,10 +67,11 @@ const ListDnD = ({ listId }: { listId: string }) => {
   const [{ isOver }, drop] = useDrop({
     accept: 'pin',
     drop: (pin: { pinObject: any; categoryObject: any }) => {
+      if (!userHasEditPermissions) return; // Disable drop if user doesn't have edit permissions
+
       const placeIdAlreadyInList = list.pins?.map((p: any) => p.placeId).includes(pin.pinObject.placeId);
 
       if (placeIdAlreadyInList) {
-        
         // Store the pin info and show confirmation modal
         setPendingPin(pin.pinObject);
         setPendingCategory(pin.categoryObject);
@@ -120,7 +128,7 @@ const ListDnD = ({ listId }: { listId: string }) => {
 
         {transitions((style, pin, _) => (
           <animated.div style={style}>
-            <DnDPin key={pin.id} pin={pin} />
+            <DnDPin key={pin.id} pin={pin} userHasEditPermissions={userHasEditPermissions}/>
           </animated.div>
         ))}
       </div>

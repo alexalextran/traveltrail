@@ -170,7 +170,7 @@ const removePinFromCollaborativeList = async (listID: string, pin: any): Promise
         }
 
         const listData = listSnapshot.data();
-        const collaborators: string[] = listData.collaborators || [];
+        const collaborators: string[] = listData.collaborators.map((collaborator: { userID: string }) => collaborator.userID) || [];
 
         // Update collaborative list with the new pin and category
         await updateDoc(listRef, {
