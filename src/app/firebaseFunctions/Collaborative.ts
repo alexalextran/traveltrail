@@ -91,7 +91,7 @@ export const retrieveCollaborativeRequestStatus = async (userID: string, listID:
             return requestSnapshot.data().status;
         }
 
-        return 'pending';
+        return 'none';
     }
     catch (error) {
         console.error("Error retrieving collaborative request status: ", error);

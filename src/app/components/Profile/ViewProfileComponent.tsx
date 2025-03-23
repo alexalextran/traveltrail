@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../../Sass/ViewProfileComponent.module.scss';
-import { getLists, getPinsFromList, getUserStatistics } from '../../firebaseFunctions/Lists';
-import { handleAddToProfile } from '../../firebaseFunctions/Lists';
+import { getLists, getPinsFromList, getUserStatistics, handleAddToProfile } from '../../firebaseFunctions/Lists';
 import { useAuth } from '@/app/context/authContext';
 import { retrieveCollaborativeRequestStatus, sendCollaborativeListRequest } from '@/app/firebaseFunctions/Collaborative';
 import { retrieveDisplayName } from '@/app/firebaseFunctions/friends';
 import { toast } from 'react-toastify'; 
+
+enum RequestType {
+  Accepted = 'accepted',
+  Pending = 'pending',
+  None = 'none',
+}
 
 interface ProfileData {
   friendID: string;
@@ -54,7 +59,7 @@ export default function ProfileModal({ profileData, setViewProfile }: ModalProps
     totalPins: 0,
     totalCategories: 0
   });
-  const [isRequestSent, setIsRequestSent] = useState<boolean>(true);  
+  const [requestType, setRequestType] = useState<RequestType>(RequestType.None);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -62,35 +67,30 @@ export default function ProfileModal({ profileData, setViewProfile }: ModalProps
       try {
         const fetchedLists = await getLists(profileData.friendID);
         setLists(fetchedLists);
-
         const userStats = await getUserStatistics(profileData.friendID);
         setStatistics(userStats);
       } catch (error) {
         console.error(error);
       }
     }
-
     fetchProfileData();
   }, [profileData.friendID]);
 
   const handleListSelect = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-    
     const selectedListID = event.target.value;
-   
     setSelectedList(selectedListID);
-    if(selectedListID !== '') {
-      console.log('selectedListID:', selectedListID);
-    const requestData = await retrieveCollaborativeRequestStatus(profileData.friendID, selectedListID)
-    requestData === 'pending' ? setIsRequestSent(true) : setIsRequestSent(false);
-
-    try {
-      const fetchedPins = await getPinsFromList(profileData.friendID, selectedListID);
-      setPins(fetchedPins);
-    } catch (error) {
-      console.error('Error fetching pins:', error);
-      setPins([]);
+    if (selectedListID !== '') {
+      const requestData = await retrieveCollaborativeRequestStatus(profileData.friendID, selectedListID);
+      setRequestType(requestData === 'accepted' ? RequestType.Accepted : requestData === 'pending' ? RequestType.Pending : RequestType.None);
+      try {
+        const fetchedPins = await getPinsFromList(profileData.friendID, selectedListID);
+        setPins(fetchedPins);
+      } catch (error) {
+        console.error('Error fetching pins:', error);
+        setPins([]);
+      }
     }
-  }};
+  };
 
   const handleCollaborationRequest = async () => {
     try {
@@ -101,10 +101,8 @@ export default function ProfileModal({ profileData, setViewProfile }: ModalProps
         user.uid,
         await retrieveDisplayName(user.uid)
       );
-      setIsRequestSent(true);  // Set request status to sent
-
-      // Show toast notification on success
-      toast.success(`${selectedList} was requested for collaboration`, {
+      setRequestType(RequestType.Pending);
+      toast.success(`${profileData.displayName} was sent a request for collaboration`, {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
@@ -114,7 +112,6 @@ export default function ProfileModal({ profileData, setViewProfile }: ModalProps
         progress: undefined,
         theme: "light",
       });
-
     } catch (error) {
       console.error('Error sending collaboration request:', error);
     }
@@ -129,29 +126,17 @@ export default function ProfileModal({ profileData, setViewProfile }: ModalProps
           <p><strong>Friend ID:</strong> {profileData.friendID}</p>
         </div>
         <div className={styles.modalStatistics}>
-          <div className={styles.statItem}>
-            <strong>Total Lists:</strong> {statistics.totalLists}
-          </div>
-          <div className={styles.statItem}>
-            <strong>Total Pins:</strong> {statistics.totalPins}
-          </div>
-          <div className={styles.statItem}>
-            <strong>Unique Categories:</strong> {statistics.totalCategories}
-          </div>
+          <div className={styles.statItem}><strong>Total Lists:</strong> {statistics.totalLists}</div>
+          <div className={styles.statItem}><strong>Total Pins:</strong> {statistics.totalPins}</div>
+          <div className={styles.statItem}><strong>Unique Categories:</strong> {statistics.totalCategories}</div>
         </div>
 
-        {lists.filter((list) => list.visible === true).length > 0 ? (
+        {lists.filter((list) => list.visible).length > 0 ? (
           <>
-            <select 
-              className={styles.selector} 
-              value={selectedList} 
-              onChange={handleListSelect}
-            >
+            <select className={styles.selector} value={selectedList} onChange={handleListSelect}>
               <option value="">Select a List</option>
-              {lists.filter((list) => list.visible === true).map((list) => (
-                <option key={list.listID} value={list.listID}>
-                  {list.listName}
-                </option>
+              {lists.filter((list) => list.visible).map((list) => (
+                <option key={list.listID} value={list.listID}>{list.listName}</option>
               ))}
             </select>
 
@@ -160,13 +145,7 @@ export default function ProfileModal({ profileData, setViewProfile }: ModalProps
                 <h3>Pins in <span>{lists.find(list => list.listID === selectedList)?.listName}</span></h3>
                 {pins.map((pin) => (
                   <div key={pin.id} className={styles.pinCard}>
-                    {pin.imageUrls && pin.imageUrls.length > 0 && (
-                      <img 
-                        src={pin.imageUrls[0]} 
-                        alt={pin.title} 
-                        className={styles.pinImage} 
-                      />
-                    )}
+                    {pin.imageUrls?.length > 0 && <img src={pin.imageUrls[0]} alt={pin.title} className={styles.pinImage} />}
                     <div className={styles.pinDetails}>
                       <h4>{pin.title}</h4>
                       <p><strong>Category:</strong> {pin.category}</p>
@@ -179,22 +158,16 @@ export default function ProfileModal({ profileData, setViewProfile }: ModalProps
               </div>
             )}
           </>
-        ) : (
-          <p className={styles.noPublic}>No Publicly Available Lists</p>
-        )}
-        {
-          selectedList &&
+        ) : <p className={styles.noPublic}>No Publicly Available Lists</p>}
+
+        {selectedList && (
           <div className={styles.buttonGroup}>
-            <button className={styles.addToProfileButton} onClick={() => { handleAddToProfile(profileData.friendID, selectedList, user.uid); } }>Add To Profile</button>
-            <button 
-              className={styles.addToProfileButton} 
-              onClick={handleCollaborationRequest} 
-              disabled={isRequestSent} // Disable the button once request is sent
-            >
-              {isRequestSent ? 'Request Sent' : 'Request Collaboration'} {/* Change button text */}
+            <button className={styles.addToProfileButton} onClick={() => handleAddToProfile(profileData.friendID, selectedList, user.uid)}>Add To Profile</button>
+            <button className={styles.addToProfileButton} onClick={handleCollaborationRequest} disabled={requestType !== RequestType.None}>
+              {requestType === RequestType.Accepted ? 'Accepted' : requestType === RequestType.Pending ? 'Pending' : 'Request Collaboration'}
             </button>
           </div>
-        }
+        )}
       </div>
     </div>
   );
