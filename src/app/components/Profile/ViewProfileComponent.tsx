@@ -3,8 +3,10 @@ import styles from '../../Sass/ViewProfileComponent.module.scss';
 import { getLists, getPinsFromList, getUserStatistics } from '../../firebaseFunctions/Lists';
 import { handleAddToProfile } from '../../firebaseFunctions/Lists';
 import { useAuth } from '@/app/context/authContext';
-import { sendCollaborativeListRequest } from '@/app/firebaseFunctions/Collaborative';
+import { retrieveCollaborativeRequestStatus, sendCollaborativeListRequest } from '@/app/firebaseFunctions/Collaborative';
 import { retrieveDisplayName } from '@/app/firebaseFunctions/friends';
+import { toast } from 'react-toastify'; 
+
 interface ProfileData {
   friendID: string;
   displayName: string;
@@ -52,8 +54,8 @@ export default function ProfileModal({ profileData, setViewProfile }: ModalProps
     totalPins: 0,
     totalCategories: 0
   });
-      const { user } = useAuth();
-
+  const [isRequestSent, setIsRequestSent] = useState<boolean>(true);  
+  const { user } = useAuth();
 
   useEffect(() => {
     async function fetchProfileData() {
@@ -67,13 +69,19 @@ export default function ProfileModal({ profileData, setViewProfile }: ModalProps
         console.error(error);
       }
     }
-  
+
     fetchProfileData();
   }, [profileData.friendID]);
 
   const handleListSelect = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+    
     const selectedListID = event.target.value;
+   
     setSelectedList(selectedListID);
+    if(selectedListID !== '') {
+      console.log('selectedListID:', selectedListID);
+    const requestData = await retrieveCollaborativeRequestStatus(profileData.friendID, selectedListID)
+    requestData === 'pending' ? setIsRequestSent(true) : setIsRequestSent(false);
 
     try {
       const fetchedPins = await getPinsFromList(profileData.friendID, selectedListID);
@@ -81,6 +89,34 @@ export default function ProfileModal({ profileData, setViewProfile }: ModalProps
     } catch (error) {
       console.error('Error fetching pins:', error);
       setPins([]);
+    }
+  }};
+
+  const handleCollaborationRequest = async () => {
+    try {
+      await sendCollaborativeListRequest(
+        profileData.friendID,
+        profileData.displayName,
+        selectedList,
+        user.uid,
+        await retrieveDisplayName(user.uid)
+      );
+      setIsRequestSent(true);  // Set request status to sent
+
+      // Show toast notification on success
+      toast.success(`${selectedList} was requested for collaboration`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+
+    } catch (error) {
+      console.error('Error sending collaboration request:', error);
     }
   };
 
@@ -149,12 +185,17 @@ export default function ProfileModal({ profileData, setViewProfile }: ModalProps
         {
           selectedList &&
           <div className={styles.buttonGroup}>
-          <button className={styles.addToProfileButton} onClick={() => { handleAddToProfile(profileData.friendID, selectedList, user.uid); } }>Add To Profile</button>
-          <button className={styles.addToProfileButton} onClick={async () => { sendCollaborativeListRequest(profileData.friendID, profileData.displayName, selectedList, user.uid, await retrieveDisplayName(user.uid)); } }>Request Collaboration</button>
+            <button className={styles.addToProfileButton} onClick={() => { handleAddToProfile(profileData.friendID, selectedList, user.uid); } }>Add To Profile</button>
+            <button 
+              className={styles.addToProfileButton} 
+              onClick={handleCollaborationRequest} 
+              disabled={isRequestSent} // Disable the button once request is sent
+            >
+              {isRequestSent ? 'Request Sent' : 'Request Collaboration'} {/* Change button text */}
+            </button>
           </div>
-
-    }
-          </div>
+        }
+      </div>
     </div>
   );
 }

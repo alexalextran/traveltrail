@@ -82,6 +82,22 @@ export const retrieveCollaborativeRequests = async (userID: string): Promise<any
     }
 };
 
+export const retrieveCollaborativeRequestStatus = async (userID: string, listID: string): Promise<string> => {
+    try {
+        const requestRef = doc(db, `users/${userID}/collaborativeRequests`, listID);
+        const requestSnapshot = await getDoc(requestRef);
+
+        if (requestSnapshot.exists()) {
+            return requestSnapshot.data().status;
+        }
+
+        return 'pending';
+    }
+    catch (error) {
+        console.error("Error retrieving collaborative request status: ", error);
+        throw new Error("Failed to retrieve collaborative request status");
+    }
+}
 
 
 export const declineCollaborativeRequest = async (userID: string, requestID: string): Promise<void> => {
@@ -212,9 +228,6 @@ export const acceptCollaborativeRequest = async (userID: string, requestID: stri
     }
 }
 
-//TODO CREATE A NEW DOCUMENT IN A SHARED COLLECTION
-//CHANGE STATUS OF THE LIST OF THE LISTS OWNER TO COLLABORATIVE
-//ADD THE LIST TO THE FRIENDS LIST
 //WRITE FUNCTION TO ADD PINS TO THE COLLABORATIVE LIST AND BOTH LISTS
 //WRITE FUNCTION TO ADD PINS TO BOTH USERS COLLECTION
 export const addCollaborativeList = async (userID: string, friendID: string, listID: string, friendDisplayName: string, listOnwerDisplayName: string): Promise<void> => {

@@ -259,20 +259,8 @@ export const getPinsFromList = async (friendID: string, listID: string): Promise
         const listSnapshot = await getDoc(listRef);
         const listData = listSnapshot.data();
 
-        // If the list has no pins, return an empty array
-        if (!listData?.pins || listData.pins.length === 0) {
-            return [];
-        }
+       return listData?.pins || [];
 
-        // Fetch each pin document
-        const pinPromises = listData.pins.map(async (pinID: string) => {
-            const pinRef = doc(db, `users/${friendID}/pins`, pinID);
-            const pinSnapshot = await getDoc(pinRef);
-            return { id: pinID, ...pinSnapshot.data() };
-        });
-
-        // Wait for all pin fetches to complete and return
-        return await Promise.all(pinPromises);
     } catch (error) {
         console.error("Error getting pins from list", error);
         throw new Error("Failed to get pins from list");
