@@ -115,7 +115,7 @@ function ManageLists() {
                 <div className={styles.lists}>
                     {lists.map(list => (
                         <div key={list.id} className={styles.listItem}>
-                            {list.owner === user.uid && <MdDeleteForever onClick={() => callDeleteList(list.id, list.collaborative, list.collaborators.map((collaborator) => collaborator.userID))}/>}
+                            {list.owner === user.uid && <MdDeleteForever onClick={() => callDeleteList(list.id, list.collaborative,  list.collaborators?.map((collaborator) => collaborator.userID) || [])}/>}
                             <p>{list.listName}</p>
                         </div>
                     ))}
