@@ -40,6 +40,7 @@ const ListDnD = ({ listId }: { listId: string }) => {
     return () => unsubscribe();
   }, [db, listId, user]);
 
+
   const userHasEditPermissions = list?.collaborators?.some((collaborator: any) => 
     collaborator.userID === user.uid && collaborator.edit
   );
@@ -63,7 +64,7 @@ const ListDnD = ({ listId }: { listId: string }) => {
   const [{ isOver }, drop] = useDrop({
     accept: 'pin',
     drop: (pin: { pinObject: any; categoryObject: any }) => {
-      if (!userHasEditPermissions) return;
+      if (list.collaborative && !userHasEditPermissions) return;
 
       const placeIdAlreadyInList = list.pins?.map((p: any) => p.placeId).includes(pin.pinObject.placeId);
 
@@ -107,10 +108,11 @@ const ListDnD = ({ listId }: { listId: string }) => {
       <p className={styles.listHeader}>
         Drag and drop pins here to add and remove to the list 
       </p>
-
+      {list?.collaborative && (
       <p className={styles.permissionsText}>
         This is a collaborative list. {userHasEditPermissions ? "You have edit permissions." : "You have view-only permissions."}
       </p>
+      )}
       
       {list?.collaborative && (
         <button className={styles.syncButton} onClick={() => synchronizeCollaborativePin(listId, user.uid)}>
@@ -121,7 +123,7 @@ const ListDnD = ({ listId }: { listId: string }) => {
       <div className={styles.pinsContainer}>
         {transitions((style, pin) => (
           <animated.div style={style}>
-            <DnDPin key={pin.id} pin={pin} userHasEditPermissions={userHasEditPermissions}/>
+            <DnDPin key={pin.id} pin={pin} userHasEditPermissions={userHasEditPermissions} collaborative={list.collaborative}/>
           </animated.div>
         ))}
       </div>
