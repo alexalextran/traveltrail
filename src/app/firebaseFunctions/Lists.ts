@@ -74,7 +74,7 @@ const addPinToCollaborativeList = async (
         }
 
         const listData = listSnapshot.data();
-        const collaborators: string[] = listData.collaborators || [];
+        const collaborators: string[] = listData.collaborators.map((collaborator: { userID: string }) => collaborator.userID) || [];
 
         // Update collaborative list with the new pin and category
         await updateDoc(listRef, {
@@ -82,15 +82,14 @@ const addPinToCollaborativeList = async (
             categories: arrayUnion(categoryObject),
         });
 
-        console.log(`Pin added to collaborative list with ID: ${listID}`);
 
       // Batch update for collaborators
-const batch = writeBatch(db);
+        const batch = writeBatch(db);
 
-for (const collaboratorID of collaborators) {
+        for (const collaboratorID of collaborators) {
     const userListRef = doc(db, `users/${collaboratorID}/lists/${listID}`);
 
-    // Ensure the list exists for each collaborator
+    // Ensure the list exists for each collaborator CHANGE
     const userListSnapshot = await getDoc(userListRef);
     if (!userListSnapshot.exists()) {
         batch.set(userListRef, {

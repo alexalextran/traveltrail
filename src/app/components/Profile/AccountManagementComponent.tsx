@@ -18,15 +18,16 @@ export default function ProfileComponent() {
   const { logout, user } = useAuth();
   const [displayName, setDisplayName] = useState(user?.displayName || "");
   const [lists, setLists] = useState<
-    { id: string; visible: boolean; listName: string; collaborative: boolean; collaborators?: any[]; listOwner?: string }[]
+    { id: string; visible: boolean; listName: string; collaborative: boolean; collaborators?: any[]; owner: string }[]
   >([]);
   const [showCollaboratorsModal, setShowCollaboratorsModal] = useState(false);
   const [selectedList, setSelectedList] = useState<{ id: string; listName: string; collaborators?: any[] } | null>(null);
 
   useEffect(() => {
     const db = getFirestore(app);
-
+    
     const listCollectionRef = collection(db, `users/${user.uid}/lists`);
+    
     const unsubscribe = onSnapshot(listCollectionRef, (snapshot) => {
       const fetchedLists = snapshot.docs.filter((doc) => doc.data().owner === user.uid).map((doc) => ({
         id: doc.id,
@@ -34,9 +35,10 @@ export default function ProfileComponent() {
         listName: doc.data().listName,
         collaborative: doc.data().collaborative,
         collaborators: doc.data().collaborators,
-        listOwner: doc.data().listOwner,
+        owner: doc.data().owner,
       }));
       setLists(fetchedLists);
+      console.log(fetchedLists);
     });
 
     const userDocRef = doc(db, `users/${user.uid}`);
@@ -156,7 +158,7 @@ export default function ProfileComponent() {
                           onClick={() => handleManageCollaborators(list.id, list.listName, list.collaborators || [])}
                           className={styles.manageButton}
                         >
-                          {list.listOwner === user.uid ? <p>Manage Collaborators</p> : <span></span>}
+                          {list.owner === user.uid && <p>Manage Collaborators</p> }
                         </button>
                       )}
                     </li>

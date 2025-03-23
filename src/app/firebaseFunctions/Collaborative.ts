@@ -1,6 +1,7 @@
 import { collection, addDoc, getFirestore, doc, deleteDoc, updateDoc, arrayUnion, arrayRemove, getDocs, getDoc, writeBatch, query, where, setDoc } from "firebase/firestore";
 import { app } from "../firebase";
 import { list } from "firebase/storage";
+import { retrieveDisplayName } from "./friends";
 
 const db = getFirestore(app);
 
@@ -177,17 +178,19 @@ export const acceptCollaborativeRequest = async (userID: string, requestID: stri
         // Commit the batch
         await batch.commit();
 
-        const sharedCollectionRef = doc(db, `sharedCollection/${requestData.listID}`);
-        await setDoc(sharedCollectionRef, {
-            owner: friendID,
-            listID: requestData.listID,
-            collaborators: [userID, friendID]
-        });
+        const listOwnerName = await retrieveDisplayName(requestData.listOwner);
 
+        await addCollaborativeList(userID, friendID, requestData.listID, requestData.fromName, listOwnerName);
+
+    
+        
         const listOwnerRef = doc(db, `users/${requestData.listOwner}/lists`, requestData.listID);
         await updateDoc(listOwnerRef, {
             collaborative: true,
-            collaborators: arrayUnion(friendID, requestData.listOwner),
+            collaborators: arrayUnion(
+            { userID: friendID, edit: true, displayName: requestData.fromName },
+            { userID: requestData.listOwner, edit: true, displayName:listOwnerName }
+            ),
             owner: requestData.listOwner
         });
 
@@ -197,6 +200,8 @@ export const acceptCollaborativeRequest = async (userID: string, requestID: stri
         if (listOwnerSnapshot.exists()) {
             await setDoc(friendListRef, listOwnerSnapshot.data());
         }
+
+
 
 
         
@@ -212,16 +217,20 @@ export const acceptCollaborativeRequest = async (userID: string, requestID: stri
 //ADD THE LIST TO THE FRIENDS LIST
 //WRITE FUNCTION TO ADD PINS TO THE COLLABORATIVE LIST AND BOTH LISTS
 //WRITE FUNCTION TO ADD PINS TO BOTH USERS COLLECTION
-export const addCollaborativeList = async (userID: string, friendID: string, listID: string): Promise<void> => {
+export const addCollaborativeList = async (userID: string, friendID: string, listID: string, friendDisplayName: string, listOnwerDisplayName: string): Promise<void> => {
     try {
+        const listName = await retrieveDisplayName(listID);
         const collaborativeListRef = doc(db, `collaborativeLists/${listID}`);
-
+        
         await setDoc(collaborativeListRef, {
-            owners: [userID, friendID],
+            collaborators: [
+                { userID: userID, edit: true, displayName: listOnwerDisplayName },
+                { userID: friendID, edit: true, displayName: friendDisplayName }
+            ],
+            owner: userID,
             listID: listID,
+            listname: listName
         });
-
-     
 
         console.log(`Collaborative list added to user: ${userID}`);
     } catch (error) {

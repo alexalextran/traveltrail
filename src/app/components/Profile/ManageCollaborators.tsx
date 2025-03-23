@@ -11,6 +11,7 @@ import {
   DocumentData,
   DocumentReference,
   deleteDoc,
+  getDoc,
 } from "firebase/firestore";
 import { app } from "../../firebase";
 import { toast } from "react-toastify";
@@ -20,14 +21,14 @@ import {returnUsers} from '../../firebaseFunctions/friends';
 interface CollaboratorType {
   userID: string;
   displayName: string;
-  accessLevel: "editor" | "viewer";
+  edit: boolean;
 }
 
 interface CollaboratorsModalProps {
   listId: string;
   listName: string;
   onBack: () => void;
-  listCollaborators: string[];
+  listCollaborators: any[];
 }
 
 export default function CollaboratorsModal({ listId, listName, onBack, listCollaborators }: CollaboratorsModalProps) {
@@ -37,27 +38,38 @@ export default function CollaboratorsModal({ listId, listName, onBack, listColla
 
   useEffect(() => {
     const fetchCollaborators = async () => {
-      setLoading(true);
-      const collaboratorsData = await returnUsers(listCollaborators);
+     
       setLoading(false);
-      setCollaborators(collaboratorsData);
+      setCollaborators(listCollaborators);
     };
 
     fetchCollaborators();
   }, [listId, user.uid]);
 
-  const updateCollaboratorAccess = async (collaboratorId: string, newAccessLevel: "editor" | "viewer") => {
+  const updateCollaboratorAccess = async (collaboratorId: string, newAccessLevel: boolean) => {
     try {
       const db = getFirestore(app);
       const listDocRef = doc(db, `users/${user.uid}/lists/${listId}`);
-      
-      // Find the collaborator and update their access level
-      const updatedCollaborators = collaborators.map(collab => 
-        collab.userID === collaboratorId ? { ...collab, accessLevel: newAccessLevel } : collab
-      );
-      
-      await updateDoc(listDocRef, { collaborators: updatedCollaborators });
-      
+      const collaborativeList = doc(db, `collaborativeLists/${listId}`);
+      const collaboratorList = doc(db, `users/${collaboratorId}/lists/${listId}`);
+
+      const updateCollaboratorField = async (docRef: DocumentReference) => {
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const updatedCollaborators = data.collaborators.map((collab: any) =>
+            collab.userID === collaboratorId ? { ...collab, edit: newAccessLevel } : collab
+          );
+          await updateDoc(docRef, { collaborators: updatedCollaborators });
+        }
+      };
+
+      await Promise.all([
+        updateCollaboratorField(listDocRef),
+        updateCollaboratorField(collaborativeList),
+        updateCollaboratorField(collaboratorList),
+      ]);
+
       toast.success(`Access level updated successfully`, {
         position: "top-right",
         autoClose: 3000,
@@ -81,6 +93,8 @@ export default function CollaboratorsModal({ listId, listName, onBack, listColla
       });
     }
   };
+
+
 
   const removeCollaborator = async (collaboratorId: string, displayName: string) => {
     try {
@@ -157,7 +171,7 @@ export default function CollaboratorsModal({ listId, listName, onBack, listColla
           </div>
         ) : collaborators.length > 0 ? (
           <ul className={styles.collaboratorsList}>
-            {collaborators.map((collaborator) => (
+            {collaborators.filter((collaborator) => collaborator.userID != user.uid).map((collaborator) => (
               <li key={collaborator.userID} className={styles.collaboratorItem}>
                 <div className={styles.avatar}>
                   {collaborator.displayName}
@@ -167,32 +181,33 @@ export default function CollaboratorsModal({ listId, listName, onBack, listColla
                     {collaborator.displayName }
                   </span>
                 
-                  <span className={styles.collaboratorAccess} data-access={collaborator.accessLevel}>
-                    {collaborator.accessLevel === "editor" ? (
-                      <>
-                        <FaUserEdit className={styles.accessIcon} /> Editor
-                      </>
+                  <span className={styles.collaboratorAccess} data-access={collaborator.edit}>
+                    {collaborator.edit === false ? (
+                       <>
+                       <FaUserCog className={styles.accessIcon} /> Viewer
+                     </>
                     ) : (
-                      <>
-                        <FaUserCog className={styles.accessIcon} /> Viewer
-                      </>
+                    
+                       <>
+                       <FaUserEdit className={styles.accessIcon} /> Editor
+                     </>
                     )}
                   </span>
                 </div>
                 <div className={styles.collaboratorActions}>
-                  {collaborator.accessLevel === "editor" ? (
+                  {collaborator.edit === false ? (
+                   <button 
+                   onClick={() => updateCollaboratorAccess(collaborator.userID, true)}
+                   className={`${styles.accessButton} ${styles.editorButton}`}
+                 >
+                   Make Editor
+                 </button>
+                  ) : (
                     <button 
-                      onClick={() => updateCollaboratorAccess(collaborator.userID, "viewer")}
+                      onClick={() => updateCollaboratorAccess(collaborator.userID, false)}
                       className={`${styles.accessButton} ${styles.viewerButton}`}
                     >
                       Make Viewer
-                    </button>
-                  ) : (
-                    <button 
-                      onClick={() => updateCollaboratorAccess(collaborator.userID, "editor")}
-                      className={`${styles.accessButton} ${styles.editorButton}`}
-                    >
-                      Make Editor
                     </button>
                   )}
                   <button 
