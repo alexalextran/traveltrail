@@ -1,6 +1,7 @@
 import { collection, addDoc, getFirestore, doc, deleteDoc, updateDoc, arrayUnion, arrayRemove, getDocs, getDoc, writeBatch, query, where, setDoc } from "firebase/firestore";
 import { app } from "../firebase";
 import { list } from "firebase/storage";
+import { retrieveListName } from "./Lists";
 import { retrieveDisplayName } from "./friends";
 
 const db = getFirestore(app);
@@ -232,9 +233,9 @@ export const acceptCollaborativeRequest = async (userID: string, requestID: stri
 //WRITE FUNCTION TO ADD PINS TO BOTH USERS COLLECTION
 export const addCollaborativeList = async (userID: string, friendID: string, listID: string, friendDisplayName: string, listOnwerDisplayName: string): Promise<void> => {
     try {
-        const listName = await retrieveDisplayName(listID);
+        const listName = await retrieveListName(userID, listID);
         const collaborativeListRef = doc(db, `collaborativeLists/${listID}`);
-        
+        console.log(listName)
         await setDoc(collaborativeListRef, {
             collaborators: [
                 { userID: userID, edit: true, displayName: listOnwerDisplayName },

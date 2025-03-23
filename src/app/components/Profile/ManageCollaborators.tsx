@@ -95,57 +95,68 @@ export default function CollaboratorsModal({ listId, listName, onBack, listColla
   };
 
 
-
   const removeCollaborator = async (collaboratorId: string, displayName: string) => {
     try {
+      console.log(collaboratorId);
       const db = getFirestore(app);
       const listDocRef = doc(db, `users/${user.uid}/lists/${listId}`);
       const collaborativeList = doc(db, `collaborativeLists/${listId}`);
       const removedUserList = doc(db, `users/${collaboratorId}/lists/${listId}`);
       const collaboratorRequest = doc(db, `users/${collaboratorId}/collaborativeRequests/${listId}`);
       const userRequests = doc(db, `users/${user.uid}/collaborativeRequests/${listId}`);
-      
-        // Remove the collaborator from the managers list
-        //Remove the collaborator from the collaborative list
-        await updateDoc(listDocRef, {
-          collaborators: arrayRemove(collaboratorId)
-        });
-
-        await updateDoc(collaborativeList, {
-          collaborators: arrayRemove(collaboratorId)
-        });
-
-        // Remove the list from the collaborator's list
-        await deleteDoc(removedUserList);
-        await deleteDoc(collaboratorRequest);
-        await deleteDoc(userRequests);
-        
-        toast.success(`${displayName} removed from collaborators`, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      }
-      catch (error) {
-
-        toast.error(`Failed to remove collaborator, ${error}`, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      }
-
+  
+      // Get the current list document
+      const listSnap = await getDoc(listDocRef);
+      if (!listSnap.exists()) throw new Error("List not found");
+  
+      const listData = listSnap.data();
+      const currentCollaborators = listData.collaborators || [];
+  
+      // Filter out the collaborator object that matches the userID
+      const updatedCollaborators = currentCollaborators.filter(
+        (collab: { userID: string }) => collab.userID !== collaboratorId
+      );
+  
+      // Update Firestore with the new collaborators array
+      await updateDoc(listDocRef, {
+        collaborators: updatedCollaborators
+      });
+  
+      await updateDoc(collaborativeList, {
+        collaborators: updatedCollaborators
+      });
+  
+      // Remove the list from the collaborator's collection
+      await deleteDoc(removedUserList);
+      await deleteDoc(collaboratorRequest);
+      await deleteDoc(userRequests);
+  
+      // Show success toast
+      toast.success(`${displayName} removed from collaborators`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+  
+    } catch (error) {
+      toast.error(`Failed to remove collaborator: ${error}`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
   };
+  
 
   return (
     <div className={styles.modal}>
