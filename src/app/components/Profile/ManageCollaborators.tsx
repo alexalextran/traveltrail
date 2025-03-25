@@ -44,7 +44,7 @@ export default function CollaboratorsModal({ listId, listName, onBack, listColla
     };
 
     fetchCollaborators();
-  }, [listId, user.uid]);
+  }, [listId, user.uid, listCollaborators]);
 
   const updateCollaboratorAccess = async (collaboratorId: string, newAccessLevel: boolean) => {
     try {
@@ -97,7 +97,6 @@ export default function CollaboratorsModal({ listId, listName, onBack, listColla
 
   const removeCollaborator = async (collaboratorId: string, displayName: string) => {
     try {
-      console.log(collaboratorId);
       const db = getFirestore(app);
       const listDocRef = doc(db, `users/${user.uid}/lists/${listId}`);
       const collaborativeList = doc(db, `collaborativeLists/${listId}`);
@@ -142,6 +141,8 @@ export default function CollaboratorsModal({ listId, listName, onBack, listColla
         progress: undefined,
         theme: "light",
       });
+
+      setCollaborators(updatedCollaborators)
   
     } catch (error) {
       toast.error(`Failed to remove collaborator: ${error}`, {

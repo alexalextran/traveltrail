@@ -119,7 +119,7 @@ const ListDnD = ({ listId }: { listId: string }) => {
           Download Collaborative Pins
         </button>
       )}
-
+  {list &&
       <div className={styles.pinsContainer}>
         {transitions((style, pin) => (
           <animated.div style={style}>
@@ -127,6 +127,7 @@ const ListDnD = ({ listId }: { listId: string }) => {
           </animated.div>
         ))}
       </div>
+      }
       
       <ConfirmationModal 
         isOpen={modalOpen}
