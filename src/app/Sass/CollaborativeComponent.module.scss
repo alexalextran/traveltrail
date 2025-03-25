@@ -1,13 +1,108 @@
 @import "variables&functions";
 
-
-
 .collaborativeListMain {
-        height: 100%;
-      width: 30%;
-      margin-bottom: 1rem;
-      background: #fff;
-      border-radius: 8px;
-      padding: 1rem;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  width: 30%;
+  margin-bottom: 1rem;
+  background: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+  div{
+    margin-bottom: 2em;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: $webBlue;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: $webBlue;
+    padding-bottom: 0.5rem;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    max-height: 20rem;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #f9f9f9;
+    margin-bottom: 1.5em;
+
+    li {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 0.75rem;
+      border-bottom: 1px solid #e0e0e0;
+      transition: background 0.3s ease;
+
+      &:nth-child(even) {
+        background-color: #f1f1f1;
+      }
+
+      &:hover {
+        background-color: #e6f7ff;
+      }
+
+      p {
+        margin-bottom: 0.5rem;
+        color: #333;
+        
+        span {
+          color: $webBlue;
+          font-weight: 600;
+        }
+      }
+
+      .buttonGroup {
+        display: flex;
+        width: 100%;
+        gap: 0.5rem;
+
+        button {
+          flex: 1;
+          padding: 0.4rem 0.8rem;
+          font-size: 0.85rem;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+
+          &:first-of-type {
+            background-color: #28a745;
+            color: white;
+
+            &:hover {
+              background-color: #218838;
+            }
+          }
+
+          &:last-of-type {
+            background-color: #dc3545;
+            color: white;
+
+            &:hover {
+              background-color: #c82333;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .collaborativeListMain {
+    width: 100%;
+  }
 }

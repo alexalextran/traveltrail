@@ -3,8 +3,10 @@ import { app } from "../firebase";
 import { list } from "firebase/storage";
 import { retrieveListName } from "./Lists";
 import { retrieveDisplayName } from "./friends";
+import { Console } from "console";
 
 const db = getFirestore(app);
+export { db };
 
 export const sendCollaborativeListRequest = async (friendID: string, friendName: string, listID: string, userId: string, userName: string): Promise<void> => {
     try {
