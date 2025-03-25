@@ -199,7 +199,6 @@ export const acceptCollaborativeRequest = async (userID: string, requestID: stri
 
         const listOwnerName = await retrieveDisplayName(requestData.listOwner);
 
-        await addCollaborativeList(userID, friendID, requestData.listID, requestData.fromName, listOwnerName);
 
     
         
@@ -213,8 +212,12 @@ export const acceptCollaborativeRequest = async (userID: string, requestID: stri
             owner: requestData.listOwner
         });
 
+        
+
         const friendListRef = doc(db, `users/${friendID}/lists`, requestData.listID);
         const listOwnerSnapshot = await getDoc(listOwnerRef);
+        await addCollaborativeList(userID, friendID, requestData.listID, requestData.fromName, listOwnerName, listOwnerSnapshot);
+
 
         if (listOwnerSnapshot.exists()) {
             await setDoc(friendListRef, listOwnerSnapshot.data());
@@ -233,19 +236,13 @@ export const acceptCollaborativeRequest = async (userID: string, requestID: stri
 
 //WRITE FUNCTION TO ADD PINS TO THE COLLABORATIVE LIST AND BOTH LISTS
 //WRITE FUNCTION TO ADD PINS TO BOTH USERS COLLECTION
-export const addCollaborativeList = async (userID: string, friendID: string, listID: string, friendDisplayName: string, listOnwerDisplayName: string): Promise<void> => {
+export const addCollaborativeList = async (userID: string, friendID: string, listID: string, friendDisplayName: string, listOnwerDisplayName: string, listOwnerData: any): Promise<void> => {
     try {
-        const listName = await retrieveListName(userID, listID);
+
+        //const listName = await retrieveListName(userID, listID);
         const collaborativeListRef = doc(db, `collaborativeLists/${listID}`);
-        console.log(listName)
         await setDoc(collaborativeListRef, {
-            collaborators: [
-                { userID: userID, edit: true, displayName: listOnwerDisplayName },
-                { userID: friendID, edit: true, displayName: friendDisplayName }
-            ],
-            owner: userID,
-            listID: listID,
-            listname: listName
+            ...listOwnerData.data()
         });
 
         console.log(`Collaborative list added to user: ${userID}`);

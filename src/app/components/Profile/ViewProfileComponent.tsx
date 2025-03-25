@@ -80,7 +80,7 @@ export default function ProfileModal({ profileData, setViewProfile }: ModalProps
     const selectedListID = event.target.value;
     setSelectedList(selectedListID);
     if (selectedListID !== '') {
-      const requestData = await retrieveCollaborativeRequestStatus(profileData.friendID, selectedListID);
+      const requestData = await retrieveCollaborativeRequestStatus(user.uid, selectedListID);
       setRequestType(requestData === 'accepted' ? RequestType.Accepted : requestData === 'pending' ? RequestType.Pending : RequestType.None);
       try {
         const fetchedPins = await getPinsFromList(profileData.friendID, selectedListID);
