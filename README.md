@@ -34,14 +34,13 @@ Please note the API keys are hidden using a .env.local file that is not tracked 
  -	   Integrated Social Media System To Share Information
  -     Download To CSV Available
  -      Drag and drop UI
+ -	   Collaborative Lists (Full collaborator management system included!)
+
 
 ## Planned Features
  -       Animations & Improved UI
  -      AI recommendations
  -     Recommendations based on proximity
- -	   Collaborative Lists
  -     Import using excel
- -	   Integration with Instagram, google maps, Pinterest etc.
- -     Mobile App using react Native
 
 
