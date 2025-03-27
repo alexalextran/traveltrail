@@ -234,8 +234,6 @@ export const acceptCollaborativeRequest = async (userID: string, requestID: stri
     }
 }
 
-//WRITE FUNCTION TO ADD PINS TO THE COLLABORATIVE LIST AND BOTH LISTS
-//WRITE FUNCTION TO ADD PINS TO BOTH USERS COLLECTION
 export const addCollaborativeList = async (userID: string, friendID: string, listID: string, friendDisplayName: string, listOnwerDisplayName: string, listOwnerData: any): Promise<void> => {
     try {
 

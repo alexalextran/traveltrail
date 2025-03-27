@@ -30,6 +30,7 @@ const DnDPin = ({ pin, userHasEditPermissions, collaborative }: { pin: Pin, user
       <div>
         <p>{pin.category}</p>
         <p>{pin.visited ? 'Visited' : 'Unvisited'}</p>
+        {collaborative && <p>{pin.displayName}</p>}
       </div>
     </div>
   );

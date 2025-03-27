@@ -57,8 +57,15 @@ export const addPinToList = async (collectionName:string, listID: string, pin: a
     try {
         //check if pin doenst already exist in the collaborative list
         const listRef = doc(db, collectionName, listID);
+        const userInfo = doc(db, `users/${userID}`);
+        const userSnapshot = await getDoc(userInfo);
+        const userData = userSnapshot.data();
+        const pinWithUserData = {
+            ...pin,
+            ...userData
+        }
         await updateDoc(listRef, {
-             pins: arrayUnion(pin),
+             pins: arrayUnion(pinWithUserData),
             categories: arrayUnion(categoryObject[0])
         });
        
@@ -66,7 +73,6 @@ export const addPinToList = async (collectionName:string, listID: string, pin: a
       
             addPinToCollaborativeList(listID, pin, categoryObject[0], userID);
         }
-        console.log(`Pin added to list with ID: ${listID}`);
     } catch (error) {
         console.error("Error adding pin to list: ", error);
         throw new Error("Failed to add pin to list");

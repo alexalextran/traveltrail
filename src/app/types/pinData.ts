@@ -15,6 +15,7 @@ export interface Pin {
     openingHours?: string;
     rating?: number;
     website?: string;
+    displayName?: string;
   }
   
  

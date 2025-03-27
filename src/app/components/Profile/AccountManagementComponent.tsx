@@ -12,7 +12,6 @@ import { app } from "../../firebase";
 import { updateListVisibility } from "../../firebaseFunctions/Lists";
 import { toast } from "react-toastify";
 import CollaboratorsModal from "./ManageCollaborators";
-import { list } from "firebase/storage";
 
 export default function ProfileComponent() {
   const { logout, user } = useAuth();
@@ -109,6 +108,7 @@ export default function ProfileComponent() {
         <main className={styles.main}>
           <h2>Profile</h2>
 
+          
           <div className={styles.profileInfo}>
             <label>Email</label>
             <p>{user?.email}</p>
@@ -118,6 +118,8 @@ export default function ProfileComponent() {
             <label>My Friend Code</label>
             <p>{user?.uid}</p>
           </div>
+
+          
 
           <div className={styles.profileInfo}>
             <label>Display Name</label>
