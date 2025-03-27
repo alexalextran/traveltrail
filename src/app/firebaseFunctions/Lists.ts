@@ -2,6 +2,7 @@ import { Category } from './../types/categoryData';
 // import { removePinFromList } from './Lists';
 import { collection, addDoc, getFirestore, doc, deleteDoc, updateDoc, arrayUnion, arrayRemove, getDocs, getDoc, writeBatch, query, where, setDoc } from "firebase/firestore";
 import { app } from "../firebase";
+import { list } from 'firebase/storage';
 
 const db = getFirestore(app);
 
@@ -169,14 +170,65 @@ const retrieveCategoryDocument = async (userID: string, categoryID: string): Pro
 
 export const removePinFromList = async (collectionName:string, listID: string, pinObject: any): Promise<void> => {
     try {
+
+
         const listRef = doc(db, collectionName, listID);
+        
+        // First, get the current list data to check categories
+        const listSnapshot = await getDoc(listRef);
+        const listData = listSnapshot.data();
+        
+
+        // Remove the pin
         await updateDoc(listRef, {
             pins: arrayRemove(pinObject)
         });
-        const listSnapshot = await getDoc(listRef);
-        const listData = listSnapshot.data();
+        
+        // Fetch the updated list data after pin removal
+        const updatedListSnapshot = await getDoc(listRef);
+        const updatedListData = updatedListSnapshot.data();
+        const updatedCategories = updatedListData?.categories || [];
+
+        // Check and remove the specific category if no other pins use it
+        if (updatedListData?.categories && updatedListData?.pins && pinObject.categoryId) {
+            
+            // Check if any remaining pins use this category
+            const pinsWithCategory = updatedListData.pins.filter(
+                (pin: any) => pin.categoryId === pinObject.categoryId
+            );
+            
+            
+            // If no other pins use this category, remove it
+            if (pinsWithCategory.length === 0) {
+                const updatedCategories = updatedListData.categories.filter(
+                    (category: any) => category.CategoryID !== pinObject.categoryId
+                );
+
+                updatedListData.categories.forEach((category: { CategoryID: string }) => {
+                    if (pinObject.categoryId === category.CategoryID) {
+                        console.log(`Match found: ${category.CategoryID}`);
+                    } else {
+                        console.log(`No match: ${category.CategoryID}`);
+                    }
+                });
+                
+                
+                await updateDoc(listRef, {
+                    categories: updatedCategories
+                });
+
+                if(listData?.collaborative){
+                    await removePinFromCollaborativeList(listID, pinObject, updatedCategories);
+                }
+                return;
+            }
+        }
+      
+
+        
+        // Existing collaborative list handling
         if(listData?.collaborative){
-            removePinFromCollaborativeList(listID, pinObject);
+            await removePinFromCollaborativeList(listID, pinObject, updatedCategories);
         }
     } catch (error) {
         console.error("Error removing pin from list: ", error);
@@ -184,8 +236,10 @@ export const removePinFromList = async (collectionName:string, listID: string, p
     }
 };
 
-const removePinFromCollaborativeList = async (listID: string, pin: any): Promise<void> => {
+const removePinFromCollaborativeList = async (listID: string, pin: any, updatedCategories: any): Promise<void> => {
     try {
+        console.log(updatedCategories);
+
         const listRef = doc(db, `collaborativeLists`, listID);
         const listSnapshot = await getDoc(listRef);
         if (!listSnapshot.exists()) {
@@ -193,12 +247,20 @@ const removePinFromCollaborativeList = async (listID: string, pin: any): Promise
         }
 
         const listData = listSnapshot.data();
+
         const collaborators: string[] = listData.collaborators.map((collaborator: { userID: string }) => collaborator.userID) || [];
 
-        // Update collaborative list with the new pin and category
+        // Remove the pin from the collaborative list
         await updateDoc(listRef, {
             pins: arrayRemove(pin),
         });
+
+        await updateDoc(listRef, {
+         categories: updatedCategories
+         });
+                
+            
+        
 
         console.log(`Pin removed from collaborative list with ID: ${listID}`);
 
@@ -212,6 +274,11 @@ const removePinFromCollaborativeList = async (listID: string, pin: any): Promise
             batch.update(userListRef, {
                 pins: arrayRemove(pin),
             });
+
+            batch.update(userListRef, {
+                categories: updatedCategories
+            });
+
         }
 
         await batch.commit();
