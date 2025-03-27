@@ -71,7 +71,7 @@ export const addPinToList = async (collectionName:string, listID: string, pin: a
        
         if(collaborative){
       
-            addPinToCollaborativeList(listID, pin, categoryObject[0], userID);
+            addPinToCollaborativeList(listID, pinWithUserData, categoryObject[0], userID);
         }
     } catch (error) {
         console.error("Error adding pin to list: ", error);
@@ -173,7 +173,6 @@ export const removePinFromList = async (collectionName:string, listID: string, p
         await updateDoc(listRef, {
             pins: arrayRemove(pinObject)
         });
-        console.log(`Pin removed from list with ID: ${listID}`);
         const listSnapshot = await getDoc(listRef);
         const listData = listSnapshot.data();
         if(listData?.collaborative){
