@@ -16,6 +16,7 @@ export interface Pin {
     rating?: number;
     website?: string;
     displayName?: string;
+    photoURL?: string;
   }
   
  

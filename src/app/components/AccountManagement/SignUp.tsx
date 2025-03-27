@@ -30,7 +30,7 @@ const SignUp: React.FC = () => {
     try {
       const userCredential = await signup(email, password);
       const userDocRef = doc(getFirestore(app), `users/${userCredential}`);
-      await setDoc(userDocRef, { displayName: displayName });
+      await setDoc(userDocRef, { displayName: displayName, photoURL: 'https://firebasestorage.googleapis.com/v0/b/traveltrail-425604.appspot.com/o/defaultProfilePicture.png?alt=media&token=818be1d6-aef3-49f2-b237-0465920f2d8c' });
       toast.success(`Account creation successful`, {
         position: "top-right",
         autoClose: 2000,

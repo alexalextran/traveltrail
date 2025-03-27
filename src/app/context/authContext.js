@@ -29,7 +29,6 @@ export const AuthProvider = ({ children }) => {
         password
       );
       // Successfully signed up
-      console.log("Signed up:", userCredential.user);
       return userCredential.user.uid; // Return the user ID
     } catch (error) {
       console.error("Error signing up:", error);
