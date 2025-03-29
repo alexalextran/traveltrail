@@ -60,7 +60,19 @@ export const addPinToList = async (collectionName:string, listID: string, pin: a
         const listRef = doc(db, collectionName, listID);
         const userInfo = doc(db, `users/${userID}`);
         const userSnapshot = await getDoc(userInfo);
-        const userData = userSnapshot.data();
+
+        let userData
+        if (!userSnapshot.exists()) {
+            // Create a default user if the user doesn't exist
+            userData = {
+            displayName: "Deleted User",
+            photoURL: "https://firebasestorage.googleapis.com/v0/b/traveltrail-425604.appspot.com/o/profilePictures%2Fc5a4aHYy8JUhFV2rodWOLcTbjNv2?alt=media&token=65212860-5073-4b26-bd97-69c2b20189d2"
+            };
+        }else{
+            userData = userSnapshot.data();
+        }
+
+
         const pinWithUserData = {
             ...pin,
             ...userData
