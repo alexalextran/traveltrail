@@ -16,6 +16,7 @@ import { useAuth } from '../../context/authContext.js';
 import { FaImages } from "react-icons/fa";
 import { FaShare } from "react-icons/fa";
 import { useRouter } from 'next/navigation'; // Changed from 'next/router'
+import { toast } from 'react-toastify';
 
 export default function IconBar({ pin, color, setchild, enableImage }: { pin: Pin, color: string, setchild?: any, enableImage: Boolean }) {
   const { user } = useAuth();
@@ -31,7 +32,22 @@ export default function IconBar({ pin, color, setchild, enableImage }: { pin: Pi
 
 const sharePin = () => {
   if (isClient) {
-    router.push(`/share/${pin.id}?userId=${user.uid}`);
+    const shareUrl = `${window.location.origin}/share/${pin.id}?userId=${user.uid}`;
+    navigator.clipboard.writeText(shareUrl).then(() => {
+         toast.info('Link has been copied to clipboard!', {
+                position: "top-right",  
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+              });
+    }).catch(err => {
+      console.error("Failed to copy link to clipboard:", err);
+    });
+    window.open(shareUrl, '_blank');
   }
 };
 
