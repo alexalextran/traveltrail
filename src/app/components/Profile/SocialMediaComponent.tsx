@@ -20,14 +20,13 @@ import { toast } from 'react-toastify';
 import ManageFriendsComponent from './ManageFriendsComponent';
 import FriendRequestsComponent from './FriendRequestsComponent';
 import ViewProfileComponent from './ViewProfileComponent';
-
+import CollaborativeComponent from './CollborativeComponent';
 export default function SocialMediaComponent() {
     const { user } = useAuth();
     const [friendRequests, setFriendRequests] = useState<{ id: string; from: string; displayName: string; status: string }[]>([]);
     const [friends, setFriends] = useState<{ friendID: string; displayName: string }[]>([]);
     const [filteredFriends, setFilteredFriends] = useState<{ friendID: string; displayName: string }[]>([]);
     const [publicLists, setPublicLists] = useState<{ friendId: string; listId: string; listName: string }[]>([]);
-    const [listToBeAdded, setListToBeAdded] = useState('');
     const [searchFriends, setsearchFriends] = useState('');
     const [friendCode, setFriendCode] = useState('');
     const [viewProfile, setviewProfile] = useState(false)
@@ -224,6 +223,7 @@ export default function SocialMediaComponent() {
                 searchFriends={searchFriends} 
                 setSearchFriends={setsearchFriends} 
             />
+            <CollaborativeComponent />
             </>
             
             }

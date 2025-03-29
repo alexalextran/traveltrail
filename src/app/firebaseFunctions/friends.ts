@@ -1,4 +1,4 @@
-import { collection, addDoc, getFirestore, doc, deleteDoc, updateDoc, arrayUnion, arrayRemove, query, where, getDocs } from "firebase/firestore";
+import { collection, addDoc, getFirestore, doc, deleteDoc, updateDoc, arrayUnion, arrayRemove, query, where, getDocs, getDoc } from "firebase/firestore";
 import { app } from "../firebase";
 
 const db = getFirestore(app);
@@ -28,4 +28,34 @@ export const removeFriend = async (friendID: string, userID: string): Promise<vo
 
 
 
+}
+
+
+export const retrieveDisplayName = async (userID: string): Promise<string> => {
+    try {
+        const userDoc = doc(db, `users/${userID}`);
+        const userSnapshot = await getDoc(userDoc);
+        return userSnapshot.data()?.displayName;
+    } catch (error) {
+        console.error("Error retrieving display name: ", error);
+        throw new Error("Failed to retrieve display name");
+    }
+}
+
+export const returnUsers = async (userIDs: string[]): Promise<any> => {
+    try {
+        const users = [];
+        for (const userID of userIDs) {
+            const userDoc = doc(db, `users/${userID}`);
+            const userSnapshot = await getDoc(userDoc);
+            const userData = userSnapshot.data();
+            if (userData) {
+                users.push({ ...userData, userID });
+            }
+        }
+        return users;
+    } catch (error) {
+        console.error("Error retrieving users: ", error);
+        throw new Error("Failed to retrieve users");
+    }
 }

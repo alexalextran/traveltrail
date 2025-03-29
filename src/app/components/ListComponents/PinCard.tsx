@@ -6,12 +6,11 @@ import { Pin } from '../../types/pinData';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 
-const PinCard = ({ pin, responsiveConfig, categoryColor }: { pin: Pin, responsiveConfig: any, categoryColor: string }) => {
+const PinCard = ({ pin, responsiveConfig, category }: { pin: Pin, responsiveConfig: any, category: any }) => {
   const divRef = useRef<HTMLDivElement>(null); // Create a ref for the div
-  console.log(pin);
   const [{ opacity }, dragRef] = useDrag({
     type: 'pin',
-    item: { id: pin.id, categoryId: pin.categoryId },
+    item: { pinObject: pin, categoryObject: category },
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0.5 : 1,
     }),
@@ -25,7 +24,7 @@ const PinCard = ({ pin, responsiveConfig, categoryColor }: { pin: Pin, responsiv
       <div className={styles.pinInfo}>
         <h2>{pin.title}</h2>
         <p>{pin.address}</p>
-        <p style={{ color: categoryColor, border: `2px solid ${categoryColor}` }}>{pin.category}</p>
+        <p style={{ color: category.categoryColor, border: `2px solid ${category.categoryColor}` }}>{pin.category}</p>
         <p>{pin.visited ? "Visited" : "Unvisited"}</p>
         <p>{pin.description}</p>
       </div>

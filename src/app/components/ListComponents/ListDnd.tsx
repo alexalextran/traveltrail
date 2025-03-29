@@ -1,19 +1,26 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDrop } from 'react-dnd';
-import { getFirestore, doc, onSnapshot, DocumentSnapshot, DocumentReference, getDoc } from 'firebase/firestore';
+import { getFirestore, doc, onSnapshot } from 'firebase/firestore';
 import { app } from "../../firebase";
-import { addPinToList } from '../../firebaseFunctions/Lists'; // Function to add pin to list
+import { addPinToList, synchronizeCollaborativePin } from '../../firebaseFunctions/Lists';
 import DnDPin from './DnDPin';
 import { Pin } from '../../types/pinData';
-import { useAuth } from '../../context/authContext'; // Import the useAuth hook
+import { useAuth } from '../../context/authContext';
 import { animated, useTransition } from '@react-spring/web';
-
+import { BsFillPeopleFill } from "react-icons/bs";
+import ConfirmationModal from './ConfirmationModal';
+import styles from "../../Sass/ListPin.module.scss";
 
 const ListDnD = ({ listId }: { listId: string }) => {
   const [pinData, setPinData] = useState<Pin[]>([]);
   const dropRef = useRef<HTMLDivElement>(null);
   const db = getFirestore(app);
   const { user } = useAuth(); 
+  const [list, setList] = useState<any>();
+  
+  const [modalOpen, setModalOpen] = useState(false);
+  const [pendingPin, setPendingPin] = useState<any>(null);
+  const [pendingCategory, setPendingCategory] = useState<any>(null);
 
   useEffect(() => {
     if (!listId) {
@@ -23,38 +30,60 @@ const ListDnD = ({ listId }: { listId: string }) => {
 
     const listDocRef = doc(db, `users/${user.uid}/lists/${listId}`);
     const unsubscribe = onSnapshot(listDocRef, async (docSnapshot) => {
-      if (docSnapshot.exists()) {
-        const listData = docSnapshot.data();
-        if (listData && listData.pins) {
-          const promises = listData.pins.map(async (pinId: string) => {
-            const pinDocRef = doc(db, `users/${user.uid}/pins/${pinId}`);
-            const pinDocSnap = await getDoc(pinDocRef);
-            if (pinDocSnap.exists()) {
-              return { id: pinDocSnap.id, ...pinDocSnap.data() } as Pin;
-            }
-            return null;
-          });
-
-          const results = await Promise.all(promises);
-          setPinData(results.filter((pin) => pin !== null) as Pin[]);
-        } else {
-          setPinData([]);
-        }
-      } else {
-        console.log('List document does not exist');
-        setPinData([]); // Clear pinData if list document does not exist
+      const listData = docSnapshot.data();
+      console.log(listData)
+      setList(listData);
+      if (listData) {
+        setPinData(listData.pins);
       }
     });
 
-    return () => unsubscribe(); // Clean up listener
+    return () => unsubscribe();
   }, [db, listId, user]);
+
+
+  const userHasEditPermissions = list?.collaborators?.some((collaborator: any) => 
+    collaborator.userID === user.uid && collaborator.edit
+  );
+
+  const handleAddPin = () => {
+    if (listId && pendingPin && pendingCategory) {
+      addPinToList(
+        `users/${user.uid}/lists`, 
+        listId, 
+        pendingPin, 
+        pendingCategory, 
+        list.collaborative, 
+        user.uid
+      );
+      setPendingPin(null);
+      setPendingCategory(null);
+    }
+    setModalOpen(false);
+  };
   
   const [{ isOver }, drop] = useDrop({
     accept: 'pin',
-    drop: (pin: { id: string; categoryId: string }) => {
-      console.log('Dropped Item:', pin); // <-- Debugging log
-      if (listId) {
-        addPinToList(`users/${user.uid}/lists`, listId, pin.id, pin.categoryId);
+    drop: (pin: { pinObject: any; categoryObject: any }) => {
+      if (list.collaborative && !userHasEditPermissions) return;
+
+      const placeIdAlreadyInList = list.pins?.map((p: any) => p.placeId).includes(pin.pinObject.placeId);
+
+      if (placeIdAlreadyInList) {
+        setPendingPin(pin.pinObject);
+        setPendingCategory(pin.categoryObject);
+        setModalOpen(true);
+      } else { 
+        if (listId) {
+          addPinToList(
+            `users/${user.uid}/lists`, 
+            listId, 
+            pin.pinObject, 
+            pin.categoryObject, 
+            list.collaborative, 
+            user.uid
+          );
+        }
       }
     },
     collect: (monitor) => ({
@@ -62,11 +91,9 @@ const ListDnD = ({ listId }: { listId: string }) => {
     }),
   });
 
-  // Connect the drop ref to the drop target
   drop(dropRef);
 
-
-  const transitions = useTransition( pinData, {
+  const transitions = useTransition(pinData, {
     from: { opacity: 0, y: -50 },
     enter: { opacity: 1, y: 0 },
     leave: { opacity: 0, y: -50 },
@@ -74,23 +101,47 @@ const ListDnD = ({ listId }: { listId: string }) => {
     trail: 50,
     config: { tension: 200, friction: 20 }, 
     keys: (pin: Pin) => pin.id, 
-});
-
+  });
 
   return (
-    <div ref={dropRef} style={{ border: isOver ? '2px solid green' : '2px solid gray', padding: '20px', margin: '10px' }}>
-      <p>Drag and drop pins here to add and remove to the list</p>
-      <div>
+    <div ref={dropRef} className={`${styles.listContainer} ${isOver ? styles.dragOver : ''}`}>
+    
+      <p className={styles.listHeader}>
+        Drag and drop pins here to add and remove to the list 
+      </p>
+      {list?.collaborative && (
+      <p className={styles.permissionsText}>
+        This is a collaborative list. {userHasEditPermissions ? "You have edit permissions." : "You have view-only permissions."}
+      </p>
+      )}
+      
+      {list?.collaborative && (
+        <button className={styles.syncButton} onClick={() => synchronizeCollaborativePin(listId, user.uid)}>
+          Download Collaborative Pins
+        </button>
+      )}
+       {list?.collaborative === false && (!list.collaborators || list.collaborators.length === 0) && (
+        <button className={styles.syncButton} onClick={() => synchronizeCollaborativePin(listId, user.uid)}>
+          Download External Pins
+        </button>
+      )}
 
-      {transitions((style, pin, _) => (
-                        <animated.div style={style}>
-                             <DnDPin key={pin.id} pin={pin} />
-                        </animated.div>
-                    ))}
-
-
-        
+  {list &&
+      <div className={styles.pinsContainer}>
+        {transitions((style, pin) => (
+          <animated.div style={style}>
+            <DnDPin key={pin.id} pin={pin} userHasEditPermissions={userHasEditPermissions} collaborative={list.collaborative}/>
+          </animated.div>
+        ))}
       </div>
+      }
+      
+      <ConfirmationModal 
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onConfirm={handleAddPin}
+        placeName={pendingPin?.title || "This place"}
+      />
     </div>
   );
 };

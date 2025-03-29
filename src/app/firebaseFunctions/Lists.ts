@@ -1,15 +1,21 @@
-import { collection, addDoc, getFirestore, doc, deleteDoc, updateDoc, arrayUnion, arrayRemove, getDocs, getDoc, writeBatch, query, where } from "firebase/firestore";
+import { Category } from './../types/categoryData';
+// import { removePinFromList } from './Lists';
+import { collection, addDoc, getFirestore, doc, deleteDoc, updateDoc, arrayUnion, arrayRemove, getDocs, getDoc, writeBatch, query, where, setDoc } from "firebase/firestore";
 import { app } from "../firebase";
+import { list } from 'firebase/storage';
 
 const db = getFirestore(app);
 
 export const writeList = async (collectionName:string, data: {
     listName: string;
+    owner: string;
 }): Promise<any> => {
     try {
         const docRef = await addDoc(collection(db, collectionName), {
             listName: data.listName,
             visible: false, 
+            owner: data.owner,
+            collaborative: false,
             });
         await updateDoc(docRef, { listID: docRef.id });
        
@@ -19,10 +25,28 @@ export const writeList = async (collectionName:string, data: {
     }
 };
 
-export const deleteList = async (collectionName:string, listID: string): Promise<void> => {
+export const deleteList = async (collectionName: string, listID: string, collaborative: boolean, collaborators: string[]): Promise<void> => {
     try {
         const listRef = doc(db, collectionName, listID);
-        await deleteDoc(listRef);
+      
+
+
+        if (collaborative) {
+            const batch = writeBatch(db);
+            
+            for (const collaboratorID of collaborators) {
+                const collaboratorListRef = doc(db, `users/${collaboratorID}/lists/${listID}`);
+                batch.delete(collaboratorListRef);
+            }
+
+            batch.delete(listRef)
+            const collaborativeList = doc(db, `collaborativeLists`, listID);
+            await deleteDoc(collaborativeList)
+            await batch.commit();
+        } else {
+            await deleteDoc(listRef);
+        }
+
         console.log(`List deleted with ID: ${listID}`);
     } catch (error) {
         console.error("Error deleting list: ", error);
@@ -30,33 +54,254 @@ export const deleteList = async (collectionName:string, listID: string): Promise
     }
 };
 
-export const addPinToList = async (collectionName:string, listID: string, pinID: string, categoryID: string): Promise<void> => {
+export const addPinToList = async (collectionName:string, listID: string, pin: any, categoryObject: any, collaborative:boolean, userID:string): Promise<void> => {
     try {
+        //check if pin doenst already exist in the collaborative list
         const listRef = doc(db, collectionName, listID);
+        const userInfo = doc(db, `users/${userID}`);
+        const userSnapshot = await getDoc(userInfo);
+
+        let userData
+        if (!userSnapshot.exists()) {
+            // Create a default user if the user doesn't exist
+            userData = {
+            displayName: "Deleted User",
+            photoURL: "https://firebasestorage.googleapis.com/v0/b/traveltrail-425604.appspot.com/o/profilePictures%2Fc5a4aHYy8JUhFV2rodWOLcTbjNv2?alt=media&token=65212860-5073-4b26-bd97-69c2b20189d2"
+            };
+        }else{
+            userData = userSnapshot.data();
+        }
+
+
+        const pinWithUserData = {
+            ...pin,
+            ...userData
+        }
         await updateDoc(listRef, {
-            pins: arrayUnion(pinID),
-            categories: arrayUnion(categoryID)
+             pins: arrayUnion(pinWithUserData),
+            categories: arrayUnion(categoryObject[0])
         });
-        console.log(`Pin added to list with ID: ${listID}`);
+       
+        if(collaborative){
+      
+            addPinToCollaborativeList(listID, pinWithUserData, categoryObject[0], userID);
+        }
     } catch (error) {
         console.error("Error adding pin to list: ", error);
         throw new Error("Failed to add pin to list");
     }
 };
 
-export const removePinFromList = async (collectionName:string, listID: string, pinID: string): Promise<void> => {
-    console.log(listID, pinID)
+
+
+const addPinToCollaborativeList = async (
+    listID: string,
+    pin: any,
+    categoryObject: any,
+    userID: string
+): Promise<void> => {
     try {
-        const listRef = doc(db, collectionName, listID);
+        
+
+        const listRef = doc(db, `collaborativeLists`, listID);
+        const listSnapshot = await getDoc(listRef);
+
+        if (!listSnapshot.exists()) {
+            throw new Error("Collaborative list does not exist.");
+        }
+
+        const listData = listSnapshot.data();
+        const collaborators: string[] = listData.collaborators.map((collaborator: { userID: string }) => collaborator.userID) || [];
+
+        // Update collaborative list with the new pin and category
         await updateDoc(listRef, {
-            pins: arrayRemove(pinID)
+            pins: arrayUnion(pin),
+            categories: arrayUnion(categoryObject),
         });
-        console.log(`Pin removed from list with ID: ${listID}`);
+
+
+      // Batch update for collaborators
+        const batch = writeBatch(db);
+
+        for (const collaboratorID of collaborators) {
+    const userListRef = doc(db, `users/${collaboratorID}/lists/${listID}`);
+
+    // Ensure the list exists for each collaborator CHANGE
+    const userListSnapshot = await getDoc(userListRef);
+    if (!userListSnapshot.exists()) {
+        batch.set(userListRef, {
+            listName: listData.listName,
+            visible: false,
+            pins: [],
+            categories: [],
+        });
+    }
+
+    // Only update if the collaborator is NOT the original user who added the pin
+    if (collaboratorID !== userID) {
+        batch.update(userListRef, {
+            pins: arrayUnion(pin),
+            categories: arrayUnion(categoryObject),
+        });
+    }
+}
+
+
+        await batch.commit();
+        console.log(`Pin synchronized to all collaborators' lists.`);
+
+    } catch (error) {
+        console.error("Error adding pin to collaborative list: ", error);
+        throw new Error("Failed to add pin to collaborative list");
+    }
+};
+
+
+const retrievePinDocument = async (userID: string, pinID: string): Promise<any> => {
+    try {
+        const pinRef = doc(db, `users/${userID}/pins`, pinID);
+        const pinSnapshot = await getDoc(pinRef);
+        return pinSnapshot.data();
+    } catch (error) {
+        console.error("Error retrieving pin document: ", error);
+        throw new Error("Failed to retrieve pin document");
+    }
+}
+
+const retrieveCategoryDocument = async (userID: string, categoryID: string): Promise<any> => {
+    try { 
+        const categoryRef = doc(db, `users/${userID}/categories`, categoryID);
+        const categorySnapshot = await getDoc(categoryRef);
+        return categorySnapshot.data();
+    }
+    catch (error) {
+        console.error("Error retrieving category document: ", error);
+        throw new Error("Failed to retrieve category document");
+    }
+}
+
+export const removePinFromList = async (collectionName:string, listID: string, pinObject: any): Promise<void> => {
+    try {
+
+
+        const listRef = doc(db, collectionName, listID);
+        
+        // First, get the current list data to check categories
+        const listSnapshot = await getDoc(listRef);
+        const listData = listSnapshot.data();
+        
+
+        // Remove the pin
+        await updateDoc(listRef, {
+            pins: arrayRemove(pinObject)
+        });
+        
+        // Fetch the updated list data after pin removal
+        const updatedListSnapshot = await getDoc(listRef);
+        const updatedListData = updatedListSnapshot.data();
+        const updatedCategories = updatedListData?.categories || [];
+
+        // Check and remove the specific category if no other pins use it
+        if (updatedListData?.categories && updatedListData?.pins && pinObject.categoryId) {
+            
+            // Check if any remaining pins use this category
+            const pinsWithCategory = updatedListData.pins.filter(
+                (pin: any) => pin.categoryId === pinObject.categoryId
+            );
+            
+            
+            // If no other pins use this category, remove it
+            if (pinsWithCategory.length === 0) {
+                const updatedCategories = updatedListData.categories.filter(
+                    (category: any) => category.CategoryID !== pinObject.categoryId
+                );
+
+                updatedListData.categories.forEach((category: { CategoryID: string }) => {
+                    if (pinObject.categoryId === category.CategoryID) {
+                        console.log(`Match found: ${category.CategoryID}`);
+                    } else {
+                        console.log(`No match: ${category.CategoryID}`);
+                    }
+                });
+                
+                
+                await updateDoc(listRef, {
+                    categories: updatedCategories
+                });
+
+                if(listData?.collaborative){
+                    await removePinFromCollaborativeList(listID, pinObject, updatedCategories);
+                }
+                return;
+            }
+        }
+      
+
+        
+        // Existing collaborative list handling
+        if(listData?.collaborative){
+            await removePinFromCollaborativeList(listID, pinObject, updatedCategories);
+        }
     } catch (error) {
         console.error("Error removing pin from list: ", error);
         throw new Error("Failed to remove pin from list");
     }
 };
+
+const removePinFromCollaborativeList = async (listID: string, pin: any, updatedCategories: any): Promise<void> => {
+    try {
+        console.log(updatedCategories);
+
+        const listRef = doc(db, `collaborativeLists`, listID);
+        const listSnapshot = await getDoc(listRef);
+        if (!listSnapshot.exists()) {
+            throw new Error("Collaborative list does not exist.");
+        }
+
+        const listData = listSnapshot.data();
+
+        const collaborators: string[] = listData.collaborators.map((collaborator: { userID: string }) => collaborator.userID) || [];
+
+        // Remove the pin from the collaborative list
+        await updateDoc(listRef, {
+            pins: arrayRemove(pin),
+        });
+
+        await updateDoc(listRef, {
+         categories: updatedCategories
+         });
+                
+            
+        
+
+        console.log(`Pin removed from collaborative list with ID: ${listID}`);
+
+        // Batch update for collaborators
+        const batch = writeBatch(db);
+
+        for (const collaboratorID of collaborators) {
+            const userListRef = doc(db, `users/${collaboratorID}/lists/${listID}`);
+
+            // Only update if the collaborator is NOT the original user who added the pin
+            batch.update(userListRef, {
+                pins: arrayRemove(pin),
+            });
+
+            batch.update(userListRef, {
+                categories: updatedCategories
+            });
+
+        }
+
+        await batch.commit();
+        console.log(`Pin removed from all collaborators' lists.`);
+    }
+    catch (error) {
+        console.error("Error removing pin from collaborative list: ", error);
+        throw new Error("Failed to remove pin from collaborative list");
+    }
+}
+
 
 export const updateListVisibility = async (collectionName: string, listID: string, visible: boolean): Promise<void> => {
     try {
@@ -98,20 +343,8 @@ export const getPinsFromList = async (friendID: string, listID: string): Promise
         const listSnapshot = await getDoc(listRef);
         const listData = listSnapshot.data();
 
-        // If the list has no pins, return an empty array
-        if (!listData?.pins || listData.pins.length === 0) {
-            return [];
-        }
+       return listData?.pins || [];
 
-        // Fetch each pin document
-        const pinPromises = listData.pins.map(async (pinID: string) => {
-            const pinRef = doc(db, `users/${friendID}/pins`, pinID);
-            const pinSnapshot = await getDoc(pinRef);
-            return { id: pinID, ...pinSnapshot.data() };
-        });
-
-        // Wait for all pin fetches to complete and return
-        return await Promise.all(pinPromises);
     } catch (error) {
         console.error("Error getting pins from list", error);
         throw new Error("Failed to get pins from list");
@@ -160,60 +393,21 @@ export const getUserStatistics = async (friendID: string): Promise<{
         }
 
         const friendListData = friendListSnapshot.data();
-        const pinIDs: string[] = friendListData?.pins || [];
-
-        // Fetch all pins in parallel
-        const pinSnapshots = await Promise.all(
-            pinIDs.map((pinID) => getDoc(doc(db, `users/${friendId}/pins/${pinID}`)))
-        );
-
-        const batch = writeBatch(db);
-        const userPinsRef = collection(db, `users/${userId}/pins`);
-        const userCategoriesRef = collection(db, `users/${userId}/categories`);
-
-        const newPinIDs: string[] = [];
-        const categoryIds = new Set<string>();
-
-        pinSnapshots.forEach((pinSnapshot) => {
-            if (pinSnapshot.exists()) {
-                const pinData = pinSnapshot.data();
-                const newPinRef = doc(userPinsRef);
-                newPinIDs.push(newPinRef.id);
-
-                batch.set(newPinRef, {
-                    ...pinData, // Copy all pin data
-                });
-
-                if (pinData?.categoryId) {
-                    categoryIds.add(pinData.categoryId);
-                }
-            }
-        });
-
-        // Fetch category details in parallel
-        const categorySnapshots = await Promise.all(
-            Array.from(categoryIds).map((categoryId) => getDoc(doc(db, `users/${friendId}/categories/${categoryId}`)))
-        );
-
-        // Add categories to Firestore
-        categorySnapshots.forEach((categorySnapshot) => {
-            if (categorySnapshot.exists()) {
-                const categoryData = categorySnapshot.data();
-                const categoryRef = doc(userCategoriesRef, categorySnapshot.id);
-                batch.set(categoryRef, categoryData);
-            }
-        });
-
+      
         // Add the list to the user's profile
         const userListRef = collection(db, `users/${userId}/lists`);
         const newUserListRef = await addDoc(userListRef, {
-            listName: friendListData.listName,
-            visible: false,
-            pins: newPinIDs, // Store new pin IDs
-            categories: Array.from(categoryIds), // Store category IDs
+            ...friendListData,
+            collaborative: false,
+            collaborators: [],
+            owner: userId
         });
 
-        await batch.commit();
+        // Add the listID property after the document is created
+        await updateDoc(newUserListRef, {
+            listID: newUserListRef.id
+        });
+
 
         console.log(`List added to profile with ID: ${newUserListRef.id}`);
     } catch (error) {
@@ -221,3 +415,40 @@ export const getUserStatistics = async (friendID: string): Promise<{
     }
 };
 
+export const retrieveListName = async (userID: string, listID: string): Promise<string> => {
+    try {
+        const listDoc = doc(db, `users/${userID}/lists/${listID}`);
+        const listSnapshot = await getDoc(listDoc);
+        return listSnapshot.data()?.listName;
+    } catch (error) {
+        console.error("Error retrieving list name: ", error);
+        throw new Error("Failed to retrieve list name");
+    }
+}
+
+export const synchronizeCollaborativePin = async (listID: string, userID: string) => {
+    try{
+        //ONLY SYNC OVER THE PINS AND CATEGORIES THAT DONT EXIST IN THE USER'S PROFILE YET OR ELSE DUPLICATES WILL OCCUR
+        const listRef = doc(db, `users/${userID}/lists`, listID);
+        const listSnapshot = await getDoc(listRef);
+        const pins = listSnapshot.data()?.pins || [];
+        const categories = listSnapshot.data()?.categories || [];
+
+        for(const category of categories){
+            const categoryRef = doc(db, `users/${userID}/categories`, category.CategoryID);
+            await setDoc(categoryRef, {
+                ...category,
+            });
+        }
+
+        for(const pin of pins){
+           const pinRef = doc(db, `users/${userID}/pins`, pin.id);
+         await setDoc(pinRef, {
+                ...pin,
+                });
+
+        }
+    } catch{
+
+    }
+}
