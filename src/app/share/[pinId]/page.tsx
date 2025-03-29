@@ -15,6 +15,7 @@ import styles2 from '../../Sass/NoImagesDisplay.module.scss';
 
 import { Libraries, useLoadScript } from '@react-google-maps/api';
 import { fetchUserData } from '@/app/firebaseFunctions/friends.ts';
+import Head from 'next/head';
 export default function SharePinClient() {
   const [pin, setPin] = useState<Pin | null>(null);
   const [loading, setLoading] = useState(true);
@@ -116,6 +117,11 @@ export default function SharePinClient() {
   const openingHours = parseOpeningHours(pin.openingHours);
   
   return (
+    <>
+      <Head>
+        <title>Travel Trail - {pin.displayName}</title>
+        <meta name="description" content={`${userDetails.displayName} wants to share a pin with you!`} />
+      </Head>
     <main className={styles.mainDiv}>
       <div className={styles.userDetails}>
         <img src={userDetails.photoURL} alt="profile picture" className={styles.profilePicture} />
@@ -201,6 +207,7 @@ export default function SharePinClient() {
       </div>
     </div>
     </main>
+    </>
   );
 }
 
