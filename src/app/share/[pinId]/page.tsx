@@ -19,8 +19,6 @@ export default function SharePinClient() {
   const pinId = params.pinId as string;
 
   useEffect(() => {
-    console.log("Pin ID:", pinId);
-    console.log("User ID:", userId);
     if (pinId && userId) {
       const fetchPin = async () => {
         try {
