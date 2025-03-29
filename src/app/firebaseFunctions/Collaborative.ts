@@ -14,8 +14,8 @@ export const sendCollaborativeListRequest = async (friendID: string, friendName:
             throw new Error("Request already exists");
         }
         
-        const friendRef = doc(db, `users/${friendID}/collaborativeRequests`, listID);
-        const userRef = doc(db, `users/${userId}/collaborativeRequests`, listID);
+        const friendRef = doc(db, `users/${friendID}/collaborativeRequests`, listID + '_' + userId);
+        const userRef = doc(db, `users/${userId}/collaborativeRequests`, listID + '_' + userId);
 
         await setDoc(friendRef, {
             from: userId,
