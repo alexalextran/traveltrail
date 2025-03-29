@@ -51,6 +51,8 @@ const Page = () => {
       <p>Multiple Ways To Sort Places And Activities</p>
       <p>Integrated Social Media System To Share Information</p>
       <p>Download To CSV Avaliable</p>
+      <p>Collaborative Lists</p>
+
       </div>
 
       <div>
@@ -58,10 +60,7 @@ const Page = () => {
       <p>Animations & Improved UI</p>
       <p>AI recommendations</p>
       <p>Recommendations based on proximity</p>
-      <p>Collaborative Lists</p>
       <p>Import using excel</p>
-      <p>Integration with Instagram, google maps, Pinterest etc.</p>
-      <p>Mobile App using react Native</p>
       </div>
     </div>
 
