@@ -42,6 +42,17 @@ export const retrieveDisplayName = async (userID: string): Promise<string> => {
     }
 }
 
+export const fetchUserData = async (userID: string): Promise<any> => {
+    try {
+        const userDoc = doc(db, `users/${userID}`);
+        const userSnapshot = await getDoc(userDoc);
+        return userSnapshot.data();
+    } catch (error) {
+        console.error("Error fetching user data: ", error);
+        throw new Error("Failed to fetch user data");
+    }
+}
+
 export const returnUsers = async (userIDs: string[]): Promise<any> => {
     try {
         const users = [];
