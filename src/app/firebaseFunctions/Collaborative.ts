@@ -200,7 +200,7 @@ export const acceptCollaborativeRequest = async (userID: string, requestID: stri
         const listOwnerName = await retrieveDisplayName(requestData.listOwner);
 
 
-    
+        console.log(requestData)
         
         const listOwnerRef = doc(db, `users/${requestData.listOwner}/lists`, requestData.listID);
         await updateDoc(listOwnerRef, {
@@ -230,6 +230,7 @@ export const acceptCollaborativeRequest = async (userID: string, requestID: stri
         console.log("Successfully accepted collaborative requests");
     } catch (error) {
         console.error("Error accepting collaborative request: ", error);
+        console.log(error)
         throw new Error("Failed to accept collaborative request");
     }
 }

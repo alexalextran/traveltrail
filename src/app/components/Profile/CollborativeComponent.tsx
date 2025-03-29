@@ -84,7 +84,7 @@ export default function CollaborativeComponent() {
       });
     } catch (error) {
       console.error( error);
-      toast.error("Failed to accept collaboration request", {
+      toast.error(" collaboration request", {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,

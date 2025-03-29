@@ -391,6 +391,11 @@ export const getUserStatistics = async (friendID: string): Promise<{
             owner: userId
         });
 
+        // Add the listID property after the document is created
+        await updateDoc(newUserListRef, {
+            listID: newUserListRef.id
+        });
+
 
         console.log(`List added to profile with ID: ${newUserListRef.id}`);
     } catch (error) {
