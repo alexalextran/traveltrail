@@ -31,6 +31,7 @@ const ListDnD = ({ listId }: { listId: string }) => {
     const listDocRef = doc(db, `users/${user.uid}/lists/${listId}`);
     const unsubscribe = onSnapshot(listDocRef, async (docSnapshot) => {
       const listData = docSnapshot.data();
+      console.log(listData)
       setList(listData);
       if (listData) {
         setPinData(listData.pins);
@@ -119,6 +120,12 @@ const ListDnD = ({ listId }: { listId: string }) => {
           Download Collaborative Pins
         </button>
       )}
+       {list?.collaborative === false && (!list.collaborators || list.collaborators.length === 0) && (
+        <button className={styles.syncButton} onClick={() => synchronizeCollaborativePin(listId, user.uid)}>
+          Download External Pins
+        </button>
+      )}
+
   {list &&
       <div className={styles.pinsContainer}>
         {transitions((style, pin) => (

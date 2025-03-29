@@ -381,60 +381,16 @@ export const getUserStatistics = async (friendID: string): Promise<{
         }
 
         const friendListData = friendListSnapshot.data();
-        const pinIDs: string[] = friendListData?.pins || [];
-
-        // Fetch all pins in parallel
-        const pinSnapshots = await Promise.all(
-            pinIDs.map((pinID) => getDoc(doc(db, `users/${friendId}/pins/${pinID}`)))
-        );
-
-        const batch = writeBatch(db);
-        const userPinsRef = collection(db, `users/${userId}/pins`);
-        const userCategoriesRef = collection(db, `users/${userId}/categories`);
-
-        const newPinIDs: string[] = [];
-        const categoryIds = new Set<string>();
-
-        pinSnapshots.forEach((pinSnapshot) => {
-            if (pinSnapshot.exists()) {
-                const pinData = pinSnapshot.data();
-                const newPinRef = doc(userPinsRef);
-                newPinIDs.push(newPinRef.id);
-
-                batch.set(newPinRef, {
-                    ...pinData, // Copy all pin data
-                });
-
-                if (pinData?.categoryId) {
-                    categoryIds.add(pinData.categoryId);
-                }
-            }
-        });
-
-        // Fetch category details in parallel
-        const categorySnapshots = await Promise.all(
-            Array.from(categoryIds).map((categoryId) => getDoc(doc(db, `users/${friendId}/categories/${categoryId}`)))
-        );
-
-        // Add categories to Firestore
-        categorySnapshots.forEach((categorySnapshot) => {
-            if (categorySnapshot.exists()) {
-                const categoryData = categorySnapshot.data();
-                const categoryRef = doc(userCategoriesRef, categorySnapshot.id);
-                batch.set(categoryRef, categoryData);
-            }
-        });
-
+      
         // Add the list to the user's profile
         const userListRef = collection(db, `users/${userId}/lists`);
         const newUserListRef = await addDoc(userListRef, {
-            listName: friendListData.listName,
-            visible: false,
-            pins: newPinIDs, // Store new pin IDs
-            categories: Array.from(categoryIds), // Store category IDs
+            ...friendListData,
+            collaborative: false,
+            collaborators: [],
+            owner: userId
         });
 
-        await batch.commit();
 
         console.log(`List added to profile with ID: ${newUserListRef.id}`);
     } catch (error) {
