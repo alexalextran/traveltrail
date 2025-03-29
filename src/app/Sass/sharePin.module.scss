@@ -12,9 +12,15 @@
     margin-right: 1em
 }
 .userDetails{
-    @include flexCenter(row);
+    @include flexCenter(column);
     padding-bottom: 2em;
 }
+
+a{
+    text-decoration: none;
+    color: $webBlue;
+    font-weight: 700;
+    }
 }
 
 .main {

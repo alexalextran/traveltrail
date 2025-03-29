@@ -120,6 +120,8 @@ export default function SharePinClient() {
       <div className={styles.userDetails}>
         <img src={userDetails.photoURL} alt="profile picture" className={styles.profilePicture} />
         <h1>{userDetails.displayName} wants to share a pin with you!</h1>
+        <p>If you want to use Travel Trail as well, please visit <a href='https://www.traveltrailalextran.com/' target='_blank'>Travel Trail</a> to start using it!</p>
+
         </div>
     <div className={styles.main}>
       <div className={styles.header}>
@@ -198,7 +200,6 @@ export default function SharePinClient() {
         )}
       </div>
     </div>
-    <p>If you want to use Travel Trail as well, please visit </p>
     </main>
   );
 }
