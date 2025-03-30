@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { AdvancedMarker, Pin, InfoWindow, useAdvancedMarkerRef } from "@vis.gl/react-google-maps";
 import styles from "../../Sass/infoWindow.module.scss";
 import InfoWindowComponent from "./InfoWindowComponent";
 import ExpandedInfoModal from "./expandedInfoModal";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Category } from "../../types/categoryData";
 import { selectSelectedList } from "../../store/List/listSlice"; 
+import { setActivePin, selectActivePin } from "../../store/activePinModal/activePinModalSlice";
+
 import { doc, getFirestore, onSnapshot } from "firebase/firestore";
 import { app } from "../../firebase";
 import { useAuth } from '../../context/authContext'; // Import the useAuth hook
@@ -17,9 +19,12 @@ const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {cate
   const selectedList = useSelector(selectSelectedList);
   const [allListPins, setallListPins] = useState<string[]>([]);
   const { user } = useAuth(); 
+  const dispatch = useDispatch();
+  const activePinID = useSelector(selectActivePin);
+  const isActive = activePinID === pinID;
 
   const handleClick = () => {
-    setShowInfoWindow(prevState => !prevState);
+    dispatch(setActivePin(isActive ? null : pinID)); // Toggle modal
   };
 
   useEffect(() => {
@@ -28,12 +33,13 @@ const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {cate
       return;
     }
 
+
     const db = getFirestore(app);
     const listDocRef = doc(db, `users/${user.uid}/lists`, selectedList.id);
     const unsubscribe = onSnapshot(listDocRef, (snapshot) => {
       const fetchedList = snapshot.data();
       if (fetchedList && fetchedList.pins) {
-        setallListPins([...fetchedList.pins]);
+        setallListPins(fetchedList.pins.map((pin: { id: string }) => pin.id));
       } else {
         setallListPins([]);
       }
@@ -59,7 +65,9 @@ const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {cate
         position={{ lat, lng }} 
         ref={markerRef} 
         onClick={handleClick}
-      >
+        onMouseEnter={() => setShowInfoWindow(true)}
+        onMouseLeave={() => setShowInfoWindow(false)}>
+        
         <CustomPin  category={category} backgroundColor={backgroundColor}/>
         {showInfoWindow && (
           <InfoWindow anchor={marker} className={styles.infoWindow}>
@@ -73,7 +81,7 @@ const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {cate
           </InfoWindow>
         )}
       </AdvancedMarker>
-      {toggleIWM && (
+      {isActive && (
         <ExpandedInfoModal
           pin={pin}
           settoggleIWM={settoggleIWM}
