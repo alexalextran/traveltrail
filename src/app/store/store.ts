@@ -5,6 +5,7 @@ import categoryReducer from './categories/categoriesSlice';
 import modalReducer from './toggleModals/toggleModalSlice';
 import locationReducer from './location/locationSlice'; // Ensure this import is correct
 import listReducer from './List/listSlice'; // Import the listReducer
+import activePinModalReducer from './activePinModal/activePinModalSlice'; // Import the activePinModalReducer
 
 const store = configureStore({
   reducer: {
@@ -12,7 +13,8 @@ const store = configureStore({
     categories: categoryReducer,
     modals: modalReducer,
     location: locationReducer,
-    selectedList: listReducer // Use locationReducer here
+    selectedList: listReducer, 
+    activePinModal: activePinModalReducer,
   },
 });
 

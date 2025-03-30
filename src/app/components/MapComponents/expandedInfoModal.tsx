@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Pin } from "../../types/pinData.ts";
 import { Category } from "../../types/categoryData.ts";
 import styles from "../../Sass/expandedInfoModal.module.scss";
@@ -8,8 +8,9 @@ import { useMapsLibrary } from "@vis.gl/react-google-maps";
 import IconBar from "../ImageComponents/IconBar.tsx";
 import { Rating } from "react-simple-star-rating";
 import { useSpring, animated } from "@react-spring/web";
-import { transform } from "next/dist/build/swc/index";
 import NoImagesDisplay from "../ImageComponents/NoImagesDisplay.tsx";
+import { useDispatch } from "react-redux";
+import { setActivePin } from "@/app/store/activePinModal/activePinModalSlice.ts";
 
 export default function ExpandedInfoModal({
   pin,
@@ -43,12 +44,40 @@ export default function ExpandedInfoModal({
   };
 
   const [images, setimages] = useState(pin.imageUrls || []);
+  const [isClosing, setIsClosing] = useState(false);
+  const dispatch = useDispatch();
 
-  const fadeIn = useSpring({
-    from: { opacity: 0, transform: `translate(50%, 50%)` },
-    to: { opacity: 1, transform: `translate(-50%, 50%)` },
+  // Reset closing state when pin changes
+  useEffect(() => {
+    setIsClosing(false);
+  }, [pin]);
+
+  // Update the animation to handle both entrance and exit
+  const slideAnimation = useSpring({
+    opacity: isClosing ? 0 : 1,
+    transform: isClosing 
+      ? `translate(-150%, 50%)` // Slide further left when closing
+      : `translate(-50%, 50%)`, // Initial position after sliding from right
+    from: {
+      opacity: isClosing ? 1 : 0,
+      transform: isClosing 
+        ? `translate(-50%, 50%)` // Start from current position when closing
+        : `translate(50%, 50%)`, // Start from right when opening
+    },
     config: { tension: 200, friction: 20 },
+    onRest: () => {
+      // When animation completes and we're closing, actually dispatch the action
+      if (isClosing) {
+        dispatch(setActivePin(null));
+      }
+    }
   });
+
+  // Create a close handler function
+  const handleClose = () => {
+    setIsClosing(true);
+    // The actual dispatch happens after animation completes in onRest
+  };
 
   const geometryLibrary = useMapsLibrary("geometry");
   const calculateDistance = (
@@ -108,11 +137,12 @@ export default function ExpandedInfoModal({
     userLocation.lat,
     userLocation.lng
   );
+  
   return (
-    <animated.div style={fadeIn} className={styles.main}>
+    <animated.div style={slideAnimation} className={styles.main}>
       <div className={styles.header}>
         <h1>{pin.title}</h1>
-        <button onClick={() => settoggleIWM(false)}>Close</button>
+        <button onClick={handleClose}>Close</button>
       </div>
 
       <div className={styles.content}>

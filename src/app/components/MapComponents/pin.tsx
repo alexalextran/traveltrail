@@ -3,9 +3,11 @@ import { AdvancedMarker, Pin, InfoWindow, useAdvancedMarkerRef } from "@vis.gl/r
 import styles from "../../Sass/infoWindow.module.scss";
 import InfoWindowComponent from "./InfoWindowComponent";
 import ExpandedInfoModal from "./expandedInfoModal";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Category } from "../../types/categoryData";
 import { selectSelectedList } from "../../store/List/listSlice"; 
+import { setActivePin, selectActivePin } from "../../store/activePinModal/activePinModalSlice";
+
 import { doc, getFirestore, onSnapshot } from "firebase/firestore";
 import { app } from "../../firebase";
 import { useAuth } from '../../context/authContext'; // Import the useAuth hook
@@ -17,9 +19,12 @@ const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {cate
   const selectedList = useSelector(selectSelectedList);
   const [allListPins, setallListPins] = useState<string[]>([]);
   const { user } = useAuth(); 
+  const dispatch = useDispatch();
+  const activePinID = useSelector(selectActivePin);
+  const isActive = activePinID === pinID;
 
   const handleClick = () => {
-    settoggleIWM(prevState => !prevState);
+    dispatch(setActivePin(isActive ? null : pinID)); // Toggle modal
   };
 
   useEffect(() => {
@@ -76,7 +81,7 @@ const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {cate
           </InfoWindow>
         )}
       </AdvancedMarker>
-      {toggleIWM && (
+      {isActive && (
         <ExpandedInfoModal
           pin={pin}
           settoggleIWM={settoggleIWM}
