@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { AdvancedMarker, Pin, InfoWindow, useAdvancedMarkerRef } from "@vis.gl/react-google-maps";
 import styles from "../../Sass/infoWindow.module.scss";
 import InfoWindowComponent from "./InfoWindowComponent";
@@ -19,7 +19,7 @@ const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {cate
   const { user } = useAuth(); 
 
   const handleClick = () => {
-    setShowInfoWindow(prevState => !prevState);
+    settoggleIWM(prevState => !prevState);
   };
 
   useEffect(() => {
@@ -28,12 +28,13 @@ const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {cate
       return;
     }
 
+
     const db = getFirestore(app);
     const listDocRef = doc(db, `users/${user.uid}/lists`, selectedList.id);
     const unsubscribe = onSnapshot(listDocRef, (snapshot) => {
       const fetchedList = snapshot.data();
       if (fetchedList && fetchedList.pins) {
-        setallListPins([...fetchedList.pins]);
+        setallListPins(fetchedList.pins.map((pin: { id: string }) => pin.id));
       } else {
         setallListPins([]);
       }
@@ -59,7 +60,9 @@ const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {cate
         position={{ lat, lng }} 
         ref={markerRef} 
         onClick={handleClick}
-      >
+        onMouseEnter={() => setShowInfoWindow(true)}
+        onMouseLeave={() => setShowInfoWindow(false)}>
+        
         <CustomPin  category={category} backgroundColor={backgroundColor}/>
         {showInfoWindow && (
           <InfoWindow anchor={marker} className={styles.infoWindow}>

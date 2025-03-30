@@ -14,7 +14,7 @@ import { useMapsLibrary } from '@vis.gl/react-google-maps';
 import styles2 from '../../Sass/NoImagesDisplay.module.scss';
 
 import { Libraries, useLoadScript } from '@react-google-maps/api';
-import { fetchUserData } from '@/app/firebaseFunctions/friends.ts';
+import { fetchUserData } from '../../firebaseFunctions/friends.ts';
 export default function SharePinClient() {
   const [pin, setPin] = useState<Pin | null>(null);
   const [loading, setLoading] = useState(true);

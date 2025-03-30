@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from "../../Sass/infoWindow.module.scss";
 import { Category } from '../../types/categoryData';
 import { useMapsLibrary, useMap } from '@vis.gl/react-google-maps';
@@ -16,6 +16,31 @@ export default function InfoWindowComponent({ setShowInfoWindow, filteredPin, se
     settoggleIWM(true);
     setShowInfoWindow(false)
   };
+
+
+  useEffect(() => {
+    const removeCloseButtons = () => {
+      document.querySelectorAll(".gm-style-iw-chr").forEach((infoWindow) => {
+        infoWindow.parentNode?.removeChild(infoWindow);
+      });
+    };
+
+    // Run once in case elements already exist
+    removeCloseButtons();
+
+    // MutationObserver to detect dynamically added elements
+    const observer = new MutationObserver(() => {
+      removeCloseButtons();
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+
+    return () => observer.disconnect(); // Cleanup when unmounting
+  }, []);
+  
 
   const geometryLibrary = useMapsLibrary('geometry'); //calculate distance between user and pin
   const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
@@ -38,9 +63,9 @@ export default function InfoWindowComponent({ setShowInfoWindow, filteredPin, se
       <div>
         <div className={styles.category} style={{ backgroundColor: filteredCategory.categoryColor, border: `2px solid ${filteredCategory.categoryColor}`}}>{filteredPin.category}</div>
         <p>{distanceToUser.toFixed(2)}KM Away</p>
+        <p>Click the pin to expand!</p>
       </div>
      
-      <button className={styles.expandButton} onClick={handleClick}>Click To Expand</button>
     </main>
   );
 }
