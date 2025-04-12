@@ -38,7 +38,7 @@ const LogIn: React.FC = () => {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
+          placeholder=""
           required
         />
         <input
