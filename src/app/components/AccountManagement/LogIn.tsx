@@ -6,10 +6,13 @@ const LogIn: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const { login } = useAuth();
+    const [loading, setloading] = useState(false)
   
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+      setloading(true)
       e.preventDefault();
       try {
+     
         await login(email, password);
       } catch (error) {
         toast.error(`Invalid details, please try again`, {
@@ -22,6 +25,8 @@ const LogIn: React.FC = () => {
           progress: undefined,
           theme: "light",
         });
+      }finally{
+        setloading(false)
       }
     };
 
@@ -43,7 +48,7 @@ const LogIn: React.FC = () => {
           placeholder="Password"
           required
         />
-        <button type="submit">Log In</button>
+        <button disabled={loading} type="submit">{loading ?  'Loading...' : 'Log In'}</button>
       </form>
     </div>
   );

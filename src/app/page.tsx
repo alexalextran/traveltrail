@@ -31,7 +31,7 @@ const Page = () => {
 
       <div>
       <h2>Travel Trail</h2>
-      <p>Welcome to Travel Trail Version 0.9</p>
+      <p>Welcome to Travel Trail Version 0.97</p>
       <p>A <span>free</span> advanced travel planner developed by me, Alex Tran as a way to plan my own japan trip. However feel free to use it as much as you like. Disclaimer: Travel Trail is still in early beta, so you may come across some unexpected bugs, please let me know if you find any!</p>
 
       <div className={styles.helpInfo}>
@@ -52,6 +52,7 @@ const Page = () => {
       <p>Integrated Social Media System To Share Information</p>
       <p>Download To CSV Avaliable</p>
       <p>Collaborative Lists</p>
+      <p>Integrated Location Data AutoFill</p>
 
       </div>
 
