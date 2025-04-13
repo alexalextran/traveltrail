@@ -1,4 +1,8 @@
 import { Bounce, toast } from "react-toastify";
+import { setLocation } from "./store/location/locationSlice"; // adjust the path to your map slice
+import { AppDispatch } from "./store/store";
+import { ToastContentProps } from "react-toastify";
+import { useDispatch } from "react-redux";
 
 const passwordsDoNotMatch = "password_DNM";
 const accountSuccessfullyCreated = "account_created";
@@ -78,4 +82,49 @@ export const invalidDetailsToast = () => {
     toastId: invalidDetails,
     transition: Bounce,
   });
+};
+
+export const showCenterMapToast = (
+  lat: number,
+  lng: number,
+  dispatch: AppDispatch,
+  toastId: string = `center-map-${lat}-${lng}` // Unique toast ID for each location
+) => {
+  toast.success(
+    ({ closeToast }: ToastContentProps) => (
+      <div>
+        Pin added successfully!
+        <br />
+        <button
+          onClick={() => {
+            dispatch(setLocation({ lat, lng }));
+            closeToast?.(); // Close toast after action
+          }}
+          style={{
+            marginTop: "0.5rem",
+            padding: "0.25rem 0.75rem",
+            background: "rgb(0,123,255)",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+        >
+          Take me to the pin!
+        </button>
+      </div>
+    ),
+    {
+      position: "top-right",
+      autoClose: 6000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: false,
+      progress: undefined,
+      theme: "light",
+      toastId,
+      transition: Bounce,
+    }
+  );
 };
