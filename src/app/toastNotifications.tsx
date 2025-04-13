@@ -75,5 +75,7 @@ export const invalidDetailsToast = () => {
     draggable: true,
     progress: undefined,
     theme: "colored",
+    toastId: invalidDetails,
+    transition: Bounce,
   });
 };

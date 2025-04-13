@@ -1,14 +1,14 @@
 "use client";
-
 import React, { useState } from "react";
 import LogIn from "./components/AccountManagement/LogIn.tsx";
 import SignUp from "./components/AccountManagement/SignUp.tsx";
 import styles from "../app/Sass/Auth.module.scss";
 import { useRequireAuth } from "./hooks/useRequiredAuth.ts";
 import authImage from "../app/assets/authImage.png";
-import { Bounce, ToastContainer, toast } from "react-toastify";
+import { Bounce, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
+
 const Page = () => {
   const [isLoggingIn, setIsLoggingIn] = useState(true); // Toggle between log in and sign up
 
@@ -26,7 +26,7 @@ const Page = () => {
   } else if (user.user == null && user.loading === false) {
     return (
       <main className={styles["main"]}>
-        <ToastContainer
+        <ToastContainer // Toast container for notifications
           position="top-right"
           autoClose={3000}
           hideProgressBar={false}
