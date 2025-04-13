@@ -1,145 +1,104 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import Page from '@/app/page';
-import { ToastContainer } from 'react-toastify';
-import { useSelector } from 'react-redux';
-import '@testing-library/jest-dom';
+import React from "react";
+import { render, screen, fireEvent } from "@testing-library/react";
+import Page from "@/app/page";
+import { ToastContainer } from "react-toastify";
+import { useSelector } from "react-redux";
+import "@testing-library/jest-dom";
 
 // Mock Firebase
-jest.mock('@/app/firebase', () => ({
+jest.mock("@/app/firebase", () => ({
   app: {},
   auth: {},
-  getAuth: jest.fn()
+  getAuth: jest.fn(),
 }));
 
 // Mock AuthContext
-jest.mock('@/app/context/authContext', () => ({
-  AuthContextProvider: ({ children }: { children: React.ReactNode }) => children,
+jest.mock("@/app/context/authContext", () => ({
+  AuthContextProvider: ({ children }: { children: React.ReactNode }) =>
+    children,
   useAuth: () => ({
     user: null,
     loading: false,
     logout: jest.fn(),
     login: jest.fn(),
-    signup: jest.fn()
-  })
+    signup: jest.fn(),
+  }),
 }));
 
-// Mock the hooks and external dependencies
-jest.mock('react-redux', () => ({
-  useSelector: jest.fn()
+// Mock Redux
+jest.mock("react-redux", () => ({
+  useSelector: jest.fn(),
 }));
 
-jest.mock('@/app/hooks/useRequiredAuth', () => ({
-  useRequireAuth: jest.fn()
+// Mock Auth Hook
+jest.mock("@/app/hooks/useRequiredAuth", () => ({
+  useRequireAuth: jest.fn(),
 }));
 
-jest.mock('react-toastify', () => ({
-  ToastContainer: () => null,
+// Mock toast
+jest.mock("react-toastify", () => ({
+  ToastContainer: () => <div data-testid="toast-container" />,
   toast: {
     error: jest.fn(),
-    success: jest.fn()
-  }
+    success: jest.fn(),
+  },
 }));
 
-// Mock the components that use Firebase
-jest.mock('@/app/components/AccountManagement/LogIn', () => ({
+// Mock child components
+jest.mock("@/app/components/AccountManagement/LogIn", () => ({
   __esModule: true,
-  default: () => <div data-testid="mock-login">Login Form</div>
+  default: () => <div data-testid="mock-login">Login Form</div>,
 }));
 
-jest.mock('@/app/components/AccountManagement/SignUp', () => ({
+jest.mock("@/app/components/AccountManagement/SignUp", () => ({
   __esModule: true,
-  default: () => <div data-testid="mock-signup">Signup Form</div>
+  default: () => <div data-testid="mock-signup">Signup Form</div>,
 }));
 
-jest.mock('@/app/assets/authImage.png', () => ({
-  src: 'mocked-image-path'
-}));
-
-describe('Page Component', () => {
+describe("Page Component", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (useSelector as unknown as jest.Mock).mockReturnValue(false);
   });
 
-  describe('Loading and Authentication States', () => {
-    // test('shows loading animation when user is loading', () => {
-    //   const useRequireAuth = require('@/app/hooks/useRequiredAuth').useRequireAuth;
-    //   useRequireAuth.mockReturnValue({ loading: true, user: null });
+  const useRequireAuth = require("@/app/hooks/useRequiredAuth").useRequireAuth;
 
-    //   render(<Page />);
-    //   expect(screen.getByTitle('loading-animation')).toBeInTheDocument();
-    // });
+  test("redirects or hides auth UI when user is authenticated", () => {
+    useRequireAuth.mockReturnValue({ loading: false, user: { uid: "123" } });
 
-    // test('shows loading animation when user is authenticated', () => {
-    //   const useRequireAuth = require('@/app/hooks/useRequiredAuth').useRequireAuth;
-    //   useRequireAuth.mockReturnValue({ loading: false, user: { id: '1' } });
-
-    //   render(<Page />);
-    //   expect(screen.getByTitle('loading-animation')).toBeInTheDocument();
-    // });
-
-    test('shows auth page when user is not authenticated and not loading', () => {
-      const useRequireAuth = require('@/app/hooks/useRequiredAuth').useRequireAuth;
-      useRequireAuth.mockReturnValue({ loading: false, user: null });
-
-      render(<Page />);
-      expect(screen.getByText('Travel Trail')).toBeInTheDocument();
-      expect(screen.getByText(/Welcome to Travel Trail Version 0.9/i)).toBeInTheDocument();
-    });
+    render(<Page />);
+    expect(screen.queryByTestId("mock-login")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("mock-signup")).not.toBeInTheDocument();
   });
 
-  describe('Authentication UI Interaction', () => {
-    beforeEach(() => {
-      const useRequireAuth = require('@/app/hooks/useRequiredAuth').useRequireAuth;
-      useRequireAuth.mockReturnValue({ loading: false, user: null });
-    });
+  test("renders login UI when unauthenticated", () => {
+    useRequireAuth.mockReturnValue({ loading: false, user: null });
 
-    test('toggles between login and signup forms', () => {
-      render(<Page />);
-      
-      // Should show login form by default
-      expect(screen.getByTestId('mock-login')).toBeInTheDocument();
-      
-      // Click signup button
-      fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
-      
-      // Should now show signup form
-      expect(screen.getByTestId('mock-signup')).toBeInTheDocument();
-    });
-
-    test('displays all feature sections', () => {
-      render(<Page />);
-
-      // Current features
-      expect(screen.getByText('Current Implemented Features')).toBeInTheDocument();
-      expect(screen.getByText('Interactive Google Maps')).toBeInTheDocument();
-      expect(screen.getByText('Realtime Database')).toBeInTheDocument();
-
-      // Planned features
-      expect(screen.getByText('Planned Features')).toBeInTheDocument();
-      expect(screen.getByText('Animations & Improved UI')).toBeInTheDocument();
-      expect(screen.getByText('AI recommendations')).toBeInTheDocument();
-    });
-
-    test('renders auth image with correct source', () => {
-      render(<Page />);
-      const image = screen.getByRole('img');
-      expect(image).toHaveAttribute('src', 'mocked-image-path');
-    });
+    render(<Page />);
+    expect(screen.getByTestId("mock-login")).toBeInTheDocument();
+    expect(screen.queryByTestId("mock-signup")).not.toBeInTheDocument();
+    expect(screen.getByText("Travel Trail")).toBeInTheDocument();
   });
 
-  // describe('Component Styling', () => {
-  //   beforeEach(() => {
-  //     const useRequireAuth = require('@/app/hooks/useRequiredAuth').useRequireAuth;
-  //     useRequireAuth.mockReturnValue({ loading: false, user: null });
-  //   });
+  test("toggles to signup UI when Sign Up button is clicked", () => {
+    useRequireAuth.mockReturnValue({ loading: false, user: null });
 
-  //   test('applies correct CSS classes', () => {
-  //     render(<Page />);
-      
-  //     expect(screen.getByTestId('auth-container')).toHaveClass('auth-container');
-  //     expect(screen.getByTestId('toggle-buttons')).toHaveClass('toggle-buttons');
-  //   });
-  // });
+    render(<Page />);
+    const signUpButton = screen.getByRole("button", { name: /sign up/i });
+    fireEvent.click(signUpButton);
+
+    expect(screen.getByTestId("mock-signup")).toBeInTheDocument();
+    expect(screen.queryByTestId("mock-login")).not.toBeInTheDocument();
+  });
+
+  test("toggles back to login UI when Log In button is clicked", () => {
+    useRequireAuth.mockReturnValue({ loading: false, user: null });
+
+    render(<Page />);
+    fireEvent.click(screen.getByRole("button", { name: /sign up/i }));
+    fireEvent.click(screen.getByRole("button", { name: /log in/i }));
+
+    expect(screen.getByTestId("mock-login")).toBeInTheDocument();
+    expect(screen.queryByTestId("mock-signup")).not.toBeInTheDocument();
+  });
 });

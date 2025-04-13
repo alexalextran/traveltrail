@@ -30,9 +30,13 @@
       }
     }
 
-    img{
-      aspect-ratio: 16/8;
+    .helpInfoImageWrapper {
+      position: relative;
       width: 90%;
+      aspect-ratio: 16 / 8;
+      margin-bottom: 1rem; // optional
+      max-height: 30vh;
+      
     }
 
     div{
