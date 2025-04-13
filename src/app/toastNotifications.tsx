@@ -4,6 +4,7 @@ const passwordsDoNotMatch = "password_DNM";
 const accountSuccessfullyCreated = "account_created";
 const emailInUse = "email_in_use";
 const standardError = "standard_error";
+const invalidDetails = "invalid_details";
 
 export const passwordsDontMatchToast = () => {
   toast.error(`Passwords do not match!`, {
@@ -61,5 +62,18 @@ export const standardErrorToast = (errorMessage: string) => {
     theme: "colored",
     toastId: standardError,
     transition: Bounce,
+  });
+};
+
+export const invalidDetailsToast = () => {
+  toast.error(`Invalid details, please try again`, {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
   });
 };
