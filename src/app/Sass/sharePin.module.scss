@@ -247,6 +247,7 @@ a{
       }
       
       .opening_hours {
+        display: block !important;
         text-align: left;
       }
     }
@@ -337,6 +338,7 @@ a{
         }
 
         .opening_hours {
+          display: block !important;
           text-align: center;
           font-size: 0.8em;
         }
