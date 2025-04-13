@@ -13,7 +13,7 @@ const LogIn: React.FC = () => {
     setloading(true);
     e.preventDefault();
     try {
-      await login(email, password);
+      await login(email, password); //login function using firebase auth
     } catch (error: any) {
       if (error?.toString()?.includes("auth/invalid-credential")) {
         invalidDetailsToast();
