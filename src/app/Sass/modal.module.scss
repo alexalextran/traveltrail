@@ -21,7 +21,6 @@
   padding: 2em; 
   @include flexCenter(column);
   width: 30em;
-  animation: fadeIn 0.3s ease-in-out;
 
   .close{
     @include closeButtonCorner
@@ -77,6 +76,7 @@
   }
 
   p {
+    padding-bottom: 0.1em;
     margin: 0;
   }
 
@@ -100,7 +100,9 @@
         border-radius: 0.4em;
         border: 2px solid $webBlue;
     
-       
+       .visitedRating{
+        @include flexCustom(space-between, center, row);
+       }
 
         input,
         select,

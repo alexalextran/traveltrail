@@ -55,12 +55,12 @@ export default function ExpandedInfoModal({
   // Update the animation to handle both entrance and exit
   const slideAnimation = useSpring({
     opacity: isClosing ? 0 : 1,
-    transform: isClosing 
+    transform: isClosing
       ? `translate(-150%, 50%)` // Slide further left when closing
       : `translate(-50%, 50%)`, // Initial position after sliding from right
     from: {
       opacity: isClosing ? 1 : 0,
-      transform: isClosing 
+      transform: isClosing
         ? `translate(-50%, 50%)` // Start from current position when closing
         : `translate(50%, 50%)`, // Start from right when opening
     },
@@ -70,7 +70,7 @@ export default function ExpandedInfoModal({
       if (isClosing) {
         dispatch(setActivePin(null));
       }
-    }
+    },
   });
 
   // Create a close handler function
@@ -137,7 +137,7 @@ export default function ExpandedInfoModal({
     userLocation.lat,
     userLocation.lng
   );
-  
+
   return (
     <animated.div style={slideAnimation} className={styles.main}>
       <div className={styles.header}>

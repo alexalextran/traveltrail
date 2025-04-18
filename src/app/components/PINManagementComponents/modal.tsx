@@ -4,13 +4,13 @@ import styles from "../../Sass/modal.module.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { Pin } from "../../types/pinData.ts";
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
-import { writeToFirestore } from "../../firebaseFunctions/writeDocument.ts"; // Adjust the import path as necessary
+import { writeToFirestore } from "../../firebaseFunctions/writeDocument.ts";
 import { Category } from "../../types/categoryData.ts";
 import axios from "axios";
 import { selectAddModal } from "../../store/toggleModals/toggleModalSlice.ts";
 import { toggleAddModal } from "../../store/toggleModals/toggleModalSlice.ts";
 import { selectFullScreen } from "../../store/toggleModals/toggleModalSlice.ts";
-import { useAuth } from "../../context/authContext.js"; // Import the useAuth hook
+import { useAuth } from "../../context/authContext.js";
 import { Rating } from "react-simple-star-rating";
 import { collection, getFirestore, onSnapshot } from "firebase/firestore";
 import { app } from "../../firebase.js";
@@ -20,6 +20,7 @@ import {
   invalidAdressToast,
   standardErrorToast,
 } from "../../toastNotifications.tsx";
+import { useSpring, animated } from "@react-spring/web";
 
 const Modal = () => {
   const placesLib = useMapsLibrary("places");
@@ -35,6 +36,7 @@ const Modal = () => {
   const [openingHours, setOpeningHours] = useState<string>("");
   const [rating, setRating] = useState<number>(0);
   const [website, setWebsite] = useState<string>("");
+  const [tiktokLink, settiktokLink] = useState<string>("");
   const [place, setplace] = useState<any>();
   const [photos, setPhotos] = useState<string[]>([]);
 
@@ -43,8 +45,25 @@ const Modal = () => {
 
   const addressInputRef = useRef<HTMLInputElement | null>(null);
 
+  // Animation for the modal
+  const modalAnimation = useSpring({
+    opacity: ShowAddModal ? 1 : 0,
+    transform: ShowAddModal ? "translateY(0px)" : "translateY(-200px)",
+    config: {
+      tension: 300,
+      friction: 20,
+      clamp: true, // Preovershooting
+    },
+    immediate: !ShowAddModal, // Makes closing instant while keeping opening smooth
+  });
+
+  // Animation for the "+" button
+  const buttonAnimation = useSpring({
+    transform: ShowAddModal ? "rotate(45deg)" : "rotate(0deg)",
+    config: { tension: 300, friction: 20 },
+  });
+
   useEffect(() => {
-    //handle the autocomplete feature for the address input field
     if (placesLib && addressInputRef.current) {
       const autocomplete = new google.maps.places.Autocomplete(
         addressInputRef.current
@@ -58,22 +77,12 @@ const Modal = () => {
           place.opening_hours && place.opening_hours.weekday_text
             ? setOpeningHours(place.opening_hours.weekday_text.join(" \n"))
             : setOpeningHours("");
-          //for caching photos, cannot be used due to google maps api restrictions
-          // if (place.photos && place.photos.length > 0) {
-          //   // Fetch photo URLs
-          //   const photoUrls = place.photos.map((photo: any) => {
-          //     return photo.getUrl({ maxWidth: 600, maxHeight: 600 });
-          //   });
-          //   setPhotos(photoUrls);
-          //   // Store the photo URLs in the state
-          // }
         }
       });
     }
   }, [placesLib, ShowAddModal]);
 
   useEffect(() => {
-    //fetch categories from firestore
     const db = getFirestore(app);
     const listCollectionRef = collection(db, `users/${user.uid}/categories`);
     const unsubscribe = onSnapshot(listCollectionRef, (snapshot) => {
@@ -91,29 +100,25 @@ const Modal = () => {
 
   useEffect(() => {
     if (categories.length === 0 && ShowAddModal) {
-      //notify the user if there are no categories
       noCategoriesToast(dispatch);
     }
   }, [ShowAddModal, ShowFullScreen, categories.length, dispatch]);
 
   const handleSubmit = async (
-    //function to handle the form submission
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     e.preventDefault();
 
     const response = await axios.get(
       `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.NEXT_PUBLIC_GOOGLEAPI_API_KEY}`
-    ); //get the coordinates of the address
+    );
     const data = response.data;
     if (data.status === "ZERO_RESULTS") {
-      //if address is invalid throw an error
       invalidAdressToast();
       return;
     }
     const coords = data.results[0].geometry.location;
 
-    // Create a new pin
     const newPin: Omit<Pin, "id"> = {
       title: title,
       placeId: place.place_id || "",
@@ -132,13 +137,12 @@ const Modal = () => {
       website: website,
     };
 
-    writeToFirestore(user.uid, newPin) //upload pin to firestore
+    writeToFirestore(user.uid, newPin)
       .then(() => {
-        showCenterMapToast(coords.lat, coords.lng, dispatch); //custom toast notification
+        showCenterMapToast(coords.lat, coords.lng, dispatch);
       })
       .catch((error) => standardErrorToast(error));
 
-    // Reset form fields besides category and visited since user might want to add another pin with the same category or visited status
     setDescription("");
     setAddress("");
     setTitle("");
@@ -231,15 +235,16 @@ const Modal = () => {
 
   return (
     <>
-      {/* Button to open the modal */}
-      <button
+      {/* Button to open the modal with rotation animation */}
+      <animated.button
         className={styles.button}
         onClick={() => {
-          dispatch(toggleAddModal(!ShowAddModal)); //toggle the modal
+          dispatch(toggleAddModal(!ShowAddModal));
         }}
+        style={buttonAnimation}
       >
         <p>+</p>
-      </button>
+      </animated.button>
 
       {ShowAddModal && (
         <div className={styles.modalWrapper}>
@@ -251,7 +256,13 @@ const Modal = () => {
               y: window.innerHeight / 8,
             }}
           >
-            <div className={styles.modal}>
+            <animated.div
+              className={styles.modal}
+              style={{
+                opacity: modalAnimation.opacity,
+                transform: modalAnimation.transform,
+              }}
+            >
               <div className="modal-handle" style={{ cursor: "move" }}>
                 <h1>Add Pin</h1>
                 <p>Drag me here!</p>
@@ -286,7 +297,6 @@ const Modal = () => {
                   value={category}
                   onChange={(e) => {
                     setCategory(e.target.value);
-                    console.log(e.target.value);
                   }}
                 >
                   <option value="">Select a category</option>
@@ -299,25 +309,30 @@ const Modal = () => {
                 <hr></hr>
 
                 <i>Optional Fields</i>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={visited}
-                    onChange={(e) => setVisited(e.target.checked)}
+
+                <div className={styles.visitedRating}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={visited}
+                      onChange={(e) => setVisited(e.target.checked)}
+                    />
+                    Visited
+                  </label>
+                  <Rating
+                    onClick={handleRating}
+                    initialValue={rating}
+                    allowFraction={true}
                   />
-                  Visited
-                </label>
+                </div>
+
                 <input
                   type="text"
                   value={openingHours}
                   onChange={(e) => setOpeningHours(e.target.value)}
                   placeholder="Opening Hours e.g Saturday: 11am - 8pm"
                 />
-                <Rating
-                  onClick={handleRating}
-                  initialValue={rating}
-                  allowFraction={true}
-                />
+
                 <input
                   type="url"
                   value={website}
@@ -340,7 +355,7 @@ const Modal = () => {
                   <button type="submit">Add Pin</button>
                 </div>
               </form>
-            </div>
+            </animated.div>
           </Draggable>
         </div>
       )}
