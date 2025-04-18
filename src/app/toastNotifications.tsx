@@ -2,13 +2,13 @@ import { Bounce, toast } from "react-toastify";
 import { setLocation } from "./store/location/locationSlice"; // adjust the path to your map slice
 import { AppDispatch } from "./store/store";
 import { ToastContentProps } from "react-toastify";
-import { useDispatch } from "react-redux";
 
 const passwordsDoNotMatch = "password_DNM";
 const accountSuccessfullyCreated = "account_created";
 const emailInUse = "email_in_use";
 const standardError = "standard_error";
 const invalidDetails = "invalid_details";
+const noCategories = "no_categories";
 
 export const passwordsDontMatchToast = () => {
   toast.error(`Passwords do not match!`, {
@@ -82,6 +82,24 @@ export const invalidDetailsToast = () => {
     toastId: invalidDetails,
     transition: Bounce,
   });
+};
+
+export const noCategoriesToast = () => {
+  toast.error(
+    "Seems you don't have any categories, try adding some in the sidebar to the left!",
+    {
+      position: "top-right",
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      toastId: noCategories,
+      transition: Bounce,
+    }
+  );
 };
 
 export const showCenterMapToast = (

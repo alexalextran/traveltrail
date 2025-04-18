@@ -6,6 +6,7 @@ interface ModalState {
   imageModal: boolean;
   fullScreen: boolean;
   ListScreen: boolean;
+  categoryModal: boolean;
 }
 
 const initialState: ModalState = {
@@ -14,6 +15,7 @@ const initialState: ModalState = {
   imageModal: false,
   fullScreen: false,
   ListScreen: false,
+  categoryModal: false,
 };
 
 const pinsSlice = createSlice({
@@ -35,16 +37,19 @@ const pinsSlice = createSlice({
     toggleListScreen: (state, action: PayloadAction<boolean>) => {
       state.ListScreen = action.payload;
     },
+    toggleCategoryModal: (state, action: PayloadAction<boolean>) => {
+      state.categoryModal = action.payload;
+    },
   },
 });
 
-export const {toggleListScreen, toggleAddModal, toggleEditModal, toggleImageModal, toggleFullScreen } = pinsSlice.actions;
+export const {toggleListScreen, toggleAddModal, toggleEditModal, toggleImageModal, toggleFullScreen, toggleCategoryModal } = pinsSlice.actions;
 
 export const selectAddModal = (state: { modals: ModalState }) => state.modals.addModal;
 export const selectEditModal = (state: { modals: ModalState }) => state.modals.editModal;
 export const selectImageModal = (state: { modals: ModalState }) => state.modals.imageModal;
 export const selectFullScreen = (state: { modals: ModalState }) => state.modals.fullScreen;
 export const selectListScreen = (state: { modals: ModalState }) => state.modals.ListScreen;
-
+export const selectCategoryModal = (state: { modals: ModalState }) => state.modals.categoryModal;
 
 export default pinsSlice.reducer;

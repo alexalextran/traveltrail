@@ -16,11 +16,13 @@ import { toast } from "react-toastify";
 import { collection, getFirestore, onSnapshot } from "firebase/firestore";
 import { app } from "../../firebase.js";
 import { showCenterMapToast } from "@/app/toastNotifications.tsx";
+import { noCategoriesToast } from "../../toastNotifications.tsx";
+
 const Modal = () => {
-  const placesLib = useMapsLibrary("places"); //from google maps api
+  const placesLib = useMapsLibrary("places");
   const [categories, setcategories] = useState<Category[]>([]);
-  const ShowAddModal = useSelector(selectAddModal); //redux toggle state for the modal
-  const ShowFullScreen = useSelector(selectFullScreen); //redux toggle state for the fullscreen version modal
+  const ShowAddModal = useSelector(selectAddModal);
+  const ShowFullScreen = useSelector(selectFullScreen);
 
   const [description, setDescription] = useState<string>("");
   const [visited, setVisited] = useState<boolean>(false);
@@ -31,7 +33,7 @@ const Modal = () => {
   const [rating, setRating] = useState<number>(0);
   const [website, setWebsite] = useState<string>("");
   const [place, setplace] = useState<any>();
-  const [photos, setPhotos] = useState<string[]>([]); // State for storing photo URLs
+  const [photos, setPhotos] = useState<string[]>([]);
 
   const dispatch = useDispatch();
   const { user } = useAuth();
@@ -53,7 +55,6 @@ const Modal = () => {
           place.opening_hours && place.opening_hours.weekday_text
             ? setOpeningHours(place.opening_hours.weekday_text.join(" \n"))
             : setOpeningHours("");
-          console.log(place.opening_hours?.weekday_text);
           //for caching photos, cannot be used due to google maps api restrictions
           // if (place.photos && place.photos.length > 0) {
           //   // Fetch photo URLs
@@ -88,19 +89,7 @@ const Modal = () => {
   useEffect(() => {
     if (categories.length === 0 && ShowAddModal) {
       //notify the user if there are no categories
-      toast.error(
-        "You do not have any categories, try adding some in the sidebar to the left",
-        {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        }
-      );
+      noCategoriesToast();
     }
   }, [ShowAddModal, ShowFullScreen]);
 
