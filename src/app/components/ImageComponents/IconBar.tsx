@@ -61,6 +61,7 @@ export default function IconBar({
   };
 
   const selectNewPin = (child: any) => {
+    console.log(pin);
     dispatch(selectPin(pin));
 
     if (setchild !== null && child === "edit") {

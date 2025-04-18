@@ -12,11 +12,14 @@ import { toggleAddModal } from "../../store/toggleModals/toggleModalSlice.ts";
 import { selectFullScreen } from "../../store/toggleModals/toggleModalSlice.ts";
 import { useAuth } from "../../context/authContext.js"; // Import the useAuth hook
 import { Rating } from "react-simple-star-rating";
-import { toast } from "react-toastify";
 import { collection, getFirestore, onSnapshot } from "firebase/firestore";
 import { app } from "../../firebase.js";
 import { showCenterMapToast } from "@/app/toastNotifications.tsx";
-import { noCategoriesToast } from "../../toastNotifications.tsx";
+import {
+  noCategoriesToast,
+  invalidAdressToast,
+  standardErrorToast,
+} from "../../toastNotifications.tsx";
 
 const Modal = () => {
   const placesLib = useMapsLibrary("places");
@@ -84,16 +87,17 @@ const Modal = () => {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [user.uid]);
 
   useEffect(() => {
     if (categories.length === 0 && ShowAddModal) {
       //notify the user if there are no categories
-      noCategoriesToast();
+      noCategoriesToast(dispatch);
     }
-  }, [ShowAddModal, ShowFullScreen]);
+  }, [ShowAddModal, ShowFullScreen, categories.length, dispatch]);
 
   const handleSubmit = async (
+    //function to handle the form submission
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     e.preventDefault();
@@ -104,16 +108,7 @@ const Modal = () => {
     const data = response.data;
     if (data.status === "ZERO_RESULTS") {
       //if address is invalid throw an error
-      toast.error("Could not add a pin, please enter a valid address!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      invalidAdressToast();
       return;
     }
     const coords = data.results[0].geometry.location;
@@ -121,7 +116,7 @@ const Modal = () => {
     // Create a new pin
     const newPin: Omit<Pin, "id"> = {
       title: title,
-      placeId: place.place_id,
+      placeId: place.place_id || "",
       address: address,
       description: description,
       lat: coords.lat,
@@ -137,24 +132,11 @@ const Modal = () => {
       website: website,
     };
 
-    writeToFirestore(user.uid, newPin)
-      .then((docId) => {
-        const completePin: Pin = { ...newPin, id: docId }; //ignore, redux (not used)
-
+    writeToFirestore(user.uid, newPin) //upload pin to firestore
+      .then(() => {
         showCenterMapToast(coords.lat, coords.lng, dispatch); //custom toast notification
       })
-      .catch((error) =>
-        toast.success(error, {
-          position: "top-right",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        })
-      );
+      .catch((error) => standardErrorToast(error));
 
     // Reset form fields besides category and visited since user might want to add another pin with the same category or visited status
     setDescription("");
@@ -162,6 +144,7 @@ const Modal = () => {
     setTitle("");
     setOpeningHours("");
     setWebsite("");
+    setRating(0);
   };
 
   const handleResetAllFields = () => {
@@ -248,14 +231,16 @@ const Modal = () => {
 
   return (
     <>
+      {/* Button to open the modal */}
       <button
         className={styles.button}
         onClick={() => {
-          dispatch(toggleAddModal(!ShowAddModal));
+          dispatch(toggleAddModal(!ShowAddModal)); //toggle the modal
         }}
       >
         <p>+</p>
       </button>
+
       {ShowAddModal && (
         <div className={styles.modalWrapper}>
           <Draggable
@@ -263,7 +248,7 @@ const Modal = () => {
             handle=".modal-handle"
             defaultPosition={{
               x: window.innerWidth / 1.5,
-              y: window.innerHeight / 6,
+              y: window.innerHeight / 8,
             }}
           >
             <div className={styles.modal}>
@@ -271,12 +256,15 @@ const Modal = () => {
                 <h1>Add Pin</h1>
                 <p>Drag me here!</p>
               </div>
+
+              {/* Button to close the modal */}
               <button
                 className={styles.close}
                 onClick={() => dispatch(toggleAddModal(false))}
               >
                 X
               </button>
+
               <form className={styles.form} onSubmit={handleSubmit}>
                 <input
                   type="text"
