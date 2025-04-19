@@ -3,9 +3,8 @@ import styles from "../../Sass/addCategoryModal.module.scss";
 import { ColorPicker, useColor } from "react-color-palette";
 import { writeCategory } from "../../firebaseFunctions/Categories.ts";
 import { useAuth } from "../../context/authContext.js";
-import { toast } from "react-toastify";
 import EmojiPicker from "emoji-picker-react";
-import { Emoji, EmojiStyle } from "emoji-picker-react";
+import { Emoji } from "emoji-picker-react";
 import { toggleCategoryModal } from "../../store/toggleModals/toggleModalSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { selectCategoryModal } from "../../store/toggleModals/toggleModalSlice";
@@ -16,7 +15,7 @@ import {
   noEmojiSelectedToast,
 } from "../../toastNotifications.tsx";
 import { useSpring, animated, config } from "@react-spring/web";
-import Draggable from "react-draggable";
+import { useTransition } from "@react-spring/web";
 
 export default function AddCategoryModal() {
   const [categoryToAdd, setcategoryToAdd] = useState("");
@@ -43,12 +42,12 @@ export default function AddCategoryModal() {
     config: config.gentle,
   });
 
-  // Picker toggle animation
-  const pickerAnimation = useSpring({
-    opacity: 1,
-    height: "auto",
-    from: { opacity: 0, height: 0 },
-    config: config.default,
+  // Picker transition animation
+  const pickerTransition = useTransition(emojiPicker, {
+    from: { opacity: 0, transform: "translateY(20px)" },
+    enter: { opacity: 1, transform: "translateY(0)" },
+    leave: { opacity: 0, transform: "translateY(-20px)" },
+    config: config.gentle,
   });
 
   // Button hover animations
@@ -96,80 +95,68 @@ export default function AddCategoryModal() {
   };
 
   return (
-    <div className={styles.modalWrapper}>
-      <Draggable
-        bounds="parent"
-        handle=".modal-handle"
-        defaultPosition={{
-          x: window.innerWidth / 1.5,
-          y: window.innerHeight / 8,
-        }}
+    <animated.main
+      className={isCategoryModalOpen ? styles.main : styles.fullScreen}
+      style={modalAnimation}
+    >
+      <animated.h1 style={formItemsAnimation}>Add Category</animated.h1>
+      <animated.form
+        className={styles.form}
+        onSubmit={(e) => addCategory(e)}
+        style={formItemsAnimation}
       >
-        <animated.main
-          className={isCategoryModalOpen ? styles.main : styles.fullScreen}
-          style={modalAnimation}
+        <animated.div
+          className={styles.inputContainer}
+          style={
+            {
+              "--category-color": color.hex,
+              opacity: formItemsAnimation.opacity.to((o) => `${o}`),
+              transform: formItemsAnimation.y.to((y) => `translateY(${y}px)`),
+            } as unknown as React.CSSProperties
+          }
         >
-          <animated.h1 style={formItemsAnimation} className={styles.title}>
-            <div className="modal-handle" style={{ cursor: "move" }}>
-              <h1>Add Category</h1>
-              <p>Drag me here!</p>
-            </div>
-          </animated.h1>
-          <animated.form
-            className={styles.form}
-            onSubmit={(e) => addCategory(e)}
-            style={formItemsAnimation}
+          <input
+            required
+            type="text"
+            placeholder="Enter category name"
+            value={categoryToAdd}
+            onChange={(e) => setcategoryToAdd(e.target.value)}
+          />
+          <Emoji unified={selectedEmoji} />
+        </animated.div>
+
+        <animated.div
+          className={styles.buttonContainer}
+          style={formItemsAnimation}
+        >
+          <animated.button
+            type="button"
+            onClick={() => setEmojiPicker(false)}
+            style={!emojiPicker ? activeButtonStyle : {}}
+            onMouseEnter={() => setButtonHover({ scale: 1.05 })}
+            onMouseLeave={() => setButtonHover({ scale: 1 })}
+            {...buttonHoverProps}
           >
-            <animated.div
-              className={styles.inputContainer}
-              style={
-                {
-                  "--category-color": color.hex,
-                  opacity: formItemsAnimation.opacity.to((o) => `${o}`),
-                  transform: formItemsAnimation.y.to(
-                    (y) => `translateY(${y}px)`
-                  ),
-                } as unknown as React.CSSProperties
-              }
-            >
-              <input
-                required
-                type="text"
-                placeholder="Enter category name"
-                value={categoryToAdd}
-                onChange={(e) => setcategoryToAdd(e.target.value)}
-              />
-              <Emoji unified={selectedEmoji} />
-            </animated.div>
+            Color Picker
+          </animated.button>
+          <animated.button
+            type="button"
+            onClick={() => setEmojiPicker(true)}
+            style={emojiPicker ? activeButtonStyle : {}}
+            onMouseEnter={() => setButtonHover({ scale: 1.05 })}
+            onMouseLeave={() => setButtonHover({ scale: 1 })}
+            {...buttonHoverProps}
+          >
+            Emoji Picker
+          </animated.button>
+        </animated.div>
 
-            <animated.div
-              className={styles.buttonContainer}
-              style={formItemsAnimation}
-            >
-              <animated.button
-                type="button"
-                onClick={() => setEmojiPicker(false)}
-                style={!emojiPicker ? activeButtonStyle : {}}
-                onMouseEnter={() => setButtonHover({ scale: 1.05 })}
-                onMouseLeave={() => setButtonHover({ scale: 1 })}
-                {...buttonHoverProps}
+        <div style={{ width: "100%", height: "20em", position: "relative" }}>
+          {pickerTransition((style, showEmojiPicker) =>
+            showEmojiPicker ? (
+              <animated.div
+                style={{ ...style, position: "absolute", width: "100%" }}
               >
-                Color Picker
-              </animated.button>
-              <animated.button
-                type="button"
-                onClick={() => setEmojiPicker(true)}
-                style={emojiPicker ? activeButtonStyle : {}}
-                onMouseEnter={() => setButtonHover({ scale: 1.05 })}
-                onMouseLeave={() => setButtonHover({ scale: 1 })}
-                {...buttonHoverProps}
-              >
-                Emoji Picker
-              </animated.button>
-            </animated.div>
-
-            <animated.div style={{ ...pickerAnimation, width: "100%" }}>
-              {emojiPicker ? (
                 <div className={isCategoryModalOpen ? styles.emojiPicker : ""}>
                   <EmojiPicker
                     onEmojiClick={(emojiData) => {
@@ -182,7 +169,11 @@ export default function AddCategoryModal() {
                     height="20em"
                   />
                 </div>
-              ) : (
+              </animated.div>
+            ) : (
+              <animated.div
+                style={{ ...style, position: "absolute", width: "100%" }}
+              >
                 <div className={isCategoryModalOpen ? styles.modalContent : ""}>
                   <ColorPicker
                     color={color}
@@ -191,30 +182,30 @@ export default function AddCategoryModal() {
                     hideAlpha={true}
                   />
                 </div>
-              )}
-            </animated.div>
-
-            <animated.button
-              type="submit"
-              style={formItemsAnimation}
-              onMouseEnter={() => setButtonHover({ scale: 1.05 })}
-              onMouseLeave={() => setButtonHover({ scale: 1 })}
-              {...buttonHoverProps}
-            >
-              Add Category
-            </animated.button>
-          </animated.form>
-
-          {isCategoryModalOpen && (
-            <animated.button
-              onClick={() => dispatch(toggleCategoryModal(false))}
-              className={isCategoryModalOpen ? styles.exit : ""}
-            >
-              X
-            </animated.button>
+              </animated.div>
+            )
           )}
-        </animated.main>
-      </Draggable>
-    </div>
+        </div>
+
+        <animated.button
+          type="submit"
+          style={formItemsAnimation}
+          onMouseEnter={() => setButtonHover({ scale: 1.05 })}
+          onMouseLeave={() => setButtonHover({ scale: 1 })}
+          {...buttonHoverProps}
+        >
+          Add Category
+        </animated.button>
+      </animated.form>
+
+      {isCategoryModalOpen && (
+        <animated.button
+          onClick={() => dispatch(toggleCategoryModal(false))}
+          className={isCategoryModalOpen ? styles.exit : ""}
+        >
+          X
+        </animated.button>
+      )}
+    </animated.main>
   );
 }
