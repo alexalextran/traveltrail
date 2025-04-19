@@ -28,11 +28,6 @@ export default function AddCategoryModal() {
   const [isFlashing, setIsFlashing] = useState(false);
 
   // Modal animation
-  const modalAnimation = useSpring({
-    opacity: isCategoryModalOpen ? 1 : 0,
-    transform: isCategoryModalOpen ? "translateY(0%)" : "translateY(-20%)",
-    config: config.stiff,
-  });
 
   // Form elements animation (staggered)
   const formItemsAnimation = useSpring({
@@ -97,7 +92,6 @@ export default function AddCategoryModal() {
   return (
     <animated.main
       className={isCategoryModalOpen ? styles.main : styles.fullScreen}
-      style={modalAnimation}
     >
       <animated.h1 style={formItemsAnimation}>Add Category</animated.h1>
       <animated.form
@@ -187,13 +181,7 @@ export default function AddCategoryModal() {
           )}
         </div>
 
-        <animated.button
-          type="submit"
-          style={formItemsAnimation}
-          onMouseEnter={() => setButtonHover({ scale: 1.05 })}
-          onMouseLeave={() => setButtonHover({ scale: 1 })}
-          {...buttonHoverProps}
-        >
+        <animated.button type="submit" style={formItemsAnimation}>
           Add Category
         </animated.button>
       </animated.form>
