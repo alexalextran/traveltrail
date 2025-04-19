@@ -20,7 +20,7 @@ import {
   invalidAdressToast,
   standardErrorToast,
 } from "../../toastNotifications.tsx";
-import { useSpring, animated } from "@react-spring/web";
+import { useSpring, animated, useTransition } from "@react-spring/web";
 
 const Modal = () => {
   const placesLib = useMapsLibrary("places");
@@ -36,7 +36,6 @@ const Modal = () => {
   const [openingHours, setOpeningHours] = useState<string>("");
   const [rating, setRating] = useState<number>(0);
   const [website, setWebsite] = useState<string>("");
-  const [tiktokLink, settiktokLink] = useState<string>("");
   const [place, setplace] = useState<any>();
   const [photos, setPhotos] = useState<string[]>([]);
 
@@ -45,16 +44,15 @@ const Modal = () => {
 
   const addressInputRef = useRef<HTMLInputElement | null>(null);
 
-  // Animation for the modal
-  const modalAnimation = useSpring({
-    opacity: ShowAddModal ? 1 : 0,
-    transform: ShowAddModal ? "translateY(0px)" : "translateY(-200px)",
+  const modalTransition = useTransition(ShowAddModal, {
+    from: { opacity: 0, transform: "scale(0.9) !important" },
+    enter: { opacity: 1, transform: "scale(1) !important" },
+    leave: { opacity: 0, transform: "scale(0.9) !important" },
     config: {
       tension: 300,
       friction: 20,
-      clamp: true, // Preovershooting
+      clamp: true,
     },
-    immediate: !ShowAddModal, // Makes closing instant while keeping opening smooth
   });
 
   // Animation for the "+" button
@@ -246,118 +244,114 @@ const Modal = () => {
         <p>+</p>
       </animated.button>
 
-      {ShowAddModal && (
-        <div className={styles.modalWrapper}>
-          <Draggable
-            bounds="parent"
-            handle=".modal-handle"
-            defaultPosition={{
-              x: window.innerWidth / 1.5,
-              y: window.innerHeight / 8,
-            }}
-          >
-            <animated.div
-              className={styles.modal}
-              style={{
-                opacity: modalAnimation.opacity,
-                transform: modalAnimation.transform,
+      {modalTransition((style, item) =>
+        item ? (
+          <div className={styles.modalWrapper}>
+            <Draggable
+              bounds="parent"
+              handle=".modal-handle"
+              defaultPosition={{
+                x: window.innerWidth / 1.5,
+                y: window.innerHeight / 8,
               }}
             >
-              <div className="modal-handle" style={{ cursor: "move" }}>
-                <h1>Add Pin</h1>
-                <p>Drag me here!</p>
-              </div>
+              <animated.div className={styles.modal} style={style}>
+                <div className="modal-handle" style={{ cursor: "move" }}>
+                  <h1>Add Pin</h1>
+                  <p>Drag me here!</p>
+                </div>
 
-              {/* Button to close the modal */}
-              <button
-                className={styles.close}
-                onClick={() => dispatch(toggleAddModal(false))}
-              >
-                X
-              </button>
-
-              <form className={styles.form} onSubmit={handleSubmit}>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Enter Title (Mandatory)"
-                  required
-                />
-                <input
-                  type="text"
-                  ref={addressInputRef}
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  placeholder="Enter address (Mandatory)"
-                  required
-                />
-                <select
-                  required
-                  value={category}
-                  onChange={(e) => {
-                    setCategory(e.target.value);
-                  }}
+                {/* Button to close the modal */}
+                <button
+                  className={styles.close}
+                  onClick={() => dispatch(toggleAddModal(false))}
                 >
-                  <option value="">Select a category</option>
-                  {categories.map((category: Category, index: number) => (
-                    <option key={index} value={category.CategoryID}>
-                      {category.categoryName}
-                    </option>
-                  ))}
-                </select>
-                <hr></hr>
+                  X
+                </button>
 
-                <i>Optional Fields</i>
-
-                <div className={styles.visitedRating}>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={visited}
-                      onChange={(e) => setVisited(e.target.checked)}
-                    />
-                    Visited
-                  </label>
-                  <Rating
-                    onClick={handleRating}
-                    initialValue={rating}
-                    allowFraction={true}
+                <form className={styles.form} onSubmit={handleSubmit}>
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="Enter Title (Mandatory)"
+                    required
                   />
-                </div>
-
-                <input
-                  type="text"
-                  value={openingHours}
-                  onChange={(e) => setOpeningHours(e.target.value)}
-                  placeholder="Opening Hours e.g Saturday: 11am - 8pm"
-                />
-
-                <input
-                  type="url"
-                  value={website}
-                  onChange={(e) => setWebsite(e.target.value)}
-                  placeholder="Related Website"
-                />
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Description"
-                />
-                <div className={styles.formButtons}>
-                  <button
-                    className={styles.clearbutton}
-                    type="button"
-                    onClick={handleResetAllFields}
+                  <input
+                    type="text"
+                    ref={addressInputRef}
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    placeholder="Enter address (Mandatory)"
+                    required
+                  />
+                  <select
+                    required
+                    value={category}
+                    onChange={(e) => {
+                      setCategory(e.target.value);
+                    }}
                   >
-                    Clear All
-                  </button>
-                  <button type="submit">Add Pin</button>
-                </div>
-              </form>
-            </animated.div>
-          </Draggable>
-        </div>
+                    <option value="">Select a category</option>
+                    {categories.map((category: Category, index: number) => (
+                      <option key={index} value={category.CategoryID}>
+                        {category.categoryName}
+                      </option>
+                    ))}
+                  </select>
+                  <hr></hr>
+
+                  <i>Optional Fields</i>
+
+                  <div className={styles.visitedRating}>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={visited}
+                        onChange={(e) => setVisited(e.target.checked)}
+                      />
+                      Visited
+                    </label>
+                    <Rating
+                      onClick={handleRating}
+                      initialValue={rating}
+                      allowFraction={true}
+                    />
+                  </div>
+
+                  <input
+                    type="text"
+                    value={openingHours}
+                    onChange={(e) => setOpeningHours(e.target.value)}
+                    placeholder="Opening Hours e.g Saturday: 11am - 8pm"
+                  />
+
+                  <input
+                    type="url"
+                    value={website}
+                    onChange={(e) => setWebsite(e.target.value)}
+                    placeholder="Related Website"
+                  />
+                  <textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Description"
+                  />
+                  <div className={styles.formButtons}>
+                    <button
+                      className={styles.clearbutton}
+                      type="button"
+                      onClick={handleResetAllFields}
+                    >
+                      Clear All
+                    </button>
+                    <button type="submit">Add Pin</button>
+                  </div>
+                </form>
+              </animated.div>
+            </Draggable>
+          </div>
+        ) : null
       )}
     </>
   );

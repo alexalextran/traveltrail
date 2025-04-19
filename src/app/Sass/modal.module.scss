@@ -21,6 +21,7 @@
   padding: 2em; 
   @include flexCenter(column);
   width: 30em;
+  animation:  fadeIn 0.3s ease-in-out;
 
   .close{
     @include closeButtonCorner

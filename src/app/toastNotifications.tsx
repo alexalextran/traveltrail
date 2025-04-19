@@ -11,6 +11,8 @@ const standardError = "standard_error";
 const invalidDetails = "invalid_details";
 const noCategories = "no_categories";
 const invalidAdress = "invalid_address";
+const categoryAdded = "category_added";
+const noEmojiSelected = "no_emoji_selected";
 
 export const passwordsDontMatchToast = () => {
   toast.error(`Passwords do not match!`, {
@@ -101,6 +103,34 @@ export const invalidAdressToast = () => {
   });
 };
 
+export const categoryAddedToast = () => {
+  toast.success(`Category added successfully!`, {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+    transition: Bounce,
+  });
+};
+
+export const noEmojiSelectedToast = () => {
+  toast.error(`Please select an emoji`, {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+    toastId: noEmojiSelected,
+    transition: Bounce,
+  });
+};
 export const noCategoriesToast = (dispatch: AppDispatch) => {
   toast.error(
     ({ closeToast }: ToastContentProps) => (
