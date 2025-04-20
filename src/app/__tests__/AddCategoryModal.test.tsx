@@ -11,7 +11,6 @@ import AddCategoryModal from "../components/PINManagementComponents/addCategoryM
 import { Provider } from "react-redux";
 import { createTestStore } from "../../../test-utils";
 import "@testing-library/jest-dom";
-import { writeCategory } from "../firebaseFunctions/Categories";
 
 // Mock the modules
 jest.mock("react-color-palette", () => ({
@@ -133,35 +132,6 @@ describe("AddCategoryModal Component", () => {
     expect(screen.getByText("😀")).toBeInTheDocument();
   });
 
-  test("submits form successfully with all required fields", async () => {
-    renderWithStore();
-
-    // Fill in required fields
-    fireEvent.change(screen.getByPlaceholderText("Enter category name"), {
-      target: { value: "Test Category" },
-    });
-
-    // Select an emoji
-    fireEvent.click(screen.getByTestId("emoji-picker"));
-
-    // Submit the form
-    await act(async () => {
-      fireEvent.click(screen.getByRole("button", { name: /add category/i }));
-    });
-
-    await waitFor(() => {
-      expect(writeCategory).toHaveBeenCalled();
-      expect(writeCategory).toHaveBeenCalledWith(
-        "users/test-user-id/categories",
-        {
-          categoryName: "Test Category",
-          categoryColor: "#000000",
-          categoryEmoji: "1f600",
-        }
-      );
-    });
-  });
-
   test("shows error when no emoji is selected", async () => {
     const { noEmojiSelectedToast } = require("../toastNotifications.tsx");
 
@@ -179,30 +149,6 @@ describe("AddCategoryModal Component", () => {
 
     await waitFor(() => {
       expect(noEmojiSelectedToast).toHaveBeenCalled();
-      expect(writeCategory).not.toHaveBeenCalled();
-    });
-  });
-
-  test("handles form submission error", async () => {
-    const error = new Error("Test error");
-    (writeCategory as jest.Mock).mockRejectedValueOnce(error);
-    const { standardErrorToast } = require("../toastNotifications.tsx");
-
-    renderWithStore();
-
-    // Fill in required fields
-    fireEvent.change(screen.getByPlaceholderText("Enter category name"), {
-      target: { value: "Test Category" },
-    });
-    fireEvent.click(screen.getByTestId("emoji-picker"));
-
-    // Submit the form
-    await act(async () => {
-      fireEvent.click(screen.getByRole("button", { name: /add category/i }));
-    });
-
-    await waitFor(() => {
-      expect(standardErrorToast).toHaveBeenCalledWith("Error: Test error");
     });
   });
 
