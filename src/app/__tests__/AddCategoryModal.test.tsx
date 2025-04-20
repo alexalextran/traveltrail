@@ -12,7 +12,6 @@ import { Provider } from "react-redux";
 import { createTestStore } from "../../../test-utils";
 import "@testing-library/jest-dom";
 import { writeCategory } from "../firebaseFunctions/Categories";
-import modalsReducer from "../store/toggleModals/toggleModalSlice";
 
 // Mock the modules
 jest.mock("react-color-palette", () => ({
