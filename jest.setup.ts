@@ -82,3 +82,13 @@ jest.mock('next/router', () => ({
     };
   },
 }));
+
+
+// jest.setup.ts
+console.error = (message) => {
+  if (message.includes('findDOMNode is deprecated')) {
+    return; // Suppress the findDOMNode deprecation warning
+  }
+  originalError(message); // Call the original console.error function
+};
+jest.spyOn(require('react-dom'), 'findDOMNode').mockImplementation(() => null);

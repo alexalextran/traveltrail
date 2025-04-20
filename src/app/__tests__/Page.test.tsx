@@ -12,6 +12,13 @@ jest.mock("@/app/firebase", () => ({
   getAuth: jest.fn(),
 }));
 
+jest.mock("next/image", () => ({
+  __esModule: true,
+  default: ({ alt, src, fill, ...props }: any) => (
+    <img alt={alt} src={src} {...props} />
+  ),
+}));
+
 // Mock AuthContext
 jest.mock("@/app/context/authContext", () => ({
   AuthContextProvider: ({ children }: { children: React.ReactNode }) =>

@@ -14,7 +14,6 @@ export const writeCategory = async (collectionName:string, data: {
 }): Promise<Category> => {
   try {
     const docRef = await addDoc(collection(db, collectionName), data);
-    console.log("Document written with ID: ", docRef.id);
     return {
       CategoryID: docRef.id,
       categoryName: data.categoryName,

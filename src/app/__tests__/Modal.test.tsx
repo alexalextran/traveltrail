@@ -114,7 +114,8 @@ jest.mock("../toastNotifications", () => ({
 
 const renderWithStore = (modalsState = {}) => {
   const store = createTestStore({
-    toggleModals: {
+    modals: {
+      // Use `modals` instead of `toggleModals`
       addModal: true,
       fullScreen: false,
       ...modalsState,

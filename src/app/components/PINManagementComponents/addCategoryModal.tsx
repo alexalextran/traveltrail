@@ -104,7 +104,6 @@ export default function AddCategoryModal() {
             <EmojiPicker
               onEmojiClick={(emojiData) => {
                 setselectedEmoji(emojiData.unified);
-                console.log(emojiData.unified);
               }}
               categories={[]}
               skinTonesDisabled={true}
@@ -128,6 +127,7 @@ export default function AddCategoryModal() {
       </form>
       {isCategoryModalOpen && (
         <button
+          data-testid="close-button"
           onClick={() => dispatch(toggleCategoryModal(false))}
           className={isCategoryModalOpen ? styles.exit : ""}
         >

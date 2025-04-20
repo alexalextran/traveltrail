@@ -1,24 +1,22 @@
-import { configureStore } from "@reduxjs/toolkit";
-import modalsReducer from "./src/app/store/toggleModals/toggleModalSlice";
+// test-utils.ts
+import { configureStore } from '@reduxjs/toolkit';
+import pinReducer from './src/app/store/pins/pinsSlice';
+import categoryReducer from './src/app/store/categories/categoriesSlice';
+import modalReducer from './src/app/store/toggleModals/toggleModalSlice';
+import locationReducer from './src/app/store/location/locationSlice';
+import listReducer from './src/app/store/List/listSlice';
+import activePinModalReducer from './src/app/store/activePinModal/activePinModalSlice';
 
-export const createTestStore = (preloadedModalsState = {}) => {
+export const createTestStore = (preloadedState = {}) => {
   return configureStore({
     reducer: {
-      modals: modalsReducer,
+      pins: pinReducer,
+      categories: categoryReducer,
+      modals: modalReducer,  // Changed from modalsReducer to modalReducer to match main store
+      location: locationReducer,
+      selectedList: listReducer,
+      activePinModal: activePinModalReducer,
     },
-    // Redux Toolkit includes thunk by default, so no need to add it
-    // If you need to customize middleware, use this approach:
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
-    preloadedState: {
-      modals: {
-        editModal: false,
-        addModal: true,
-        imageModal: false,
-        fullScreen: false,
-        ListScreen: false,
-        categoryModal: false,
-        ...preloadedModalsState,
-      },
-    },
+    preloadedState,
   });
 };
