@@ -12,6 +12,14 @@ jobs:
   run-tests:
     runs-on: ubuntu-latest
 
+    env: # 👈 Global environment variables for this job
+      FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+      FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+      FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+      FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -20,7 +28,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: "npm" # Speeds up builds by caching node_modules
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
