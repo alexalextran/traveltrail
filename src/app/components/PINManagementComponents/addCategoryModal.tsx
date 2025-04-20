@@ -24,7 +24,7 @@ export default function AddCategoryModal() {
   const isCategoryModalOpen = useSelector(selectCategoryModal);
   const [isFlashing, setIsFlashing] = useState(false);
 
-  // Set up the flashing effect
+  // Set up the flashing effect //
   useEffect(() => {
     if (emojiPicker !== null) {
       const flashInterval = setInterval(() => {
