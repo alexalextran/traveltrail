@@ -23,6 +23,7 @@ import { useAuth } from "../../context/authContext";
 import { collection, getFirestore, onSnapshot } from "firebase/firestore";
 import { app } from "../../firebase";
 import { useTransition, animated, useSpring } from "@react-spring/web";
+import { getContrastTextColor } from "../../utility";
 
 function Sidebar({ pins }: { pins: Pin[] }) {
   const [extend, setExtend] = useState(false);
@@ -107,11 +108,11 @@ function Sidebar({ pins }: { pins: Pin[] }) {
               style={{
                 backgroundColor:
                   selectedCategory === category.categoryName
-                    ? "rgb(0,123,255)"
+                    ? `${category.categoryColor}`
                     : undefined,
                 color:
                   selectedCategory === category.categoryName
-                    ? "white"
+                    ? `${getContrastTextColor(category.categoryColor)}`
                     : undefined,
               }}
             >

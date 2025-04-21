@@ -215,7 +215,7 @@ function ListScreen() {
             <div className={styles.formBar}>
               <select
                 onClick={() => setchild(<ListDnD listId={selectedList} />)}
-                value={selectedList} // Add this line
+                value={selectedList}
                 onChange={(e) => setSelectedList(e.target.value)}
               >
                 <option value="">Choose a list</option>
