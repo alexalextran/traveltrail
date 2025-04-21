@@ -123,7 +123,7 @@ const renderWithStore = (modalsState = {}) => {
   });
   return render(
     <Provider store={store}>
-      <Modal />
+      <Modal FullScreen={false} />
     </Provider>
   );
 };

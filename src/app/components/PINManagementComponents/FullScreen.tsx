@@ -129,7 +129,14 @@ function FullScreen({ pins, categories }: FullScreenProps) {
                       >
                         {pin.category}
                       </p>
-                      <p>{pin.visited ? "Visited" : "Unvisited"}</p>
+                      <p
+                        style={{
+                          backgroundColor: pin.visited ? "#3c763d" : "#dff0d8",
+                          color: pin.visited ? "#dff0d8" : "#3c763d",
+                        }}
+                      >
+                        {pin.visited ? "Visited" : "Unvisited"}
+                      </p>
                       <p>{pin.description}</p>
                     </div>
                     {pin.imageUrls && pin.imageUrls.length > 0 && (

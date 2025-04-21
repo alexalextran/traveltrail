@@ -8,7 +8,7 @@ import { setLocation } from "../../store/location/locationSlice.ts";
 import { AppDispatch } from "../../store/store.ts";
 import { collection, getFirestore, onSnapshot } from "firebase/firestore";
 import { app } from "../../firebase.js";
-import { useAuth } from "../../context/authContext.js"; // Import the useAuth hook
+import { useAuth } from "../../context/authContext.js";
 
 function PinItem({ pin, index }: { pin: Pin; index: number }) {
   const dispatch: AppDispatch = useDispatch();
@@ -31,15 +31,17 @@ function PinItem({ pin, index }: { pin: Pin; index: number }) {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [user.uid]);
 
   const category: Category = categories.filter(
     (category) => category.categoryName === pin.category
-  )[0];
+  )[0]; // Get the category for the pin
+
   return (
     <main
       className={styles.main}
       onClick={() => {
+        // Center the map on the pin when clicked
         dispatch(setLocation({ lat: pin.lat, lng: pin.lng }));
       }}
     >
