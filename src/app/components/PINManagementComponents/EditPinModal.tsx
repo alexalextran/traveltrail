@@ -13,7 +13,11 @@ import { Rating } from "react-simple-star-rating";
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
 import { collection, getFirestore, onSnapshot } from "firebase/firestore";
 import { app } from "../../firebase";
-import { toast } from "react-toastify";
+import {
+  invalidAdressToastEditPin,
+  pinUpdatedSuccessfullyToast,
+  standardErrorToast,
+} from "../../toastNotifications";
 
 function EditPinForm() {
   const placesLib = useMapsLibrary("places");
@@ -47,6 +51,7 @@ function EditPinForm() {
   };
 
   useEffect(() => {
+    // Fetch categories from Firestore
     const db = getFirestore(app);
     const listCollectionRef = collection(db, `users/${user.uid}/categories`);
     const unsubscribe = onSnapshot(listCollectionRef, (snapshot) => {
@@ -60,7 +65,7 @@ function EditPinForm() {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [user.uid]);
 
   useEffect(() => {
     if (selectedPin != null) {
@@ -78,6 +83,7 @@ function EditPinForm() {
   }, [selectedPin, rating]);
 
   useEffect(() => {
+    // Initialize Google Places Autocomplete
     if (placesLib && addressInputRef.current) {
       const autocomplete = new google.maps.places.Autocomplete(
         addressInputRef.current
@@ -96,7 +102,13 @@ function EditPinForm() {
     const response = await axios.get(
       `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.NEXT_PUBLIC_GOOGLEAPI_API_KEY}`
     );
-    const data = response.data;
+    const data = response.data; //google place api response
+
+    //if address invalid
+    if (data.status !== "OK") {
+      invalidAdressToastEditPin();
+      return;
+    }
     const coords = data.results[0].geometry.location;
 
     const updatedPin = {
@@ -117,31 +129,16 @@ function EditPinForm() {
 
     try {
       await updateToFirestore(`users/${user.uid}/pins`, updatedPin);
-      dispatch(toggleEditModal(false));
-
-      toast.success("Pin was updated sucessfully!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      dispatch(toggleEditModal(false)); //close edit modal after successful updat
+      pinUpdatedSuccessfullyToast(updatedPin.title);
     } catch (error) {
-      toast.error("Could not update the pin, please contact the owner!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      standardErrorToast("Failed to update pin. Please try again.");
     }
   };
+
+  {
+    /* Fullscreen Modal */
+  }
 
   const formContent = (
     <form onSubmit={handleSubmit} className={styles.form}>

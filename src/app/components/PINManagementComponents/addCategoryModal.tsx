@@ -4,7 +4,7 @@ import { ColorPicker, useColor } from "react-color-palette";
 import { writeCategory } from "../../firebaseFunctions/Categories.ts";
 import { useAuth } from "../../context/authContext.js";
 import EmojiPicker from "emoji-picker-react";
-import { Emoji, EmojiStyle } from "emoji-picker-react";
+import { Emoji } from "emoji-picker-react";
 import { toggleCategoryModal } from "../../store/toggleModals/toggleModalSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { selectCategoryModal } from "../../store/toggleModals/toggleModalSlice";

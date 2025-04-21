@@ -32,6 +32,8 @@ export default function CategoryComponent({
         <MdDeleteForever onClick={() => setcategoryDeleteModal(true)} />
         <p>{category.categoryName}</p>
       </div>
+
+      {/* Category Deletion Modal */}
       {categoryDeleteModal && (
         <CategoryDeletionModal
           setcategoryDeleteModal={setcategoryDeleteModal}

@@ -1,55 +1,66 @@
 import React, { useEffect, useState } from "react";
 import styles from "../../Sass/sidebar.module.scss";
 import { useSelector, useDispatch } from "react-redux";
-import { Pin } from "../../types/pinData";
-import PinItem from "./pinItem";
-import AddCategoryModal from "./addCategoryModal";
-import { Category } from "../../types/categoryData";
-import { AppDispatch } from "../../store/store";
+import { collection, getFirestore, onSnapshot } from "firebase/firestore";
+import { useSpring, useTransition, animated } from "@react-spring/web";
 import { RiArrowRightDoubleFill } from "react-icons/ri";
 import { HiOutlineArrowsExpand } from "react-icons/hi";
+import { app } from "../../firebase";
+import { useAuth } from "../../context/authContext";
+
+import PinItem from "./pinItem";
+import AddCategoryModal from "./addCategoryModal";
 import FullScreenComponent from "./FullScreen";
+
+import { AppDispatch } from "../../store/store";
 import {
   selectCategoryModal,
   selectFullScreen,
-} from "../../store/toggleModals/toggleModalSlice";
-import {
-  toggleFullScreen,
-  toggleEditModal,
   toggleAddModal,
   toggleCategoryModal,
+  toggleEditModal,
+  toggleFullScreen,
 } from "../../store/toggleModals/toggleModalSlice";
-import { useAuth } from "../../context/authContext";
-import { collection, getFirestore, onSnapshot } from "firebase/firestore";
-import { app } from "../../firebase";
-import { useTransition, animated, useSpring } from "@react-spring/web";
+
+import { Pin } from "../../types/pinData";
+import { Category } from "../../types/categoryData";
 import { getContrastTextColor } from "../../utility";
 
 function Sidebar({ pins }: { pins: Pin[] }) {
-  const [extend, setExtend] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<null | string>(null);
-  const [toggleUnvisited, setToggleUnvisited] = useState<null | boolean>(null);
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  // Local state
+  const [extend, setExtend] = useState(false); // Sidebar expansion
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null); // Active category
+  const [toggleUnvisited, setToggleUnvisited] = useState<boolean | null>(null); // Visited toggle
+  const [searchTerm, setSearchTerm] = useState(""); // Search filter
+  const [categories, setCategories] = useState<Category[]>([]); // Firebase categories
+
+  // Redux state
   const dispatch: AppDispatch = useDispatch();
   const fullScreen = useSelector(selectFullScreen);
-  const { user } = useAuth();
-  const [categories, setcategories] = useState<Category[]>([]);
   const isCategoryModalOpen = useSelector(selectCategoryModal);
 
+  // Auth context
+  const { user } = useAuth();
+
+  // Filter pins by category, visit status, and search term
   let filteredPins = selectedCategory
     ? pins.filter((pin) => pin.category === selectedCategory)
     : pins;
+
   filteredPins =
-    toggleUnvisited != null
+    toggleUnvisited !== null
       ? filteredPins.filter((pin) => pin.visited === toggleUnvisited)
       : filteredPins;
+
   filteredPins = filteredPins.filter((pin) =>
     pin.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Fetch categories from Firestore
   useEffect(() => {
     const db = getFirestore(app);
     const listCollectionRef = collection(db, `users/${user.uid}/categories`);
+
     const unsubscribe = onSnapshot(listCollectionRef, (snapshot) => {
       const fetchedCategories = snapshot.docs.map((doc) => ({
         CategoryID: doc.id,
@@ -57,16 +68,18 @@ function Sidebar({ pins }: { pins: Pin[] }) {
         categoryColor: doc.data().categoryColor,
         categoryEmoji: doc.data().categoryEmoji,
       }));
-      setcategories(fetchedCategories);
+      setCategories(fetchedCategories);
     });
 
     return () => unsubscribe();
   }, [user.uid]);
 
+  // Handle search input
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
+  // Animate pin list transitions
   const transitions = useTransition(extend ? filteredPins : [], {
     from: { opacity: 0, x: -50 },
     enter: { opacity: 1, x: 0 },
@@ -76,6 +89,7 @@ function Sidebar({ pins }: { pins: Pin[] }) {
     keys: (pin: Pin) => pin.id,
   });
 
+  // Animate expand arrow rotation
   const rotateStyle = useSpring({
     transform: extend ? "rotate(180deg)" : "rotate(0deg)",
     config: { tension: 170, friction: 30 },
@@ -83,7 +97,9 @@ function Sidebar({ pins }: { pins: Pin[] }) {
 
   return (
     <>
+      {/* Sidebar container */}
       <main className={styles.main} style={{ left: extend ? "0vw" : "-32vw" }}>
+        {/* Category Selector */}
         <div className={styles.categories}>
           <div
             className={styles.addCategoryBtn}
@@ -91,6 +107,8 @@ function Sidebar({ pins }: { pins: Pin[] }) {
           >
             Add Category
           </div>
+
+          {/* Show All category button */}
           <div
             onClick={() => setSelectedCategory(null)}
             style={{
@@ -101,6 +119,8 @@ function Sidebar({ pins }: { pins: Pin[] }) {
           >
             Show All
           </div>
+
+          {/* List of categories */}
           {categories.map((category: Category) => (
             <div
               key={category.CategoryID}
@@ -108,11 +128,11 @@ function Sidebar({ pins }: { pins: Pin[] }) {
               style={{
                 backgroundColor:
                   selectedCategory === category.categoryName
-                    ? `${category.categoryColor}`
+                    ? category.categoryColor
                     : undefined,
                 color:
                   selectedCategory === category.categoryName
-                    ? `${getContrastTextColor(category.categoryColor)}`
+                    ? getContrastTextColor(category.categoryColor)
                     : undefined,
               }}
             >
@@ -120,7 +140,10 @@ function Sidebar({ pins }: { pins: Pin[] }) {
             </div>
           ))}
         </div>
+
+        {/* Pin Items Section */}
         <div className={styles.pinItems}>
+          {/* Visited / Unvisited Toggle Buttons */}
           <div className={styles.unNvisitedButtons}>
             <button
               style={{
@@ -128,9 +151,7 @@ function Sidebar({ pins }: { pins: Pin[] }) {
                   toggleUnvisited === true ? "lightGrey" : "white",
               }}
               onClick={() =>
-                toggleUnvisited === true
-                  ? setToggleUnvisited(null)
-                  : setToggleUnvisited(true)
+                setToggleUnvisited(toggleUnvisited === true ? null : true)
               }
             >
               Visited
@@ -141,14 +162,14 @@ function Sidebar({ pins }: { pins: Pin[] }) {
                   toggleUnvisited === false ? "lightGrey" : "white",
               }}
               onClick={() =>
-                toggleUnvisited === false
-                  ? setToggleUnvisited(null)
-                  : setToggleUnvisited(false)
+                setToggleUnvisited(toggleUnvisited === false ? null : false)
               }
             >
               Unvisited
             </button>
           </div>
+
+          {/* Search Input */}
           <input
             type="text"
             placeholder="Search By Title"
@@ -156,22 +177,23 @@ function Sidebar({ pins }: { pins: Pin[] }) {
             onChange={handleSearchChange}
             className={styles.searchBar}
           />
+
+          {/* Animated list of pins */}
           {transitions((style, pin, _, index) => (
-            <animated.div style={style}>
-              <PinItem key={index} index={index} pin={pin} />
+            <animated.div style={style} key={index}>
+              <PinItem index={index} pin={pin} />
             </animated.div>
           ))}
         </div>
+
+        {/* Sidebar Expand/FullScreen Controls */}
         <div className={styles.rightExtender}>
-          <animated.div
-            style={rotateStyle}
-            onClick={() => {
-              setExtend(!extend);
-            }}
-          >
+          {/* Expand Button */}
+          <animated.div style={rotateStyle} onClick={() => setExtend(!extend)}>
             <RiArrowRightDoubleFill />
           </animated.div>
 
+          {/* Fullscreen Button */}
           <div
             onClick={() => {
               dispatch(toggleFullScreen(true));
@@ -184,6 +206,8 @@ function Sidebar({ pins }: { pins: Pin[] }) {
           </div>
         </div>
       </main>
+
+      {/* Modals */}
       {isCategoryModalOpen && <AddCategoryModal />}
       {fullScreen && (
         <FullScreenComponent pins={pins} categories={categories} />

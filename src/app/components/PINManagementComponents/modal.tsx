@@ -9,7 +9,6 @@ import { Category } from "../../types/categoryData.ts";
 import axios from "axios";
 import { selectAddModal } from "../../store/toggleModals/toggleModalSlice.ts";
 import { toggleAddModal } from "../../store/toggleModals/toggleModalSlice.ts";
-import { selectFullScreen } from "../../store/toggleModals/toggleModalSlice.ts";
 import { useAuth } from "../../context/authContext.js";
 import { Rating } from "react-simple-star-rating";
 import { collection, getFirestore, onSnapshot } from "firebase/firestore";
@@ -105,6 +104,7 @@ const Modal = ({ FullScreen }: ModalProps) => {
     }
   }, [ShowAddModal, categories.length, dispatch]);
 
+  // Function to handle form submission
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
@@ -113,7 +113,7 @@ const Modal = ({ FullScreen }: ModalProps) => {
     const response = await axios.get(
       `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.NEXT_PUBLIC_GOOGLEAPI_API_KEY}`
     );
-    const data = response.data;
+    const data = response.data; //If automplete does not action, throw error
     if (data.status === "ZERO_RESULTS") {
       invalidAdressToast();
       return;
@@ -140,10 +140,11 @@ const Modal = ({ FullScreen }: ModalProps) => {
 
     writeToFirestore(user.uid, newPin)
       .then(() => {
-        showCenterMapToast(coords.lat, coords.lng, dispatch);
+        showCenterMapToast(coords.lat, coords.lng, dispatch); //create success toast that allows users to find new pin
       })
       .catch((error) => standardErrorToast(error));
 
+    //reset all fields after submission besides category and visited
     setDescription("");
     setAddress("");
     setTitle("");
@@ -167,6 +168,9 @@ const Modal = ({ FullScreen }: ModalProps) => {
     setRating(rate);
   };
 
+  {
+    /*Fullscreen Version Of Modal */
+  }
   if (FullScreen) {
     return (
       <>
@@ -253,6 +257,9 @@ const Modal = ({ FullScreen }: ModalProps) => {
       </>
     );
   }
+  {
+    /*Regular Version Of Modal */
+  }
 
   return (
     <>
@@ -270,6 +277,7 @@ const Modal = ({ FullScreen }: ModalProps) => {
       {modalTransition((style, item) =>
         item ? (
           <div className={styles.modalWrapper}>
+            {/* Draggable modal component */}
             <Draggable
               bounds="parent"
               handle=".modal-handle"
@@ -278,6 +286,7 @@ const Modal = ({ FullScreen }: ModalProps) => {
                 y: window.innerHeight / 8,
               }}
             >
+              {/* Draggable handle */}
               <animated.div className={styles.modal} style={style}>
                 <div className="modal-handle" style={{ cursor: "move" }}>
                   <h1>Add Pin</h1>

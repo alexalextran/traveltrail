@@ -14,6 +14,35 @@ const invalidAdress = "invalid_address";
 const categoryAdded = "category_added";
 const noEmojiSelected = "no_emoji_selected";
 const categoryDeleted = "category_deleted";
+const invalid_address = "invalid_address";
+
+export const invalidAdressToastEditPin = () => {
+  toast.error(`Invalid Adress!`, {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+    toastId: invalid_address,
+  });
+};
+
+export const pinUpdatedSuccessfullyToast = (pinTitle: string) => {
+  toast.success(`${pinTitle} updated successfully!`, {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+    toastId: pinTitle,
+  });
+};
 
 export const categoryDeletedToast = (categoryName: any) => {
   toast.success(`${categoryName} and all related pins deleted successfully!`, {

@@ -23,6 +23,7 @@ export default function CategoryDeletionConfirmation({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    //fetching all pins related to the category
     const fetchPins = async () => {
       try {
         const allPins = await retrieveAllPinsWithCategory(
@@ -46,6 +47,7 @@ export default function CategoryDeletionConfirmation({
     fetchPins();
   }, [user.uid, category.categoryName]);
 
+  //function to handle the deletion of the category and related pins
   const handleDelete = async () => {
     try {
       await deleteCategoryAndRelatedPins(
@@ -57,7 +59,7 @@ export default function CategoryDeletionConfirmation({
     } catch (error) {
       standardErrorToast("Failed to delete category and related pins.");
     } finally {
-      setcategoryDeleteModal(false);
+      setcategoryDeleteModal(false); //close modal after deletion
     }
   };
 
