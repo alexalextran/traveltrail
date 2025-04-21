@@ -31,7 +31,6 @@ export default function IconBar({
 }) {
   const { user } = useAuth();
   const dispatch = useDispatch();
-  const router = useRouter();
   const [isClient, setIsClient] = useState(false);
 
   // Ensure we're running in the client environment
@@ -61,7 +60,6 @@ export default function IconBar({
   };
 
   const selectNewPin = (child: any) => {
-    console.log(pin);
     dispatch(selectPin(pin));
 
     if (setchild !== null && child === "edit") {

@@ -22,11 +22,14 @@ import {
 } from "../../toastNotifications.tsx";
 import { useSpring, animated, useTransition } from "@react-spring/web";
 
-const Modal = () => {
+interface ModalProps {
+  FullScreen: boolean;
+}
+
+const Modal = ({ FullScreen }: ModalProps) => {
   const placesLib = useMapsLibrary("places");
   const [categories, setcategories] = useState<Category[]>([]);
   const ShowAddModal = useSelector(selectAddModal);
-  const ShowFullScreen = useSelector(selectFullScreen);
 
   const [description, setDescription] = useState<string>("");
   const [visited, setVisited] = useState<boolean>(false);
@@ -100,7 +103,7 @@ const Modal = () => {
     if (categories.length === 0 && ShowAddModal) {
       noCategoriesToast(dispatch);
     }
-  }, [ShowAddModal, ShowFullScreen, categories.length, dispatch]);
+  }, [ShowAddModal, categories.length, dispatch]);
 
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>
@@ -164,7 +167,7 @@ const Modal = () => {
     setRating(rate);
   };
 
-  if (ShowFullScreen) {
+  if (FullScreen) {
     return (
       <>
         <form className={styles.form} onSubmit={handleSubmit}>

@@ -1,265 +1,258 @@
 @import "variables&functions";
 
-.main{
-    @include absolutefill;
-    background-color: rgb(250, 250, 250);
-    z-index: 100;
+.main {
+  @include absolutefill;
+  background-color: rgb(250, 250, 250);
+  z-index: 100;
 
-    .header{
-       @include header;
+  .header {
+    @include header;
+  }
+
+  .exitButton {
+    @include exitButton;
+  }
+
+  .content {
+    @include flexCustom(center, flex-start, row);
+  }
+
+  .categories {
+    height: 95vh;
+    overflow-x: hidden;
+    border-top: 2px solid black;
+    width: 15% !important;
+    overflow-y: scroll !important;
+    &::-webkit-scrollbar {
+      width: 5px;
     }
 
-    .exitButton{
-        @include exitButton;
-      
+    &::-webkit-scrollbar-track {
+      background-color: black;
     }
 
-    .content{
-        @include flexCustom(center, flex-start, row);
+    &::-webkit-scrollbar-thumb {
+      background-color: $webBlue;
+      border-radius: 5px;
     }
+    .category {
+      background-color: $webBlue;
+      padding: 0.8em;
+      font-size: 1.4em;
+      font-weight: 300;
+      color: white;
+      margin-bottom: 0.1em;
+      @include flexCenter(row);
+      p {
+        width: 80%;
+        text-align: center;
+      }
 
-    .categories{
-        height: 95vh;
-        overflow-x: hidden;
-        border-top: 2px solid black;
-        width: 15% !important;
-        overflow-y: scroll !important;
-        &::-webkit-scrollbar {
-            width: 5px;
-        }
-    
-        &::-webkit-scrollbar-track {
-            background-color: black
-        }
-    
-        &::-webkit-scrollbar-thumb {
-            background-color:  $webBlue;;
-            border-radius: 5px;
-        }
-        .category{
-            background-color: $webBlue;
-            padding: 0.8em;
-            font-size: 1.4em;
-            font-weight: 300;
-            color: white;
-            margin-bottom: 0.1em;
-            @include flexCenter(row);
-            p{
-                width: 80%;
-                text-align: center;
-            }
-            
-                svg{
-                    cursor: pointer;
-                    width: 1em;
-                    height: 1em;
-                
-                }
-           
-            &:hover{
-                background-color: white;
-                color: $webBlue;
-            }
-        }
+      svg {
+        cursor: pointer;
+        width: 1em;
+        height: 1em;
+      }
+
+      &:hover {
+        background-color: white;
+        color: $webBlue;
+      }
     }
+  }
 
-    .pins {
-        position: relative;
-        width: 55%;
-        overflow-y: scroll;
-        height: 95vh;
+  .pins {
+    position: relative;
+    width: 55%;
+    overflow-y: scroll;
+    height: 95vh;
 
-        &>:nth-child(2) {
-            margin-top: 4em;
-        }
-        .pinContainer {
-           
-
-            height: 13em;
-            position: relative;
-           padding: 1em;
-           margin-bottom: 1em;
-           background-color: #fff;
-           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-           border-radius: 0.2em;
-           @include flexCustom(space-between, center, row);
-           & > :last-child{
-            position: absolute;
-            right: 39%;
-            padding: 0 0.3em;
-            @include flexCustom(space-around, center, column);
-            top: 0;
-            bottom: 0;
-            svg{
-                cursor: pointer;
-                width: 1.5em;
-               height: 1.5em;
-              fill: white;
-            
-             }
-             & > :nth-child(2){
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: fit-content !important; 
-                height: 1.5em!important;
-                width: 1.5em !important;
-                input{
-                   display: none
-                }
-             }
-           }
-        }
-        
-        .pinInfo {
-            height: 100%;
-          width: 65% !important;
-        
-        }
-        
-        .carousel {
-            width: 35%;
-            max-height: 100%;
-    
-            aspect-ratio: 16 / 9;
-           img{
-            width: 100%;// Adjusted from 100% to 95%
-            max-height: 100%;
-            object-fit: cover; // Ensures the image covers the area without distorting its aspect ratio
-            aspect-ratio: 16 / 9; // Keeps the standard aspect ratio of 16:9
-           }
-        }
-
-      
-
-
-        .pinInfo {
-            width: 50%;
-
-            h2 {
-                color: #007bff;
-                margin-bottom: 0.5em;
-            }
-
-            p {
-                margin: 0.25em 0;
-
-                &:nth-of-type(2) {
-                    display: inline-block;
-                    background-color: #f0f0f0;
-                    color: #333;
-                    padding: 0.2em 0.5em;
-                    border-radius: 0.2em;
-                    font-weight: bold;
-                }
-
-                &:nth-of-type(3) {
-                    display: inline-block;
-                    background-color: #dff0d8;
-                    color: #3c763d;
-                    padding: 0.2em 0.5em;
-                    border-radius: 0.2em;
-                    font-weight: bold;
-                    margin-left: 0.5em;
-                }
-
-                &:last-child {
-                    font-style: italic;
-                    color: #666;
-                }
-            }
-        }
-        .searchQuery {
-           position: absolute;
-           top: 0;
-           z-index: 19;
-           width: 100%;
-           display: flex;
-           padding: 0.5em 1em;
-
-            input {
-                flex: 1;
-                padding: 0.5em;
-                font-size: 1em;
-                border: 1px solid #ccc;
-                border-radius: 0.2em;
-                margin-right: 0.5em;
-            }
-
-            button {
-                padding: 0.5em 1em;
-                font-size: 1em;
-                border: none;
-                background-color: #007bff;
-                color: white;
-                border-radius: 0.2em;
-                cursor: pointer;
-
-                &:hover {
-                    background-color: #0056b3;
-                }
-            }
-        }
-
+    & > :nth-child(2) {
+      margin-top: 4em;
     }
+    .pinContainer {
+      height: 13em;
+      position: relative;
+      padding: 0em 1em;
+      padding-top: 0.5em;
+      margin-bottom: 1em;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-radius: 0.2em;
+      @include flexCustom(space-between, center, column);
 
-    .form {
-        width: 30%;
-        z-index: 10001;
+      .pinItem {
+        width: 100%;
+        height: 100%;
+        @include flexCustom(space-between, center, row);
+      }
+      & > :last-child {
+        position: absolute;
 
-        h1{
-            width: 100%;
-            text-align: center;
-            margin-bottom: 0.3em;
-            background-color: rgb(0, 123, 255);
-            color: white;
-            padding: 0.3em 0;
+        width: 100%;
+        padding: 0 0.3em;
+        @include flexCustom(space-between, center, row);
+        bottom: 0;
+        svg {
+          cursor: pointer;
+          width: 1.5em;
+          height: 1.5em;
+          fill: white;
         }
-
         & > :nth-child(2) {
-            margin: auto;
-           width: 90%;
-           margin-top: 1em;
-        }
-
-        .formBar{
-            width: 100%;    
-            button {
-                width: 50%;
-                height: 3em;
-                font-size: 1.3em;
-                padding: 0.5em 1em; // Padding for buttons
-                border: none; // Remove default border
-                background-color: #007bff; // Bootstrap primary color
-                color: white; // Text color
-                font-weight: bold; // Bold text
-                cursor: pointer; // Change cursor to pointer
-                &:nth-child(1){
-                    border-right: 2px solid white;
-                }
-                &:hover {
-                    background-color: #0056b3; // Darker shade on hover
-                }
-            }
-        }
-
-        & > :nth-child(2){
-            animation: fadeIn 0.3s ease-in-out;
-
-        }
-        @keyframes fadeIn {
-            0% {
-              opacity: 0;
-              transform: translateX(5em);
-            }
-            100% {
-              opacity: 1;
-              transform: translateX(0em);
-    
-            }
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: fit-content !important;
+          height: 1.5em !important;
+          width: 1.5em !important;
+          input {
+            display: none;
           }
+        }
+      }
     }
 
-  
+    .pinInfo {
+      height: 100%;
+      width: 65% !important;
+    }
+
+    .carousel {
+      width: 35%;
+      max-height: 100%;
+
+      aspect-ratio: 16 / 9;
+      .imageContainer {
+        width: 100%; // Adjusted from 100% to 95%
+        max-height: 100%;
+        object-fit: cover; // Ensures the image covers the area without distorting its aspect ratio
+        aspect-ratio: 16 / 9; // Keeps the standard aspect ratio of 16:9
+      }
+    }
+
+    .pinInfo {
+      width: 50%;
+
+      h2 {
+        color: #007bff;
+        margin-bottom: 0.5em;
+      }
+
+      p {
+        margin: 0.25em 0;
+
+        &:nth-of-type(2) {
+          display: inline-block;
+          background-color: #f0f0f0;
+          color: #333;
+          padding: 0.2em 0.5em;
+          border-radius: 0.2em;
+          font-weight: bold;
+        }
+
+        &:nth-of-type(3) {
+          display: inline-block;
+          background-color: #dff0d8;
+          color: #3c763d;
+          padding: 0.2em 0.5em;
+          border-radius: 0.2em;
+          font-weight: bold;
+          margin-left: 0.5em;
+        }
+
+        &:last-child {
+          font-style: italic;
+          color: #666;
+        }
+      }
+    }
+    .searchQuery {
+      position: absolute;
+      top: 0;
+      z-index: 19;
+      width: 100%;
+      display: flex;
+      padding: 0.5em 1em;
+
+      input {
+        flex: 1;
+        padding: 0.5em;
+        font-size: 1em;
+        border: 1px solid #ccc;
+        border-radius: 0.2em;
+        margin-right: 0.5em;
+      }
+
+      button {
+        padding: 0.5em 1em;
+        font-size: 1em;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        border-radius: 0.2em;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #0056b3;
+        }
+      }
+    }
+  }
+
+  .form {
+    width: 30%;
+    z-index: 10001;
+
+    h1 {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 0.3em;
+      background-color: rgb(0, 123, 255);
+      color: white;
+      padding: 0.3em 0;
+    }
+
+    & > :nth-child(2) {
+      margin: auto;
+      width: 90%;
+      margin-top: 1em;
+    }
+
+    .formBar {
+      width: 100%;
+      button {
+        width: 50%;
+        height: 3em;
+        font-size: 1.3em;
+        padding: 0.5em 1em; // Padding for buttons
+        border: none; // Remove default border
+        background-color: #007bff; // Bootstrap primary color
+        color: white; // Text color
+        font-weight: bold; // Bold text
+        cursor: pointer; // Change cursor to pointer
+        &:nth-child(1) {
+          border-right: 2px solid white;
+        }
+        &:hover {
+          background-color: #0056b3; // Darker shade on hover
+        }
+      }
+    }
+
+    & > :nth-child(2) {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateX(5em);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0em);
+      }
+    }
+  }
 }
