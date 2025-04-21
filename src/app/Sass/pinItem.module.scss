@@ -20,7 +20,7 @@
 
     &>:nth-child(3){
         width: 100%;
-        @include flexCustom(flex-start, center, row);
+        @include flexCustom(center, center, row);
         text-align: center;
         *{
            width: 100%;

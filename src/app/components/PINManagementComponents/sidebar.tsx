@@ -22,13 +22,13 @@ import {
 import { useAuth } from "../../context/authContext";
 import { collection, getFirestore, onSnapshot } from "firebase/firestore";
 import { app } from "../../firebase";
-import { useTransition, animated } from "@react-spring/web";
+import { useTransition, animated, useSpring } from "@react-spring/web";
 
 function Sidebar({ pins }: { pins: Pin[] }) {
   const [extend, setExtend] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<null | string>(null);
   const [toggleUnvisited, setToggleUnvisited] = useState<null | boolean>(null);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const dispatch: AppDispatch = useDispatch();
   const fullScreen = useSelector(selectFullScreen);
   const { user } = useAuth();
@@ -60,7 +60,7 @@ function Sidebar({ pins }: { pins: Pin[] }) {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [user.uid]);
 
   const handleSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void = (
     e
@@ -69,12 +69,17 @@ function Sidebar({ pins }: { pins: Pin[] }) {
   };
 
   const transitions = useTransition(extend ? filteredPins : [], {
-    from: { opacity: 0, y: -50 },
-    enter: { opacity: 1, y: 0 },
-    leave: { opacity: 0, y: -50 },
-    update: { opacity: 1, y: 0 },
-    config: { tension: 200, friction: 20 },
+    from: { opacity: 0, x: -50 },
+    enter: { opacity: 1, x: 0 },
+    leave: { opacity: 0, x: -50 },
+    update: { opacity: 1, x: 0 },
+    config: { tension: 100, friction: 20 },
     keys: (pin: Pin) => pin.id,
+  });
+
+  const rotateStyle = useSpring({
+    transform: extend ? "rotate(180deg)" : "rotate(0deg)",
+    config: { tension: 170, friction: 30 },
   });
 
   return (
@@ -159,14 +164,15 @@ function Sidebar({ pins }: { pins: Pin[] }) {
           ))}
         </div>
         <div className={styles.rightExtender}>
-          <div
+          <animated.div
+            style={rotateStyle}
             onClick={() => {
               setExtend(!extend);
             }}
-            className={extend ? styles.rotated : ""}
           >
             <RiArrowRightDoubleFill />
-          </div>
+          </animated.div>
+
           <div
             onClick={() => {
               dispatch(toggleFullScreen(true));

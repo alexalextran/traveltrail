@@ -61,7 +61,6 @@
     overflow-y: scroll;
     width: 40% !important;
     height: 100%;
-    border-right: 2px solid $webBlue; // Light grey border for separation
 
     /* Custom scrollbar styles */
     &::-webkit-scrollbar {
@@ -69,12 +68,11 @@
     }
 
     &::-webkit-scrollbar-track {
-        background-color: $webBlue;
+        background-color: white;
     }
 
     &::-webkit-scrollbar-thumb {
-        background-color: white;
-        border-radius: 5px;
+        background-color: $webBlue;
     }
 
     div {
