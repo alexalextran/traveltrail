@@ -62,16 +62,13 @@ function Sidebar({ pins }: { pins: Pin[] }) {
     return () => unsubscribe();
   }, [user.uid]);
 
-  const handleSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void = (
-    e
-  ) => {
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
   const transitions = useTransition(extend ? filteredPins : [], {
     from: { opacity: 0, x: -50 },
     enter: { opacity: 1, x: 0 },
-    leave: { opacity: 0, x: -50 },
     update: { opacity: 1, x: 0 },
     config: { tension: 100, friction: 20 },
     keys: (pin: Pin) => pin.id,
