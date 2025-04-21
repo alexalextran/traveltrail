@@ -44,7 +44,7 @@ function FullScreen({ pins, categories }: FullScreenProps) {
     },
   };
 
-  const [child, setchild] = useState(<Modal FullScreen={true} />);
+  const [child, setchild] = useState(<Modal FullScreen={true} />); //used to set the child component of the modal
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedCategory, setselectedCategory] = useState(
     null as null | Category
@@ -55,11 +55,11 @@ function FullScreen({ pins, categories }: FullScreenProps) {
     : pins;
   filteredPins = filteredPins.filter((pin) =>
     pin.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ); // Filter pins based on search query
 
   const filteredCategories = [...categories].sort((a, b) =>
     a.categoryName.localeCompare(b.categoryName)
-  );
+  ); // Sort categories alphabetically
 
   // UseSpring for fade-in animation
   const fadeIn = useSpring({
@@ -92,6 +92,7 @@ function FullScreen({ pins, categories }: FullScreenProps) {
             >
               <p>All</p>
             </div>
+            {/*Render Categories*/}
             {filteredCategories.map((category: Category, index: number) => (
               <CategoryComponent
                 key={index}
@@ -101,6 +102,8 @@ function FullScreen({ pins, categories }: FullScreenProps) {
               />
             ))}
           </div>
+
+          {/*Render Pins*/}
           <div className={styles.pins}>
             <div className={styles.searchQuery}>
               <input
@@ -115,9 +118,11 @@ function FullScreen({ pins, categories }: FullScreenProps) {
               const pinCategory = categories.find(
                 (category) => category.categoryName === pin.category
               );
+
               const categoryColor = pinCategory
                 ? pinCategory.categoryColor
-                : "black";
+                : "black"; //return black if category is not found
+
               return (
                 <div key={index} className={styles.pinContainer}>
                   <div className={styles.pinItem}>
@@ -166,6 +171,8 @@ function FullScreen({ pins, categories }: FullScreenProps) {
               );
             })}
           </div>
+
+          {/*Add Pin and Category Modals*/}
           <div className={styles.form}>
             <div className={styles.formBar}>
               <button onClick={() => setchild(<Modal FullScreen={true} />)}>
