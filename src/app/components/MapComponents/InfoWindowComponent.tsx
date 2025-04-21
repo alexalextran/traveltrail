@@ -12,11 +12,6 @@ interface InfoWindowProps {
 }
 
 export default function InfoWindowComponent({ setShowInfoWindow, filteredPin, settoggleIWM, filteredCategory, userLocation }: InfoWindowProps) {
-  const handleClick = () => {
-    settoggleIWM(true);
-    setShowInfoWindow(false)
-  };
-
 
   useEffect(() => {
     const removeCloseButtons = () => {
@@ -40,7 +35,7 @@ export default function InfoWindowComponent({ setShowInfoWindow, filteredPin, se
 
     return () => observer.disconnect(); // Cleanup when unmounting
   }, []);
-  
+
 
   const geometryLibrary = useMapsLibrary('geometry'); //calculate distance between user and pin
   const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
@@ -51,7 +46,7 @@ export default function InfoWindowComponent({ setShowInfoWindow, filteredPin, se
 
     const from = new google.maps.LatLng(lat1, lng1);
     const to = new google.maps.LatLng(lat2, lng2);
-    
+
     return google.maps.geometry.spherical.computeDistanceBetween(from, to) / 1000; // Distance in km
   };
 
@@ -61,11 +56,11 @@ export default function InfoWindowComponent({ setShowInfoWindow, filteredPin, se
     <main className={styles.main}>
       <h1>{filteredPin.title}</h1>
       <div>
-        <div className={styles.category} style={{ backgroundColor: filteredCategory.categoryColor, border: `2px solid ${filteredCategory.categoryColor}`}}>{filteredPin.category}</div>
+        <div className={styles.category} style={{ backgroundColor: filteredCategory.categoryColor, border: `2px solid ${filteredCategory.categoryColor}` }}>{filteredPin.category}</div>
         <p>{distanceToUser.toFixed(2)}KM Away</p>
         <p>Click the pin to expand!</p>
       </div>
-     
+
     </main>
   );
 }

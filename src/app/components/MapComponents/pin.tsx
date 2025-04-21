@@ -1,24 +1,24 @@
-import React, { useEffect, useRef, useState } from "react";
-import { AdvancedMarker, Pin, InfoWindow, useAdvancedMarkerRef } from "@vis.gl/react-google-maps";
+import React, { useEffect, useState } from "react";
+import { AdvancedMarker, InfoWindow, useAdvancedMarkerRef } from "@vis.gl/react-google-maps";
 import styles from "../../Sass/infoWindow.module.scss";
 import InfoWindowComponent from "./InfoWindowComponent";
 import ExpandedInfoModal from "./expandedInfoModal";
 import { useDispatch, useSelector } from 'react-redux';
 import { Category } from "../../types/categoryData";
-import { selectSelectedList } from "../../store/List/listSlice"; 
+import { selectSelectedList } from "../../store/List/listSlice";
 import { setActivePin, selectActivePin } from "../../store/activePinModal/activePinModalSlice";
 
 import { doc, getFirestore, onSnapshot } from "firebase/firestore";
 import { app } from "../../firebase";
 import { useAuth } from '../../context/authContext'; // Import the useAuth hook
 import CustomPin from "./customPin";
-const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {category: Category, pin: any, lat: number, lng: number, pinID: string, userLocation: { lat: number; lng: number; } }) => {
+const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category }: { category: Category, pin: any, lat: number, lng: number, pinID: string, userLocation: { lat: number; lng: number; } }) => {
   const [markerRef, marker] = useAdvancedMarkerRef();
   const [toggleIWM, settoggleIWM] = useState(false);
   const [showInfoWindow, setShowInfoWindow] = useState(false);
   const selectedList = useSelector(selectSelectedList);
   const [allListPins, setallListPins] = useState<string[]>([]);
-  const { user } = useAuth(); 
+  const { user } = useAuth();
   const dispatch = useDispatch();
   const activePinID = useSelector(selectActivePin);
   const isActive = activePinID === pinID;
@@ -29,7 +29,7 @@ const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {cate
 
   useEffect(() => {
     if (!selectedList || !selectedList.id) {
-      setallListPins([]); 
+      setallListPins([]);
       return;
     }
 
@@ -50,10 +50,10 @@ const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {cate
         unsubscribe();
       }
     };
-  }, [selectedList]);
+  }, [selectedList, user.uid]);
 
   const pinInList = allListPins.includes(pinID);
-  var backgroundColor =  allListPins.length == 0 || pinInList  ? '100%' : '10%';
+  var backgroundColor = allListPins.length == 0 || pinInList ? '100%' : '10%';
 
 
 
@@ -61,14 +61,14 @@ const CustomizedMarker = ({ lat, lng, pinID, userLocation, pin, category}: {cate
 
   return (
     <>
-      <AdvancedMarker 
-        position={{ lat, lng }} 
-        ref={markerRef} 
+      <AdvancedMarker
+        position={{ lat, lng }}
+        ref={markerRef}
         onClick={handleClick}
         onMouseEnter={() => setShowInfoWindow(true)}
         onMouseLeave={() => setShowInfoWindow(false)}>
-        
-        <CustomPin  category={category} backgroundColor={backgroundColor}/>
+
+        <CustomPin category={category} backgroundColor={backgroundColor} />
         {showInfoWindow && (
           <InfoWindow anchor={marker} className={styles.infoWindow}>
             <InfoWindowComponent

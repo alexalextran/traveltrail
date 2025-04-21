@@ -10,7 +10,7 @@ import { Rating } from "react-simple-star-rating";
 import { useSpring, animated } from "@react-spring/web";
 import NoImagesDisplay from "../ImageComponents/NoImagesDisplay.tsx";
 import { useDispatch } from "react-redux";
-import { setActivePin } from "@/app/store/activePinModal/activePinModalSlice.ts";
+import { setActivePin } from "../../store/activePinModal/activePinModalSlice.ts";
 
 export default function ExpandedInfoModal({
   pin,
@@ -166,11 +166,11 @@ export default function ExpandedInfoModal({
             <p className={styles.opening_hours}>
               {Array.isArray(result)
                 ? result.map((item, index) => (
-                    <span key={index}>
-                      {item}
-                      <br />
-                    </span>
-                  ))
+                  <span key={index}>
+                    {item}
+                    <br />
+                  </span>
+                ))
                 : "No opening hours available"}
             </p>
           </div>
