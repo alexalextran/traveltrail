@@ -70,6 +70,7 @@ function Sidebar({ pins }: { pins: Pin[] }) {
     from: { opacity: 0, x: -50 },
     enter: { opacity: 1, x: 0 },
     update: { opacity: 1, x: 0 },
+    leave: { opacity: !extend ? 0 : 1, x: !extend ? -50 : 0 },
     config: { tension: 100, friction: 20 },
     keys: (pin: Pin) => pin.id,
   });
