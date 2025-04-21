@@ -25,6 +25,26 @@ export const writeCategory = async (collectionName:string, data: {
     throw new Error("Failed to write document");
   }
 };
+
+export const retrieveAllPinsWithCategory = async (userID:string, categoryName: string): Promise<any[]> => {
+
+  try {
+    const pinsCollectionRef = collection(db, `users/${userID}/pins`);
+    const q = query(pinsCollectionRef, where("category", "==", categoryName));
+    const querySnapshot = await getDocs(q);
+
+    const pins: any[] = [];
+    querySnapshot.forEach((doc) => {
+      pins.push({ id: doc.id, ...doc.data() });
+    });
+
+    return pins;
+  } catch (error) {
+    console.error("Error retrieving pins: ", error);
+    throw new Error("Failed to retrieve pins");
+  }
+}
+
 export const deleteCategoryAndRelatedPins = async (userID:string, categoryName: string, categoryID: string): Promise<void> => {
   try {
     // Step 1: Query for all pins related to the category

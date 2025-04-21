@@ -13,6 +13,21 @@ const noCategories = "no_categories";
 const invalidAdress = "invalid_address";
 const categoryAdded = "category_added";
 const noEmojiSelected = "no_emoji_selected";
+const categoryDeleted = "category_deleted";
+
+export const categoryDeletedToast = (categoryName: any) => {
+  toast.success(`${categoryName} and all related pins deleted successfully!`, {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+    toastId: categoryName,
+  });
+};
 
 export const passwordsDontMatchToast = () => {
   toast.error(`Passwords do not match!`, {

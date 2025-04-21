@@ -201,22 +201,33 @@ const Modal = ({ FullScreen }: ModalProps) => {
               </option>
             ))}
           </select>
-          <label>
-            <input
-              type="checkbox"
-              checked={visited}
-              onChange={(e) => setVisited(e.target.checked)}
+
+          <hr></hr>
+
+          <i>Optional Fields</i>
+
+          <div className={styles.visitedRating}>
+            <label>
+              <input
+                type="checkbox"
+                checked={visited}
+                onChange={(e) => setVisited(e.target.checked)}
+              />
+              Visited
+            </label>
+            <Rating
+              onClick={handleRating}
+              initialValue={rating}
+              allowFraction={true}
             />
-            Visited
-          </label>
-          <div></div>
+          </div>
           <input
             type="text"
             value={openingHours}
             onChange={(e) => setOpeningHours(e.target.value)}
             placeholder="Opening Hours e.g Saturday: 11am - 8pm"
           />
-          <Rating allowFraction={true} onClick={handleRating} />
+
           <input
             type="text"
             value={website}
@@ -228,7 +239,16 @@ const Modal = ({ FullScreen }: ModalProps) => {
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Description"
           />
-          <button type="submit">Add Pin</button>
+          <div className={styles.formButtons}>
+            <button
+              className={styles.clearbutton}
+              type="button"
+              onClick={handleResetAllFields}
+            >
+              Clear All
+            </button>
+            <button type="submit">Add Pin</button>
+          </div>
         </form>
       </>
     );
