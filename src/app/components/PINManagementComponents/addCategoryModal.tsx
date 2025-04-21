@@ -8,12 +8,12 @@ import { Emoji, EmojiStyle } from "emoji-picker-react";
 import { toggleCategoryModal } from "../../store/toggleModals/toggleModalSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { selectCategoryModal } from "../../store/toggleModals/toggleModalSlice";
-import { AppDispatch } from "@/app/store/store.ts";
 import {
   standardErrorToast,
   categoryAddedToast,
   noEmojiSelectedToast,
 } from "../../toastNotifications.tsx";
+import { AppDispatch } from "../../store/store.ts";
 export default function AddCategoryModal() {
   const [categoryToAdd, setcategoryToAdd] = useState("");
   const [color, setColor] = useColor("rgb(0,0,0)");
@@ -109,7 +109,8 @@ export default function AddCategoryModal() {
               skinTonesDisabled={true}
               previewConfig={{ showPreview: false }}
               className={styles.emojiPicker}
-              height="20em"
+              height="25em"
+              width="100%"
             />
           </div>
         ) : (

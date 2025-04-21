@@ -148,6 +148,7 @@
     padding: 2rem;
     & > * {
       width: 100%;
+      margin: auto;
     }
   }
 
@@ -190,7 +191,6 @@
   }
 
   .emojiPicker {
-    height: 50%;
     button {
         width: fit-content;
       background-color: transparent !important;
