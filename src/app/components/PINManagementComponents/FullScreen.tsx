@@ -16,6 +16,8 @@ import { AppDispatch } from "../../store/store.ts";
 import CategoryComponent from "./CategoryComponent.tsx";
 import { useSpring, animated } from "@react-spring/web";
 import Image from "next/image";
+import { getContrastTextColor } from "../../utility";
+
 interface FullScreenProps {
   pins: Pin[];
   categories: Category[];
@@ -94,6 +96,7 @@ function FullScreen({ pins, categories }: FullScreenProps) {
               <CategoryComponent
                 key={index}
                 category={category}
+                selectedCategory={selectedCategory}
                 setselectedCategory={setselectedCategory}
               />
             ))}
@@ -123,8 +126,9 @@ function FullScreen({ pins, categories }: FullScreenProps) {
                       <p>{pin.address}</p>
                       <p
                         style={{
-                          color: categoryColor,
-                          border: `2px solid ${categoryColor}`,
+                          border: `2px solid black`,
+                          color: ` ${getContrastTextColor(categoryColor)}`,
+                          backgroundColor: `${categoryColor}`,
                         }}
                       >
                         {pin.category}

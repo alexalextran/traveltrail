@@ -35,6 +35,11 @@
       background-color: $webBlue;
       border-radius: 5px;
     }
+    .selectedCategory {
+        background-color: white;
+        color: white;
+        font-weight: bold;
+      }
     .category {
       background-color: $webBlue;
       padding: 0.8em;
@@ -47,6 +52,7 @@
         width: 80%;
         text-align: center;
       }
+     
 
       svg {
         cursor: pointer;
@@ -55,7 +61,7 @@
       }
 
       &:hover {
-        background-color: white;
+        background-color: gray;
         color: $webBlue;
       }
     }
@@ -88,10 +94,9 @@
       }
       & > :last-child {
         position: absolute;
-
         width: 100%;
         padding: 0 0.3em;
-        @include flexCustom(space-between, center, row);
+        @include flexCustom(space-around, center, row);
         bottom: 0;
         svg {
           cursor: pointer;
