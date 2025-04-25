@@ -42,7 +42,7 @@ const Page = () => {
         <div className={styles.infoPanel}>
           <div>
             <h2>Travel Trail</h2>
-            <p>Welcome to Travel Trail Version 0.97</p>
+            <p>Welcome to Travel Trail Version 1.0 !</p>
             <p>
               A <span>free</span> advanced travel planner developed by me, Alex
               Tran as a way to plan my own japan trip. However feel free to use
