@@ -18,7 +18,7 @@ export default function AddCategoryModal() {
   const [categoryToAdd, setcategoryToAdd] = useState("");
   const [color, setColor] = useColor("rgb(0,0,0)");
   const { user } = useAuth();
-  const [emojiPicker, setEmojiPicker] = useState(true);
+  const [emojiPicker, setEmojiPicker] = useState(false);
   const [selectedEmoji, setselectedEmoji] = useState<string>("");
   const dispatch: AppDispatch = useDispatch();
   const isCategoryModalOpen = useSelector(selectCategoryModal);
