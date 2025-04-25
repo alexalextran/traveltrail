@@ -28,16 +28,20 @@ const DnDPin = ({ pin, userHasEditPermissions, collaborative }: { pin: Pin, user
         <p>{pin.address}</p>
       </div>
       <div>
-        <p>{pin.category}</p>
-        <p>{pin.visited ? 'Visited' : 'Unvisited'}</p>
-       
-      
+        <p
+        >{pin.category}</p>
+        <p style={{
+          backgroundColor: pin.visited ? "#3c763d" : "#dff0d8",
+          color: pin.visited ? "#dff0d8" : "#3c763d",
+        }}>{pin.visited ? 'Visited' : 'Unvisited'}</p>
+
+
       </div>
-      {collaborative && 
-      <div className={styles.collaborativeTag} >
-      <img src={pin?.photoURL} />
-      <p>{pin.displayName}</p>   
-      </div>
+      {collaborative &&
+        <div className={styles.collaborativeTag} >
+          <img src={pin?.photoURL} />
+          <p>{pin.displayName}</p>
+        </div>
       }
     </div>
   );
