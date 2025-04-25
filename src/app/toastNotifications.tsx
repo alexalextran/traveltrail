@@ -15,6 +15,185 @@ const categoryAdded = "category_added";
 const noEmojiSelected = "no_emoji_selected";
 const categoryDeleted = "category_deleted";
 const invalid_address = "invalid_address";
+const invalidFileType = "invalid_file_type";
+const invalidFileSize = "invalid_file_size";
+const profileUpdated = "profile_updated";
+const nameUpdated = "name_updated";
+const accessLevelUpdated = "access_level_updated";
+const userRemovedFromCollaborators = "user_removed_from_collaborators";
+const acceptedCollaborativeRequest = "accepted_collaborative_request";
+const declinedCollaborativeRequest = "declined_collaborative_request";
+const invalidFriendCode = "invalid_friend_code";
+const alreadyBeenAdded = "already_added";
+const friendRequestSent = "friend_request_sent";
+
+
+export const collaborationRequestSentToast = (friendName: string) => {
+  toast.success(`Collaborative request sent to ${friendName}`, {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+    toastId: friendName,
+  });
+}
+
+export const friendRequestSentToast = () => {
+  toast.success("Friend request sent successfully!", {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+  });
+}
+
+export const alreadyAddedToast = (friendName: string) => {
+  toast.error(`${friendName} has already been added as a friend`, {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    toastId: alreadyBeenAdded,
+  });
+}
+
+export const invalidFriendCodeToast = () => {
+  toast.error("Invalid friend code. Please try again.", {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+    toastId: invalidFriendCode,
+  });
+}
+
+export const declinedCollaborativeRequestToast = (listName: string) => {
+  toast.success(`Collaborative request declined for ${listName}`, {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+    toastId: declinedCollaborativeRequest,
+  });
+}
+
+export const acceptedCollaborativeRequestToast = (listName: string) => {
+  toast.success(`Collaborative request accepted for ${listName}`, {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+    toastId: listName,
+  });
+}
+
+export const userRemovedFromCollaboratorsToast = (userDisplayName: string) => {
+  toast.success(`${userDisplayName} removed from collaborators successfully!`, {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+    toastId: userRemovedFromCollaborators,
+  });
+}
+
+export const accessLevelUpdatedToast = () => {
+  toast.success(`Access level updated successfully!`, {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+    toastId: accessLevelUpdated,
+  });
+}
+
+export const nameUpdatedToast = () => {
+  toast.success(`Name updated successfully!`, {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+    toastId: nameUpdated,
+  });
+}
+
+export const profileUpdatedToast = () => {
+  toast.success(`Profile updated successfully!`, {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+    toastId: profileUpdated,
+  });
+}
+
+export const invalidFileSizeToast = () => {
+  toast.error(`File size is too large! Please upload a file smaller than 5MB`, {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+    toastId: invalidFileSize,
+  });
+}
+
+export const invalidFileTypeToast = () => {
+  toast.error(`Invalid file type! Please upload JPEG or PNG`, {
+    position: "top-right",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+    toastId: invalidFileType,
+  });
+}
 
 export const invalidAdressToastEditPin = () => {
   toast.error(`Invalid Adress!`, {

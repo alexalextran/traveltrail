@@ -28,16 +28,16 @@ const FriendRequestsComponent: React.FC<FriendRequestsComponentProps> = ({
     setFriendCode,
     friendCode
 }) => {
-   
+
     interface FriendRequest {
         id: string;
         from: string;
         displayName: string;
         status: string;
     }
-   
+
     const [friendRequests, setFriendRequests] = useState<FriendRequest[]>(initialFriendRequests);
-   
+
     useEffect(() => {
         const db = getFirestore(app);
         const friendRequestsRef = collection(db, `users/${user.uid}/friendRequests`);
@@ -50,11 +50,11 @@ const FriendRequestsComponent: React.FC<FriendRequestsComponentProps> = ({
             }));
             setFriendRequests(fetchedRequests);
         });
-       
+
         return () => unsubscribeFriendRequests();
     }, [user.uid]);
-   
-   
+
+
     return (
         <div className={styles.socialMediaContainer}>
             <h2>Social Media</h2>
@@ -65,7 +65,7 @@ const FriendRequestsComponent: React.FC<FriendRequestsComponentProps> = ({
                     value={friendCode}
                     onChange={(e) => setFriendCode(e.target.value)}
                 />
-                <button onClick={handleAddFriend}>Add Friend</button> {/* Fixed: removed the () => */}
+                <button onClick={handleAddFriend}>Add Friend</button>
             </div>
             <div className={styles.friendRequestsSection}>
                 <h3>Friend Requests</h3>

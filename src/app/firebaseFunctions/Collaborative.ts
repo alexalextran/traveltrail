@@ -2,8 +2,8 @@ import { collection, addDoc, getFirestore, doc, deleteDoc, updateDoc, arrayUnion
 import { app } from "../firebase";
 import { list } from "firebase/storage";
 import { retrieveListName } from "./Lists";
-import { retrieveDisplayName } from "./friends";
-import { Console } from "console";
+import { retrieveDisplayName, retrieveUserProfilePicture } from "./friends";
+import { Console, profile } from "console";
 
 const db = getFirestore(app);
 export { db };
@@ -198,7 +198,7 @@ export const acceptCollaborativeRequest = async (userID: string, requestID: stri
         await batch.commit();
 
         const listOwnerName = await retrieveDisplayName(requestData.listOwner);
-
+        
 
         console.log(requestData)
         
@@ -206,8 +206,8 @@ export const acceptCollaborativeRequest = async (userID: string, requestID: stri
         await updateDoc(listOwnerRef, {
             collaborative: true,
             collaborators: arrayUnion(
-            { userID: friendID, edit: true, displayName: requestData.fromName },
-            { userID: requestData.listOwner, edit: true, displayName:listOwnerName }
+            { userID: friendID, edit: true, displayName: requestData.fromName, photoURL: await retrieveUserProfilePicture(friendID) },
+            { userID: requestData.listOwner, edit: true, displayName:listOwnerName, photoURL: await retrieveUserProfilePicture(requestData.listOwner) } // Add the list owner as a collaborator
             ),
             owner: requestData.listOwner
         });

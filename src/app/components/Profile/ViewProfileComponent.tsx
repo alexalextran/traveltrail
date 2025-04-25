@@ -4,7 +4,7 @@ import { getLists, getPinsFromList, getUserStatistics, handleAddToProfile } from
 import { useAuth } from '@/app/context/authContext';
 import { retrieveCollaborativeRequestStatus, sendCollaborativeListRequest } from '@/app/firebaseFunctions/Collaborative';
 import { retrieveDisplayName } from '@/app/firebaseFunctions/friends';
-import { toast } from 'react-toastify'; 
+import { collaborationRequestSentToast, standardErrorToast } from '../../toastNotifications';
 
 enum RequestType {
   Accepted = 'accepted',
@@ -102,18 +102,9 @@ export default function ProfileModal({ profileData, setViewProfile }: ModalProps
         await retrieveDisplayName(user.uid)
       );
       setRequestType(RequestType.Pending);
-      toast.success(`${profileData.displayName} was sent a request for collaboration`, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      collaborationRequestSentToast(profileData.displayName);
     } catch (error) {
-      console.error('Error sending collaboration request:', error);
+      standardErrorToast('Error sending collaboration request');
     }
   };
 

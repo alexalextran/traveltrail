@@ -70,3 +70,15 @@ export const returnUsers = async (userIDs: string[]): Promise<any> => {
         throw new Error("Failed to retrieve users");
     }
 }
+
+
+export const retrieveUserProfilePicture = async (userID: string): Promise<string> => {
+    try {
+        const userDoc = doc(db, `users/${userID}`);
+        const userSnapshot = await getDoc(userDoc);
+        return userSnapshot.data()?.photoURL;
+    } catch (error) {
+        console.error("Error retrieving profile picture: ", error);
+        throw new Error("Failed to retrieve profile picture");
+    }
+}

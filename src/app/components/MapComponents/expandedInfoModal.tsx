@@ -11,6 +11,7 @@ import { useSpring, animated } from "@react-spring/web";
 import NoImagesDisplay from "../ImageComponents/NoImagesDisplay.tsx";
 import { useDispatch } from "react-redux";
 import { setActivePin } from "../../store/activePinModal/activePinModalSlice.ts";
+import { getContrastTextColor } from "../../utility";
 
 export default function ExpandedInfoModal({
   pin,
@@ -161,7 +162,7 @@ export default function ExpandedInfoModal({
 
           <div className={styles.rating}>
             {pin.rating != 0 && pin.rating && (
-              <Rating initialValue={pin.rating} readonly></Rating>
+              <Rating allowFraction={true} initialValue={pin.rating} readonly></Rating>
             )}
             <p className={styles.opening_hours}>
               {Array.isArray(result)
@@ -179,13 +180,17 @@ export default function ExpandedInfoModal({
         <div className={styles.expandedModalTags}>
           <p
             style={{
-              backgroundColor: filteredCategory.categoryColor,
-              border: `2px solid ${filteredCategory.categoryColor}`,
+              border: `2px solid black`,
+              color: ` ${getContrastTextColor(filteredCategory.categoryColor)}`,
+              backgroundColor: `${filteredCategory.categoryColor}`,
             }}
           >
             {pin.category}
           </p>
-          <p>{pin.visited ? "Visited" : "Unvisited"}</p>
+          <p style={{
+            backgroundColor: pin.visited ? "#3c763d" : "#dff0d8",
+            color: pin.visited ? "#dff0d8" : "#3c763d",
+          }}>{pin.visited ? "Visited" : "Unvisited"}</p>
         </div>
         {pin.description && (
           <p className={styles.description}>{pin?.description}</p>

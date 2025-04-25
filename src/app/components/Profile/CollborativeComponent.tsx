@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import { collection, getFirestore, onSnapshot } from "firebase/firestore";
 import { toast } from "react-toastify";
 import styles from "../../Sass/CollaborativeComponent.module.scss";
-import { 
-  acceptCollaborativeRequest, 
-  declineCollaborativeRequest 
+import {
+  acceptCollaborativeRequest,
+  declineCollaborativeRequest
 } from "../../firebaseFunctions/Collaborative";
 import { useAuth } from "../../context/authContext";
 import { retrieveListName } from "../../firebaseFunctions/Lists";
 import { app } from "../../firebase";
+import { acceptedCollaborativeRequestToast, standardErrorToast, declinedCollaborativeRequestToast } from "../../toastNotifications";
 
 interface CollaborativeRequest {
   id: string;
@@ -26,7 +27,7 @@ export default function CollaborativeComponent() {
   const { user } = useAuth();
   const [incomingRequests, setIncomingRequests] = useState<CollaborativeRequest[]>([]);
   const [outgoingRequests, setOutgoingRequests] = useState<CollaborativeRequest[]>([]);
-    const db = getFirestore(app);
+  const db = getFirestore(app);
 
   useEffect(() => {
     // Reference to the user's collaborative requests collection
@@ -38,9 +39,9 @@ export default function CollaborativeComponent() {
 
       await Promise.all(
         snapshot.docs.map(async (docSnapshot) => {
-          const requestData = { 
-            id: docSnapshot.id, 
-            ...docSnapshot.data() 
+          const requestData = {
+            id: docSnapshot.id,
+            ...docSnapshot.data()
           } as CollaborativeRequest;
 
           // Only process requests that are pending
@@ -71,57 +72,21 @@ export default function CollaborativeComponent() {
   const handleAcceptRequest = async (request: CollaborativeRequest) => {
     try {
       await acceptCollaborativeRequest(user.uid, request.id, request.from || "");
-      
-      toast.success(`Accepted collaboration request for list: ${request.listName}`, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      // Show success toast notification
+      acceptedCollaborativeRequestToast(request.listName || "");
     } catch (error) {
-      console.error( error);
-      toast.error(" collaboration request", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      console.error(error);
+      standardErrorToast("Failed to accept collaboration request");
     }
   };
 
   const handleDeclineRequest = async (request: CollaborativeRequest) => {
     try {
       await declineCollaborativeRequest(user.uid, request.id);
-      
-      toast.success(`Declined collaboration request for list: ${request.listName}`, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+
+      declinedCollaborativeRequestToast(request.listName || "");
     } catch (error) {
-      toast.error("Failed to decline collaboration request", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      standardErrorToast("Failed to decline collaboration request");
     }
   };
 

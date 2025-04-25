@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../../Sass/ProfileComponent.module.scss';
-import { useAuth } from '../../context/authContext'; 
+import { useAuth } from '../../context/authContext';
 import {
     collection,
     getFirestore,
@@ -12,8 +12,7 @@ import {
     query,
     where,
     getDocs,
-    setDoc,
-    writeBatch
+
 } from 'firebase/firestore';
 import { app } from "../../firebase";
 import { toast } from 'react-toastify';
@@ -21,6 +20,8 @@ import ManageFriendsComponent from './ManageFriendsComponent';
 import FriendRequestsComponent from './FriendRequestsComponent';
 import ViewProfileComponent from './ViewProfileComponent';
 import CollaborativeComponent from './CollborativeComponent';
+import { alreadyAddedToast, friendRequestSentToast, invalidFriendCodeToast } from '../../toastNotifications';
+
 export default function SocialMediaComponent() {
     const { user } = useAuth();
     const [friendRequests, setFriendRequests] = useState<{ id: string; from: string; displayName: string; status: string }[]>([]);
@@ -66,7 +67,7 @@ export default function SocialMediaComponent() {
             const db = getFirestore(app);
             const publicLists: { friendId: string; listId: string; listName: string }[] = [];
 
-            for (const friend of friends) { 
+            for (const friend of friends) {
                 const listsRef = collection(db, `users/${friend.friendID}/lists`);
                 const q = query(listsRef, where("visible", "==", true));
                 const snapshot = await getDocs(q);
@@ -131,104 +132,77 @@ export default function SocialMediaComponent() {
 
 
 
-       const handleAddFriend = async () => {
+    const handleAddFriend = async () => {
         const db = getFirestore(app);
         if (friendCode.trim() === '') return;
-    
+
         // Check if the friendCode exists
         const friendDocRef = doc(db, `users/${friendCode}`);
         const friendDocSnapshot = await getDoc(friendDocRef);
         if (!friendDocSnapshot.exists() || friendCode === user.uid) {
-            toast.error("Invalid friend code. Please try again.", {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+            invalidFriendCodeToast();
             setFriendCode('');
             return;
         }
-    
+
         // Check if the user is already a friend
         const friendsRef = collection(db, `users/${user.uid}/friends`);
         const friendsSnapshot = await getDocs(friendsRef);
         const isFriend = friendsSnapshot.docs.some(doc => doc.data().friendID === friendCode);
         const friendsName = friendsSnapshot.docs.find(doc => doc.data().friendID === friendCode);
-    
+
         if (isFriend) {
-            toast.error(`${friendsName?.data().displayName} has already been added as a friend`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+            alreadyAddedToast(friendsName?.data().displayName);
             return;
         }
-    
+
         // Get current user's display name
         const friendRequestsRef = collection(db, `users/${friendCode}/friendRequests`);
         const userDocRef = doc(db, `users/${user.uid}`);
         const userDocSnapshot = await getDoc(userDocRef);
-    
+
         await addDoc(friendRequestsRef, {
             from: user.uid,
             displayName: userDocSnapshot.data()?.displayName,
             status: 'pending'
         });
-        toast.success(`Friend Request was sent`, {
-            position: "top-right",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-        });
+        friendRequestSentToast()
         setFriendCode('');
     };
-    
+
     return (
         <main className={styles.socialMediaMain}>
 
-            {viewProfile 
-            ? 
-            <ViewProfileComponent 
-            profileData={profileData}
-            setViewProfile={setviewProfile}/> 
-            :
-            <>
-            <FriendRequestsComponent 
-                friendRequests={friendRequests} 
-                user={user} 
-                friends={friends} 
-                handleAcceptRequest={handleAcceptRequest}
-                handleDeclineRequest={handleDeclineRequest}
-                handleAddFriend={handleAddFriend}
-                friendCode={friendCode}
-                setFriendCode={setFriendCode}
-            />
-            <ManageFriendsComponent
-                setprofileData={setprofileData}
-                setViewProfile={setviewProfile} 
-                friends={filteredFriends} 
-                searchFriends={searchFriends} 
-                setSearchFriends={setsearchFriends} 
-            />
-            <CollaborativeComponent />
-            </>
-            
+            {viewProfile
+                ?
+                <ViewProfileComponent
+                    profileData={profileData}
+                    setViewProfile={setviewProfile} />
+                :
+                <>
+                    <FriendRequestsComponent
+                        friendRequests={friendRequests}
+                        user={user}
+                        friends={friends}
+                        handleAcceptRequest={handleAcceptRequest}
+                        handleDeclineRequest={handleDeclineRequest}
+                        handleAddFriend={handleAddFriend}
+                        friendCode={friendCode}
+                        setFriendCode={setFriendCode}
+                    />
+                    <ManageFriendsComponent
+                        setprofileData={setprofileData}
+                        setViewProfile={setviewProfile}
+                        friends={filteredFriends}
+                        searchFriends={searchFriends}
+                        setSearchFriends={setsearchFriends}
+                    />
+                    <CollaborativeComponent />
+                </>
+
             }
 
-            
+
         </main>
     );
 }

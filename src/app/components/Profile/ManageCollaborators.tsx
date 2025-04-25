@@ -2,26 +2,22 @@ import React, { useEffect, useState } from "react";
 import styles from "../../Sass/manageCollaborators.module.scss";
 import { useAuth } from "../../context/authContext";
 import {
-  collection,
   doc,
   getFirestore,
-  onSnapshot,
   updateDoc,
-  arrayRemove,
-  DocumentData,
   DocumentReference,
   deleteDoc,
   getDoc,
 } from "firebase/firestore";
 import { app } from "../../firebase";
-import { toast } from "react-toastify";
 import { FaUserEdit, FaUserCog, FaArrowLeft, FaUserMinus } from "react-icons/fa";
-import {returnUsers} from '../../firebaseFunctions/friends';
+import { accessLevelUpdatedToast, standardErrorToast, userRemovedFromCollaboratorsToast } from "../../toastNotifications";
 
 interface CollaboratorType {
   userID: string;
   displayName: string;
   edit: boolean;
+  photoURL: string | null;
 }
 
 interface CollaboratorsModalProps {
@@ -38,7 +34,7 @@ export default function CollaboratorsModal({ listId, listName, onBack, listColla
 
   useEffect(() => {
     const fetchCollaborators = async () => {
-     
+
       setLoading(false);
       setCollaborators(listCollaborators);
     };
@@ -70,27 +66,9 @@ export default function CollaboratorsModal({ listId, listName, onBack, listColla
         updateCollaboratorField(collaboratorList),
       ]);
 
-      toast.success(`Access level updated successfully`, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      accessLevelUpdatedToast()
     } catch (error) {
-      toast.error("Failed to update access level", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      standardErrorToast("Access level update failed");
     }
   };
 
@@ -103,67 +81,49 @@ export default function CollaboratorsModal({ listId, listName, onBack, listColla
       const removedUserList = doc(db, `users/${collaboratorId}/lists/${listId}`);
       const collaboratorRequest = doc(db, `users/${collaboratorId}/collaborativeRequests/${listId}`);
       const userRequests = doc(db, `users/${user.uid}/collaborativeRequests/${listId}`);
-  
+
       // Get the current list document
       const listSnap = await getDoc(listDocRef);
       if (!listSnap.exists()) throw new Error("List not found");
-  
+
       const listData = listSnap.data();
       const currentCollaborators = listData.collaborators || [];
-  
+
       // Filter out the collaborator object that matches the userID
       const updatedCollaborators = currentCollaborators.filter(
         (collab: { userID: string }) => collab.userID !== collaboratorId
       );
-  
+
       // Update Firestore with the new collaborators array
       await updateDoc(listDocRef, {
         collaborators: updatedCollaborators
       });
-  
+
       await updateDoc(collaborativeList, {
         collaborators: updatedCollaborators
       });
-  
+
       // Remove the list from the collaborator's collection
       await deleteDoc(removedUserList);
       await deleteDoc(collaboratorRequest);
       await deleteDoc(userRequests);
-  
+
       // Show success toast
-      toast.success(`${displayName} removed from collaborators`, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      userRemovedFromCollaboratorsToast(displayName);
 
       setCollaborators(updatedCollaborators)
-  
+
     } catch (error) {
-      toast.error(`Failed to remove collaborator: ${error}`, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      standardErrorToast("Failed to remove collaborator");
     }
   };
-  
+
 
   return (
     <div className={styles.modal}>
       <div className={styles.modalHeader}>
-        <button 
-          onClick={onBack} 
+        <button
+          onClick={onBack}
           className={styles.backButton}
           aria-label="Go back"
         >
@@ -186,43 +146,45 @@ export default function CollaboratorsModal({ listId, listName, onBack, listColla
             {collaborators.filter((collaborator) => collaborator.userID != user.uid).map((collaborator) => (
               <li key={collaborator.userID} className={styles.collaboratorItem}>
                 <div className={styles.avatar}>
-                  {collaborator.displayName}
+                  <img
+                    src={collaborator.photoURL || ""}
+                  ></img>
                 </div>
                 <div className={styles.collaboratorInfo}>
                   <span className={styles.collaboratorName}>
-                    {collaborator.displayName }
+                    {collaborator.displayName}
                   </span>
-                
+
                   <span className={styles.collaboratorAccess} data-access={collaborator.edit}>
                     {collaborator.edit === false ? (
-                       <>
-                       <FaUserCog className={styles.accessIcon} /> Viewer
-                     </>
+                      <>
+                        <FaUserCog className={styles.accessIcon} /> Viewer
+                      </>
                     ) : (
-                    
-                       <>
-                       <FaUserEdit className={styles.accessIcon} /> Editor
-                     </>
+
+                      <>
+                        <FaUserEdit className={styles.accessIcon} /> Editor
+                      </>
                     )}
                   </span>
                 </div>
                 <div className={styles.collaboratorActions}>
                   {collaborator.edit === false ? (
-                   <button 
-                   onClick={() => updateCollaboratorAccess(collaborator.userID, true)}
-                   className={`${styles.accessButton} ${styles.editorButton}`}
-                 >
-                   Make Editor
-                 </button>
+                    <button
+                      onClick={() => updateCollaboratorAccess(collaborator.userID, true)}
+                      className={`${styles.accessButton} ${styles.editorButton}`}
+                    >
+                      Make Editor
+                    </button>
                   ) : (
-                    <button 
+                    <button
                       onClick={() => updateCollaboratorAccess(collaborator.userID, false)}
                       className={`${styles.accessButton} ${styles.viewerButton}`}
                     >
                       Make Viewer
                     </button>
                   )}
-                  <button 
+                  <button
                     onClick={() => removeCollaborator(collaborator.userID, collaborator.displayName)}
                     className={styles.removeButton}
                     aria-label="Remove collaborator"

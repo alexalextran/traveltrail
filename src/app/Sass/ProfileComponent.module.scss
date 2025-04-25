@@ -1,5 +1,22 @@
 @import "variables&functions";
 
+.spinner {
+  width: 100px;
+  height: 100px;
+  border: 6px solid #ccc;
+  border-top-color: #007bff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
 .profileContainer {
     position: fixed;
     z-index: 1000;
@@ -497,6 +514,39 @@
         padding: 0.5rem;
         height: 70%;
         overflow-y: scroll;
+
+        .manageButton {
+          margin-left: auto;
+          background-color: $webBlue;
+          color: white;
+          border: none;
+          border-radius: 6px;
+          padding: 0.4rem 0.8rem;
+          font-size: 0.85rem;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          
+          p {
+            margin: 0;
+            padding: 0;
+            color: white;
+            background-color: transparent;
+          }
+          
+          &:hover {
+            background-color: darken($webBlue, 10%);
+            transform: translateY(-1px);
+          }
+          
+          &:active {
+            transform: translateY(0);
+          }
+          
+          &:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba($webBlue, 0.3);
+          }
+        }
         
         ul {
             list-style: none;

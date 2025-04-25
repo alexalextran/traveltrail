@@ -12,12 +12,13 @@ import { app } from "../../firebase";
 import { updateListVisibility } from "../../firebaseFunctions/Lists";
 import { toast } from "react-toastify";
 import CollaboratorsModal from "./ManageCollaborators";
-import { 
-  getStorage, 
-  ref, 
-  uploadBytes, 
-  getDownloadURL 
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL
 } from "firebase/storage";
+import { invalidFileSizeToast, invalidFileTypeToast, nameUpdatedToast, profileUpdatedToast, standardErrorToast } from "../../toastNotifications";
 
 
 export default function ProfileComponent() {
@@ -30,12 +31,14 @@ export default function ProfileComponent() {
   const [showCollaboratorsModal, setShowCollaboratorsModal] = useState(false);
   const [selectedList, setSelectedList] = useState<{ id: string; listName: string; collaborators?: any[] } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
 
   useEffect(() => {
     const db = getFirestore(app);
-    
+
     const listCollectionRef = collection(db, `users/${user.uid}/lists`);
-    
+
     const unsubscribe = onSnapshot(listCollectionRef, (snapshot) => {
       const fetchedLists = snapshot.docs.filter((doc) => doc.data().owner === user.uid).map((doc) => ({
         id: doc.id,
@@ -61,65 +64,46 @@ export default function ProfileComponent() {
       unsubscribe();
       userDocUnsubscribe();
     };
-  }, []);
+  }, [user.uid]);
 
   const handleProfilePictureChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file type and size
-    const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    const validTypes = ['image/jpeg', 'image/png'];
     const maxSize = 5 * 1024 * 1024; // 5MB
 
     if (!validTypes.includes(file.type)) {
-      toast.error("Invalid file type. Please upload JPEG, PNG, or GIF.", {
-        position: "top-right",
-        autoClose: 3000,
-        theme: "light",
-      });
+      invalidFileTypeToast();
       return;
     }
 
     if (file.size > maxSize) {
-      toast.error("File is too large. Maximum size is 5MB.", {
-        position: "top-right",
-        autoClose: 3000,
-        theme: "light",
-      });
+      invalidFileSizeToast();
       return;
     }
+
+    setIsUploading(true);
 
     try {
       const storage = getStorage(app);
       const storageRef = ref(storage, `profilePictures/${user.uid}`);
-      
-      // Upload file
       const snapshot = await uploadBytes(storageRef, file);
-      
-      // Get download URL
       const downloadURL = await getDownloadURL(snapshot.ref);
-      
-      // Update user document with new photo URL
+
       const userDocRef = doc(getFirestore(app), `users/${user.uid}`);
       await updateDoc(userDocRef, { photoURL: downloadURL });
-      
-      // Update local state
+
       setProfilePicture(downloadURL);
-      
-      toast.success("Profile picture updated successfully", {
-        position: "top-right",
-        autoClose: 3000,
-        theme: "light",
-      });
+      profileUpdatedToast();
     } catch (error) {
       console.error("Error uploading profile picture:", error);
-      toast.error("Failed to update profile picture", {
-        position: "top-right",
-        autoClose: 3000,
-        theme: "light",
-      });
+      standardErrorToast("Error uploading profile picture");
+    } finally {
+      setIsUploading(false);
     }
   };
+
 
   const updateList = (id: string, checked: boolean) => {
     updateListVisibility(`users/${user.uid}/lists`, id, checked);
@@ -129,30 +113,12 @@ export default function ProfileComponent() {
     try {
       const userDocRef = doc(getFirestore(app), `users/${user.uid}`);
       await updateDoc(userDocRef, { displayName });
-      toast.success("Name updated successfully", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      nameUpdatedToast()
     } catch (error) {
-      toast.error("Name could not be updated", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      standardErrorToast("Error updating display name");
     }
   };
-  
+
 
   const triggerFileInput = () => {
     fileInputRef.current?.click();
@@ -171,17 +137,17 @@ export default function ProfileComponent() {
   return (
     <div className={styles.profileContainer}>
       {showCollaboratorsModal && selectedList ? (
-        <CollaboratorsModal 
-          listId={selectedList.id} 
-          listName={selectedList.listName} 
-          onBack={handleBackToProfile} 
+        <CollaboratorsModal
+          listId={selectedList.id}
+          listName={selectedList.listName}
+          onBack={handleBackToProfile}
           listCollaborators={selectedList.collaborators || []}
         />
       ) : (
         <main className={styles.main}>
           <h2>Profile</h2>
 
-          <div className={styles.profileInfoModal}> 
+          <div className={styles.profileInfoModal}>
             <div>
               <div className={styles.profileInfo}>
                 <label>Email</label>
@@ -195,21 +161,27 @@ export default function ProfileComponent() {
             </div>
 
             <div className={styles.profilePicture}>
-              <input 
-                type="file" 
+              <input
+                type="file"
                 ref={fileInputRef}
                 onChange={handleProfilePictureChange}
                 accept="image/jpeg,image/png"
                 style={{ display: 'none' }}
               />
-              {profilePicture ? (
-                <><img
+              {isUploading ? (
+                <div className={styles.spinner}></div> // ⬅️ Spinner element
+              ) : profilePicture ? (
+                <>
+                  <img
                     src={profilePicture}
                     alt="Profile"
                     className={styles.profileImage}
-                    onClick={triggerFileInput} /><p> Click to Change Profile Picture</p></>
+                    onClick={triggerFileInput}
+                  />
+                  <p>Click to Change Profile Picture</p>
+                </>
               ) : (
-                <div 
+                <div
                   className={styles.profileImagePlaceholder}
                   onClick={triggerFileInput}
                 >
@@ -253,11 +225,11 @@ export default function ProfileComponent() {
                       />
                       <label htmlFor={`list-${list.id}`}>{list.listName}</label>
                       {list.collaborative && (
-                        <button 
+                        <button
                           onClick={() => handleManageCollaborators(list.id, list.listName, list.collaborators || [])}
                           className={styles.manageButton}
                         >
-                          {list.owner === user.uid && <p>Manage Collaborators</p> }
+                          {list.owner === user.uid && <p>Manage Collaborators</p>}
                         </button>
                       )}
                     </li>
@@ -273,3 +245,4 @@ export default function ProfileComponent() {
     </div>
   );
 }
+
